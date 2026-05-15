@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZambiaPMS — Sign In</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f8fafc;
+    }
+
+    /* ── Left panel ── */
+    .left-panel {
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 56px;
+    }
+
+    .brand-mark {
+      width: 50px;
+      height: 50px;
+      background: #0d9488;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 36px;
+      flex-shrink: 0;
+    }
+
+    .left-panel h1 {
+      color: #f1f5f9;
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    .left-panel p {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .feature-list li {
+      color: #94a3b8;
+      font-size: 13.5px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-list li i {
+      color: #0d9488;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .left-footer {
+      margin-top: 48px;
+      color: #334155;
+      font-size: 12px;
+    }
+
+    /* ── Right panel ── */
+    .right-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 48px;
+      background: #fff;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-box .top-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0d9488;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
+    }
+
+    .login-box h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .login-box .subtitle {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 32px;
+    }
+
+    /* Role tabs */
+    .role-tabs {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 24px;
+      gap: 4px;
+    }
+
+    .role-tab {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .role-tab.active {
+      background: #fff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px 10px 38px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #0f172a;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      background: #fff;
+    }
+
+    .form-input:focus {
+      border-color: #0d9488;
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, .12);
+    }
+
+    .form-input.error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, .1);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .password-toggle:hover { color: #64748b; }
+
+    /* Remember + forgot row */
+    .form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: #64748b;
+      cursor: pointer;
+    }
+
+    .remember-label input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: #0d9488;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      font-size: 13px;
+      color: #0d9488;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* Error message */
+    .error-msg {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 7px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #dc2626;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .error-msg.hidden { display: none !important; }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 11px;
+      background: #0d9488;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s, transform .1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-submit:hover:not(:disabled) { background: #0f766e; }
+    .btn-submit:active:not(:disabled) { transform: scale(.99); }
+    .btn-submit:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+
+    /* Spinner inside button */
+    .btn-spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    /* Demo credentials box */
+    .demo-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 20px;
+    }
+
+    .demo-box .demo-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #94a3b8;
+      margin-bottom: 10px;
+    }
+
+    .demo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 8px;
+    }
+
+    .demo-row:last-child { border-bottom: none; }
+
+    .demo-role {
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      width: 72px;
+      flex-shrink: 0;
+    }
+
+    .demo-creds {
+      font-size: 11.5px;
+      color: #64748b;
+      font-family: monospace;
+      flex: 1;
+    }
+
+    .demo-fill {
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: 11px;
+      color: #0d9488;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .demo-fill:hover {
+      background: #0d9488;
+      color: #fff;
+      border-color: #0d9488;
+    }
+
+    /* Footer */
+    .login-footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12.5px;
+      color: #94a3b8;
+    }
+
+    /* Success flash */
+    .success-flash {
+      display: none;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 7px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #15803d;
+      margin-bottom: 16px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="left-panel">
+    <div class="brand-mark">ZP</div>
+    <h1>Property Management Built for Zambia</h1>
+    <p>
+      Manage your rental portfolio, track rent payments,
+      split utility bills, and resolve maintenance requests —
+      all from one secure dashboard.
+    </p>
+
+    <ul class="feature-list">
+      <li>
+        <i class="bi bi-graph-up-arrow"></i>
+        Smart arrears detection — never miss a late payment
+      </li>
+      <li>
+        <i class="bi bi-lightning-charge"></i>
+        Utility auto-split for ZESCO and LWSC bills
+      </li>
+      <li>
+        <i class="bi bi-tools"></i>
+        Maintenance request workflow — tenant to resolution
+      </li>
+      <li>
+        <i class="bi bi-bar-chart-line"></i>
+        Financial reports and dashboard analytics
+      </li>
+      <li>
+        <i class="bi bi-shield-check"></i>
+        JWT secured — role-based access for landlords and tenants
+      </li>
+    </ul>
+
+    <div class="left-footer">
+      ZambiaPMS &copy; 2025 · Final Year Project
+    </div>
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="right-panel">
+    <div class="login-box">
+
+      <div class="top-label">Welcome back</div>
+      <h2>Sign in to ZambiaPMS</h2>
+      <p class="subtitle">Enter your credentials to access your dashboard</p>
+
+      <!-- Role selector tabs -->
+      <div class="role-tabs">
+        <button class="role-tab active" onclick="selectRole('landlord', this)">
+          <i class="bi bi-building"></i> Landlord
+        </button>
+        <button class="role-tab" onclick="selectRole('tenant', this)">
+          <i class="bi bi-person"></i> Tenant
+        </button>
+        <button class="role-tab" onclick="selectRole('admin', this)">
+          <i class="bi bi-shield"></i> Admin
+        </button>
+      </div>
+
+      <!-- Error message -->
+      <div class="error-msg hidden" id="errorMsg">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span id="errorText">Invalid email or password. Please try again.</span>
+      </div>
+
+      <!-- Success message -->
+      <div class="success-flash" id="successMsg">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>Login successful! Redirecting to dashboard…</span>
+      </div>
+
+      <!-- Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope"></i>
+            <input
+              class="form-input"
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrap">
+            <i class="bi bi-lock"></i>
+            <input
+              class="form-input"
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              id="togglePassword"
+              onclick="togglePasswordVisibility()"
+              title="Show/hide password"
+            >
+              <i class="bi bi-eye" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="remember-label">
+            <input type="checkbox" id="remember"> Remember me
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <button class="btn-submit" type="submit" id="submitBtn">
+          <div class="btn-spinner" id="btnSpinner"></div>
+          <span id="btnText">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Sign In
+          </span>
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="divider">Demo Credentials</div>
+
+      <!-- Demo credentials quick-fill -->
+      <div class="demo-box">
+        <div class="demo-title">Click "Use" to auto-fill</div>
+
+        <div class="demo-row">
+          <div class="demo-role">Landlord</div>
+          <div class="demo-creds">james@test.com / testpass123</div>
+          <button class="demo-fill" onclick="fillCredentials('james@test.com', 'testpass123')">Use</button>
+        </div>
+
+        <div class="demo-row">
+          <div class="demo-role">Tenant</div>
+          <div class="demo-creds">chanda@test.com / testpass123</div>
+          <button class="demo-fill" onclick="fillCredentials('chanda@test.com', 'testpass123')">Use</button>
+        </div>
+
+        <div class="demo-row">
+          <div class="demo-role">Admin</div>
+          <div class="demo-creds">admin@zambiapm.com / admin123</div>
+          <button class="demo-fill" onclick="fillCredentials('admin@zambiapm.com', 'admin123')">Use</button>
+        </div>
+      </div>
+
+      <div class="login-footer">
+        Don't have an account?
+        <a href="register.html" style="color:#0d9488;font-weight:600;text-decoration:none">
+          Register here
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script>
+    // ── Config ────────────────────────────────────────────────
+    const API_BASE = 'http://localhost:8000/api';
+    let selectedRole = 'landlord';
+
+    // ── Role tab selector ─────────────────────────────────────
+    function selectRole(role, btn) {
+      selectedRole = role;
+      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // ── Password visibility toggle ────────────────────────────
+    function togglePasswordVisibility() {
+      const input   = document.getElementById('password');
+      const icon    = document.getElementById('eyeIcon');
+      const isShown = input.type === 'text';
+      input.type    = isShown ? 'password' : 'text';
+      icon.className = isShown ? 'bi bi-eye' : 'bi bi-eye-slash';
+    }
+
+    // ── Quick-fill demo credentials ───────────────────────────
+    function fillCredentials(email, password) {
+      document.getElementById('email').value    = email;
+      document.getElementById('password').value = password;
+      document.getElementById('email').focus();
+      // Clear any previous error when filling demo creds
+      hideError();
+    }
+
+    // ── Error / success helpers ───────────────────────────────
+    function showError(message) {
+      const box  = document.getElementById('errorMsg');
+      const text = document.getElementById('errorText');
+      text.textContent = message;
+      box.classList.remove('hidden');
+      box.style.display = 'flex';
+      document.getElementById('email').classList.add('error');
+      document.getElementById('password').classList.add('error');
+    }
+
+    function hideError() {
+      document.getElementById('errorMsg').classList.add('hidden');
+      document.getElementById('errorMsg').style.display = 'none';
+      document.getElementById('email').classList.remove('error');
+      document.getElementById('password').classList.remove('error');
+    }
+
+    function showSuccess() {
+      const box = document.getElementById('successMsg');
+      box.style.display = 'flex';
+    }
+
+    function setLoading(loading) {
+      const btn     = document.getElementById('submitBtn');
+      const spinner = document.getElementById('btnSpinner');
+      const text    = document.getElementById('btnText');
+      btn.disabled         = loading;
+      spinner.style.display = loading ? 'block' : 'none';
+      text.style.display    = loading ? 'none'  : 'flex';
+    }
+
+    // ── Main login handler ────────────────────────────────────
+    async function handleLogin(event) {
+      event.preventDefault();
+      hideError();
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      // Client-side validation
+      if (!email) {
+        showError('Please enter your email address.');
+        document.getElementById('email').focus();
+        return;
+      }
+      if (!password) {
+        showError('Please enter your password.');
+        document.getElementById('password').focus();
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        // ── Real API call (when Django backend is running) ──
+        const response = await fetch(`${API_BASE}/auth/login/`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || data.message || 'Invalid credentials.');
+        }
+
+        // Save tokens to localStorage
+        localStorage.setItem('pms_access',  data.access);
+        localStorage.setItem('pms_refresh', data.refresh);
+
+        // Fetch full user profile
+        const meResponse = await fetch(`${API_BASE}/auth/me/`, {
+          headers: { 'Authorization': `Bearer ${data.access}` }
+        });
+        const user = await meResponse.json();
+        localStorage.setItem('pms_user', JSON.stringify(user));
+
+        // Show success and redirect
+        setLoading(false);
+        showSuccess();
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1200);
+
+      } catch (err) {
+        setLoading(false);
+
+        // ── Demo mode fallback (when backend is not yet running) ──
+        // Remove this block once your Django backend is live
+        if (err.name === 'TypeError' && err.message.includes('fetch')) {
+          handleDemoLogin(email, password);
+          return;
+        }
+
+        showError(err.message || 'Login failed. Please check your credentials.');
+      }
+    }
+
+    // ── Demo mode (no backend needed — for testing the UI) ────
+    function handleDemoLogin(email, password) {
+      const demoUsers = {
+        'james@test.com':        { role: 'landlord', name: 'James Mwale',   redirect: 'index.html' },
+        'chanda@test.com':       { role: 'tenant',   name: 'Chanda Mutale', redirect: 'index.html' },
+        'admin@zambiapm.com':    { role: 'admin',    name: 'System Admin',  redirect: 'index.html' },
+      };
+
+      const user = demoUsers[email];
+
+      if (user && password === 'testpass123' || password === 'admin123') {
+        // Store mock user data
+        localStorage.setItem('pms_access',  'demo-access-token');
+        localStorage.setItem('pms_refresh', 'demo-refresh-token');
+        localStorage.setItem('pms_user', JSON.stringify({
+          email,
+          first_name: user.name.split(' ')[0],
+          last_name:  user.name.split(' ')[1],
+          role:       user.role,
+          full_name:  user.name,
+        }));
+
+        showSuccess();
+        setTimeout(() => {
+          window.location.href = user.redirect;
+        }, 1200);
+      } else {
+        showError('Invalid email or password. Try the demo credentials below.');
+      }
+    }
+
+    // ── Redirect if already logged in ────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('pms_access')) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Enter key triggers login
+      document.getElementById('password').addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleLogin(e);
+      });
+    });
+  </script>
+
+</body>
+</html>

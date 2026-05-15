@@ -1,0 +1,6 @@
+# requirements/production.txt
+-r base.txt
+gunicorn==22.0.0
+whitenoise==6.6.0     # Serve static files from Django (no separate file server needed)
+celery==5.4.0         # Background tasks (monthly invoicing)
+redis==5.0.4          # Celery broker

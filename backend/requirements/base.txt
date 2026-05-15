@@ -1,0 +1,10 @@
+# requirements/base.txt
+
+Django==4.2.11
+djangorestframework==3.15.1
+djangorestframework-simplejwt==5.3.1   # JWT auth
+django-cors-headers==4.3.1             # Allow frontend to call API
+psycopg2-binary==2.9.9                 # PostgreSQL adapter
+django-environ==0.11.2                 # .env file management
+Pillow==10.3.0                         # Image handling
+django-filter==24.2                    # API query filtering
