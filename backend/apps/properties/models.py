@@ -1,7 +1,7 @@
-# apps/properties/models.py
 from django.db import models
 from core.models import TimeStampedModel
 from apps.authentication.models import User
+import builtins
 
 
 class PropertyType(models.TextChoices):
@@ -29,9 +29,12 @@ class Property(TimeStampedModel):
     description   = models.TextField(blank=True)
 
     class Meta:
-        db_table    = 'properties'
+        db_table = 'properties'
         verbose_name_plural = 'properties'
-        ordering    = ['name']
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['owner_id']),
+        ]
 
     def __str__(self):
         return f"{self.name} ({self.city})"
@@ -87,8 +90,12 @@ class Unit(TimeStampedModel):
 
     class Meta:
         db_table = 'units'
-        unique_together = [['property', 'unit_number']]  # no duplicate unit numbers per property
+        unique_together = [['property', 'unit_number']]
         ordering = ['unit_number']
+        indexes = [
+            models.Index(fields=['property_id']),
+            models.Index(fields=['status']),
+        ]
 
     def __str__(self):
         return f"{self.property.name} — Unit {self.unit_number}"
@@ -96,7 +103,8 @@ class Unit(TimeStampedModel):
     def is_vacant(self):
         return self.status == UnitStatus.VACANT
 
-    @property
+    # FIX: Using builtins.property to prevent referencing the ForeignKey attribute above
+    @builtins.property
     def current_lease(self):
         """Returns the active lease for this unit, or None."""
         return self.leases.filter(status='active').first()

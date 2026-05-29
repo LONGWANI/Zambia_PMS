@@ -1,41 +1,28 @@
 /**
- * ZambiaPMS — auth.js
- * Step 5.4 — Authentication Module
- * Place this file in: frontend/js/auth.js
- *
- * Handles ALL token storage, retrieval, refresh, and logout.
- * Must be loaded BEFORE api.js in every HTML page.
- *
- * Load order in every HTML file:
- *   <script src="js/auth.js"></script>   ← first
- *   <script src="js/api.js"></script>    ← second
- *   <script src="js/dashboard.js"></script> ← page-specific last
+ * ZambiaPMS – Authentication Module
+ * Handles JWT tokens, user storage, refresh, logout.
+ * Must be loaded AFTER config.js and BEFORE api.js
  */
 
 const auth = {
-
-  // ── Token storage keys ─────────────────────────────────────────────────
   KEYS: {
     ACCESS:  'pms_access',
     REFRESH: 'pms_refresh',
     USER:    'pms_user',
   },
 
-  // ── Getters ────────────────────────────────────────────────────────────
   getAccessToken()  { return localStorage.getItem(this.KEYS.ACCESS); },
   getRefreshToken() { return localStorage.getItem(this.KEYS.REFRESH); },
 
   getCurrentUser() {
     const raw = localStorage.getItem(this.KEYS.USER);
-    try { return raw ? JSON.parse(raw) : null; }
-    catch { return null; }
+    try { return raw ? JSON.parse(raw) : null; } catch { return null; }
   },
 
   isAuthenticated() { return !!this.getAccessToken(); },
 
-  // ── Setters ────────────────────────────────────────────────────────────
   setTokens(access, refresh) {
-    localStorage.setItem(this.KEYS.ACCESS,  access);
+    localStorage.setItem(this.KEYS.ACCESS, access);
     localStorage.setItem(this.KEYS.REFRESH, refresh);
   },
 
@@ -43,69 +30,63 @@ const auth = {
     localStorage.setItem(this.KEYS.USER, JSON.stringify(user));
   },
 
-  // ── Login ──────────────────────────────────────────────────────────────
   async login(email, password) {
-    // Step 1: get tokens
-    const tokenData = await api.auth.login({ email, password });
-    this.setTokens(tokenData.access, tokenData.refresh);
+    const response = await fetch(`${window.API_BASE}/auth/login/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || error.message || 'Login failed');
+    }
+    const data = await response.json();
+    this.setTokens(data.access, data.refresh);
 
-    // Step 2: fetch full user profile
-    const user = await api.auth.me();
+    const userRes = await fetch(`${window.API_BASE}/auth/me/`, {
+      headers: { 'Authorization': `Bearer ${data.access}` }
+    });
+    if (!userRes.ok) throw new Error('Failed to fetch user profile');
+    const user = await userRes.json();
     this.setUser(user);
-
     return user;
   },
 
-  // ── Silent token refresh ───────────────────────────────────────────────
-  // Called automatically by api.js when a 401 response is received
   async refreshToken() {
     try {
       const refresh = this.getRefreshToken();
       if (!refresh) return false;
-
-      const response = await fetch(`${API_BASE}/auth/token/refresh/`, {
-        method:  'POST',
+      const response = await fetch(`${window.API_BASE}/auth/token/refresh/`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ refresh }),
+        body: JSON.stringify({ refresh }),
       });
-
       if (!response.ok) return false;
-
       const data = await response.json();
       if (data.access) {
         localStorage.setItem(this.KEYS.ACCESS, data.access);
-        // If server rotates the refresh token too, update it
-        if (data.refresh) {
-          localStorage.setItem(this.KEYS.REFRESH, data.refresh);
-        }
+        if (data.refresh) localStorage.setItem(this.KEYS.REFRESH, data.refresh);
         return true;
       }
       return false;
-    } catch {
-      return false;
-    }
+    } catch { return false; }
   },
 
-  // ── Logout ─────────────────────────────────────────────────────────────
   logout() {
     const refresh = this.getRefreshToken();
-
-    // Blacklist the refresh token on the server (best effort — ignore errors)
     if (refresh) {
-      api.auth.logout({ refresh }).catch(() => {});
+      fetch(`${window.API_BASE}/auth/logout/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh }),
+      }).catch(() => {});
     }
-
-    // Clear all local storage
     localStorage.removeItem(this.KEYS.ACCESS);
     localStorage.removeItem(this.KEYS.REFRESH);
     localStorage.removeItem(this.KEYS.USER);
-
-    // Redirect to login
     window.location.href = '/login.html';
   },
 
-  // ── Guard — call at top of every protected page ────────────────────────
-  // Redirects to login if not authenticated
   requireAuth() {
     if (!this.isAuthenticated()) {
       window.location.href = '/login.html';
@@ -114,34 +95,18 @@ const auth = {
     return true;
   },
 
-  // ── Role helpers ───────────────────────────────────────────────────────
-  isAdmin() {
-    const user = this.getCurrentUser();
-    return user?.role === 'admin';
-  },
+  isAdmin()    { return this.getCurrentUser()?.role === 'admin'; },
+  isLandlord() { const r = this.getCurrentUser()?.role; return r === 'landlord' || r === 'admin'; },
+  isTenant()   { return this.getCurrentUser()?.role === 'tenant'; },
 
-  isLandlord() {
-    const user = this.getCurrentUser();
-    return user?.role === 'landlord' || user?.role === 'admin';
-  },
-
-  isTenant() {
-    const user = this.getCurrentUser();
-    return user?.role === 'tenant';
-  },
-
-  // ── Populate UI with current user info ────────────────────────────────
-  // Call this on DOMContentLoaded on every page to fill the sidebar
   populateSidebarUser() {
     const user = this.getCurrentUser();
     if (!user) return;
-
     const nameEl   = document.getElementById('userName');
     const roleEl   = document.getElementById('userRole');
     const avatarEl = document.getElementById('userAv');
-
-    if (nameEl)   nameEl.textContent   = user.full_name || `${user.first_name} ${user.last_name}`;
-    if (roleEl)   roleEl.textContent   = user.role?.charAt(0).toUpperCase() + user.role?.slice(1);
+    if (nameEl) nameEl.textContent = user.full_name || `${user.first_name} ${user.last_name}`;
+    if (roleEl) roleEl.textContent = user.role?.charAt(0).toUpperCase() + user.role?.slice(1);
     if (avatarEl) avatarEl.textContent = (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
-  },
+  }
 };

@@ -1,21 +1,34 @@
 # config/settings/base.py
-# WHY: All environment-specific values come from .env — never hardcoded.
-# This is the Twelve-Factor App methodology — critical for production security.
+"""
+Base settings for ZambiaPMS.
+All environment-specific values are loaded from .env – never hardcoded.
+"""
 
 import environ
 from pathlib import Path
+from celery.schedules import crontab
+import os
 
-env = environ.Env()
+# Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Read .env file if it exists (development convenience)
+# Load environment variables
+env = environ.Env()
 environ.Env.read_env(BASE_DIR / '.env')
 
-SECRET_KEY = env('DJANGO_SECRET_KEY')   # Never has a default — forces explicit config
+# ---------- Core Settings ----------
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = env.bool('DJANGO_DEBUG', default=False)
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
-# Application definition — note the apps/ prefix matching our folder structure
+# Security validation
+if not DEBUG and not ALLOWED_HOSTS:
+    raise ValueError("ALLOWED_HOSTS must be set when DEBUG=False")
+
+if not SECRET_KEY:
+    raise ValueError("DJANGO_SECRET_KEY must be set")
+
+# ---------- Application Definition ----------
 DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,7 +41,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',  # enables logout (JWT blacklisting)
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
 ]
@@ -47,7 +60,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',      # Must be before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',  # Must be before CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,15 +70,63 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
-AUTH_USER_MODEL = 'authentication.User'  # Our custom user model
+AUTH_USER_MODEL = 'authentication.User'
 
-# Database — all values from environment variables
+# ---------- Templates (UPDATED FOR FRONTEND) ----------
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Look for the frontend folder either outside the backend folder, or inside it.
+        'DIRS': [
+            BASE_DIR.parent / 'frontend', 
+            BASE_DIR / 'frontend'
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+# ---------- Database ----------
 DATABASES = {
     'default': env.db('DATABASE_URL')
-    # DATABASE_URL format: postgres://user:password@localhost:5432/zambia_pms
 }
+DATABASES['default']['ATOMIC_REQUESTS'] = True  # Wrap each request in a transaction
 
-# DRF configuration — applying consistent API behaviour across all views
+# ---------- Password Validation ----------
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', 'OPTIONS': {'min_length': 8}},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+# ---------- Internationalisation (Zambia) ----------
+LANGUAGE_CODE = 'en-gb'
+TIME_ZONE = 'Africa/Lusaka'
+USE_I18N = True
+USE_TZ = True
+
+# ---------- Static & Media (UPDATED FOR FRONTEND) ----------
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# This tells Django where to find the CSS, JS, and Images for your index.html
+STATICFILES_DIRS = [
+    BASE_DIR.parent / 'frontend',
+    BASE_DIR / 'frontend',
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ---------- REST Framework ----------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -84,30 +145,96 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ),
     'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',   
+        'rest_framework.throttling.UserRateThrottle',   
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/hour',      
+        'user': '100/hour',     
+    },
 }
 
-# JWT settings — tuned for a property management system
-# (longer access token than a banking app; shorter than a blog)
+# ---------- JWT Settings ----------
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),    # One working day
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),       
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,               # Old tokens invalid after refresh
+    'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# CORS — allow the frontend to call the API
+# ---------- CORS ----------
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'http://localhost:3000',
-    'http://127.0.0.1:5500',  # VS Code Live Server (common for HTML/CSS/JS dev)
+    'http://127.0.0.1:5500',
 ])
+CORS_ALLOW_CREDENTIALS = True
 
-# Internationalisation — Zambia context
-LANGUAGE_CODE = 'en-gb'
-TIME_ZONE = 'Africa/Lusaka'   # UTC+2
-USE_I18N = True
-USE_TZ = True
+# ---------- Celery ----------
+CELERY_BROKER_URL = env('REDIS_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = env('REDIS_URL', default='redis://localhost:6379/0')
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  
 
+CELERY_BEAT_SCHEDULE = {
+    'daily-arrears-check': {
+        'task': 'apps.billing.tasks.run_daily_arrears_check',
+        'schedule': crontab(hour=8, minute=0),  
+    },
+    'weekly-lease-expiry-warnings': {
+        'task': 'apps.billing.tasks.send_lease_expiry_warnings',
+        'schedule': crontab(day_of_week=1, hour=9, minute=0),  
+    },
+}
+
+# ---------- Logging ----------
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'zambia_pms.log',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'apps': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+
+# ---------- Default primary key field type ----------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

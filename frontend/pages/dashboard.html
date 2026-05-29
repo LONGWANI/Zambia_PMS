@@ -1,0 +1,131 @@
+<div id="alertsContainer" class="mb-4"></div>
+
+<div class="row g-4 mb-4">
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="saas-card h-100 p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="text-muted fw-medium small text-uppercase tracking-wider">Portfolio Size</span>
+                <div class="p-2 rounded-3" style="background-color: var(--accent-light); color: var(--accent);">
+                    <i class="bi bi-building fs-5"></i>
+                </div>
+            </div>
+            <h2 class="display-6 fw-bold mb-2" id="kpiTotalUnits" style="color: var(--text-primary);">--</h2>
+            <div class="d-flex align-items-center gap-1 small text-success fw-semibold" id="kpiOccupancy">
+                <i class="bi bi-graph-up-arrow"></i> <span>--% Occupancy Rate</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="saas-card h-100 p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="text-muted fw-medium small text-uppercase tracking-wider">Gross Revenue</span>
+                <div class="p-2 rounded-3 bg-success-subtle text-success">
+                    <i class="bi bi-cash-stack fs-5"></i>
+                </div>
+            </div>
+            <h2 class="display-6 fw-bold mb-2" id="kpiRevenue" style="color: var(--text-primary);">ZMW 0.00</h2>
+            <div class="d-flex align-items-center gap-1 small text-success fw-semibold" id="kpiRevenueChange">
+                <i class="bi bi-arrow-up-right"></i> <span>+--% MoM growth</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="saas-card h-100 p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="text-muted fw-medium small text-uppercase tracking-wider">Vacant Spaces</span>
+                <div class="p-2 rounded-3 bg-warning-subtle text-warning">
+                    <i class="bi bi-door-open fs-5"></i>
+                </div>
+            </div>
+            <h2 class="display-6 fw-bold mb-2" id="kpiVacant" style="color: var(--text-primary);">--</h2>
+            <div class="d-flex align-items-center gap-1 small text-muted fw-medium">
+                <i class="bi bi-clock-history"></i> <span>Ready for onboarding</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="saas-card h-100 p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="text-muted fw-medium small text-uppercase tracking-wider">Collection Efficiency</span>
+                <div class="p-2 rounded-3 bg-info-subtle text-info">
+                    <i class="bi bi-pie-chart fs-5"></i>
+                </div>
+            </div>
+            <h2 class="display-6 fw-bold mb-2" id="kpiCollectionRate" style="color: var(--text-primary);">--%</h2>
+            <div class="d-flex align-items-center gap-1 small text-danger fw-semibold">
+                <i class="bi bi-exclamation-circle"></i> <span>View active invoice deficits</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12 col-xl-6">
+        <div class="saas-card p-0 h-100 overflow-hidden">
+            <div class="p-4 d-flex justify-content-between align-items-center bg-white border-bottom">
+                <div>
+                    <h3 class="fs-5 fw-bold m-0" style="color: var(--text-primary);">Recent Payments</h3>
+                    <p class="text-muted small m-0">Latest verified incoming property revenue</p>
+                </div>
+                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="navigate('payments')">
+                    View Ledger <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="saas-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Amount</th>
+                            <th class="text-end">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentPayments">
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-5">
+                                <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                                Loading system data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+        <div class="saas-card p-0 h-100 overflow-hidden">
+            <div class="p-4 d-flex justify-content-between align-items-center bg-white border-bottom">
+                <div>
+                    <h3 class="fs-5 fw-bold m-0" style="color: var(--text-primary);">Open Maintenance Issues</h3>
+                    <p class="text-muted small m-0">Urgent facility repairs requiring assignments</p>
+                </div>
+                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="navigate('maintenance')">
+                    View Queue <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="saas-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Issue Description</th>
+                            <th>Unit Location</th>
+                            <th class="text-end">Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentMaintenance">
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-5">
+                                <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                                Loading operational queue...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
