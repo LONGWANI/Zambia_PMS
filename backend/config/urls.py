@@ -75,14 +75,21 @@ urlpatterns = [
     # 3. Standard API Endpoints (from router)
     path('api/', include(router.urls)),
     
-    # 4. Custom Report API Endpoints
-    path('api/reports/dashboard/',  DashboardView.as_view(),       name='dashboard'),
-    path('api/reports/financial/',  FinancialReportView.as_view(), name='financial-report'),
-    path('api/reports/arrears/',    ArrearsReportView.as_view(),   name='arrears-report'),
+    # 4. Custom Report API Endpoints (Renamed to avoid template name collisions)
+    path('api/reports/dashboard/',  DashboardView.as_view(),       name='api-dashboard'),
+    path('api/reports/financial/',  FinancialReportView.as_view(), name='api-financial-report'),
+    path('api/reports/arrears/',    ArrearsReportView.as_view(),   name='api-arrears-report'),
 
-    # 5. Core Frontend Landing Route
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    # 5. --- NEW: FRONTEND TEMPLATE ROUTES ---
+    # This renders your HTML pages perfectly injected into base.html
+    path('', TemplateView.as_view(template_name='pages/dashboard.html'), name='dashboard'),
+    path('properties/', TemplateView.as_view(template_name='pages/properties.html'), name='properties'),
+    path('tenants/', TemplateView.as_view(template_name='pages/tenants.html'), name='tenants'),
+    path('payments/', TemplateView.as_view(template_name='pages/payments.html'), name='payments'),
+    path('maintenance/', TemplateView.as_view(template_name='pages/maintenance.html'), name='maintenance'),
+    path('reports/', TemplateView.as_view(template_name='pages/reports.html'), name='reports'),
     
     # 6. Bulletproof Dynamic Frontend Asset & Page Router
+    # This stays at the bottom to catch your CSS, JS, and Images!
     re_path(r'^(?P<path>.*)$', dynamic_frontend_serve),
 ]

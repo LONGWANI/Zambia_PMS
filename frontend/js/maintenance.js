@@ -1,5 +1,5 @@
 async function render_maintenance() {
-  showLoader();
+  if (typeof showLoader === 'function') showLoader();
   try {
     const data = await api.maintenance.list();
     const requests = data.results || data;
@@ -51,52 +51,100 @@ async function render_maintenance() {
               </table>
           </div>
       </div>`;
-    document.getElementById('content').innerHTML = html;
+    document.getElementById('contentWorkspace').innerHTML = html; 
   } catch (err) {
-    document.getElementById('content').innerHTML = `<div class="alert alert-danger m-4">Error: ${err.message}</div>`;
+    document.getElementById('contentWorkspace').innerHTML = `<div class="alert alert-danger m-4">Error: ${err.message}</div>`;
   }
 }
 
-// Modal Refactor inside maintenance.js
 async function openCreateMaintenanceModal() {
-  const tenants = await api.tenants.list();
-  const tenantOptions = tenants.map(t => `<option value="${t.id}">${t.full_name}</option>`).join('');
-  
-  openModal(`
-    <div class="modal-box">
-        <div class="modal-hd">
-            <h5>File Maintenance Request</h5>
-            <button class="icon-btn p-1" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
-        </div>
-        <div class="modal-bd">
-            <div class="mb-3">
-                <label class="form-label">Issue Title *</label>
-                <input class="form-control" id="maint_title" placeholder="e.g. Broken HVAC Unit">
+  try {
+      const tenants = await api.tenants.list();
+      const tenantOptions = tenants.map(t => `<option value="${t.id}">${t.full_name}</option>`).join('');
+      
+      openModal(`
+        <div class="modal-box p-4 bg-white rounded-3 shadow">
+            <div class="modal-hd d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold m-0 text-slate-900">File Maintenance Request</h5>
+                <button class="btn-close" onclick="closeModal()"></button>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <textarea class="form-control" id="maint_description" rows="3" placeholder="Provide details..."></textarea>
-            </div>
-            <div class="row g-3 mb-2">
-                <div class="col-md-6">
-                    <label class="form-label">Tenant *</label>
-                    <select class="form-select" id="maint_tenant">${tenantOptions}</select>
+            <div class="modal-bd">
+                <div class="mb-3">
+                    <label class="form-label text-slate-700 fw-medium small mb-1">Issue Title *</label>
+                    <input class="form-control" id="maint_title" placeholder="e.g. Broken HVAC Unit">
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Priority Level</label>
-                    <select class="form-select" id="maint_priority">
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                        <option value="emergency">Emergency</option>
-                    </select>
+                <div class="mb-3">
+                    <label class="form-label text-slate-700 fw-medium small mb-1">Description</label>
+                    <textarea class="form-control" id="maint_description" rows="3" placeholder="Provide details..."></textarea>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-slate-700 fw-medium small mb-1">Tenant *</label>
+                        <select class="form-select" id="maint_tenant">${tenantOptions}</select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-slate-700 fw-medium small mb-1">Priority Level</label>
+                        <select class="form-select" id="maint_priority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="emergency">Emergency</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-ft">
-            <button class="btn-outline" onclick="closeModal()">Cancel</button>
-            <button class="btn-primary" onclick="submitMaintenance()">Submit Request</button>
-        </div>
-    </div>`);
+            <div class="modal-ft d-flex justify-content-end gap-2 pt-2">
+                <button class="btn btn-light border" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-teal text-white px-4" onclick="submitMaintenance()">Submit Request</button>
+            </div>
+        </div>`);
+  } catch(err) {
+      toast(`Failed to load dependency elements: ${err.message}`, 'err');
+  }
 }
+
+async function submitMaintenance() {
+    const titleValue = document.getElementById('maint_title').value.trim();
+    const descValue = document.getElementById('maint_description').value.trim();
+    const tenantId = document.getElementById('maint_tenant').value;
+    const priorityValue = document.getElementById('maint_priority').value;
+
+    if (!titleValue || !tenantId) {
+        toast('Issue Title and Tenant are required fields.', 'warn');
+        return;
+    }
+
+    const payload = {
+        title: titleValue,
+        description: descValue,
+        tenant_id: tenantId,
+        priority: priorityValue
+    };
+
+    try {
+        await api.maintenance.create(payload);
+        closeModal();
+        toast('Maintenance request successfully filed', 'ok');
+        await render_maintenance();
+    } catch (err) {
+        toast(`Failed to file request: ${err.message}`, 'err');
+    }
+}
+
+async function resolveRequest(requestId) {
+    if (!confirm('Mark this maintenance issue as fully resolved?')) return;
+
+    try {
+        await api.maintenance.update(requestId, { status: 'resolved' });
+        toast('Issue marked as resolved', 'ok');
+        await render_maintenance(); 
+    } catch (err) {
+        toast(`Resolution failed: ${err.message}`, 'err');
+    }
+}
+
+// BIND TO GLOBAL SCOPE
 window.render_maintenance = render_maintenance;
+window.openCreateMaintenanceModal = openCreateMaintenanceModal;
+window.submitMaintenance = submitMaintenance;
+window.resolveRequest = resolveRequest;

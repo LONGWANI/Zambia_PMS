@@ -57,7 +57,6 @@
     <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="fullName" required></div>
     <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="email" type="email" required></div>
     <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" id="phone" required></div>
-    <div class="form-group"><label class="form-label">NRC Number (optional)</label><input class="form-input" id="nrc"></div>
     <div class="form-group"><label class="form-label">Role</label>
       <select class="form-input" id="role">
         <option value="landlord">Landlord</option>
@@ -65,6 +64,7 @@
       </select>
     </div>
     <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="password" type="password" required></div>
+    <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" id="confirmPassword" type="password" required></div>
     <button class="btn-submit" type="submit">Register</button>
   </form>
   <div class="footer">Already have an account? <a href="login.html">Sign in</a></div>
@@ -76,29 +76,58 @@
   const form = document.getElementById('registerForm');
   const errorDiv = document.getElementById('errorMsg');
   const successDiv = document.getElementById('successMsg');
-  function showError(msg) { errorDiv.style.display = 'flex'; errorDiv.querySelector('span').textContent = msg; }
-  function hideError() { errorDiv.style.display = 'none'; }
+  
+  function showError(msg) { 
+      errorDiv.style.display = 'flex'; 
+      errorDiv.querySelector('span').textContent = msg; 
+  }
+  function hideError() { 
+      errorDiv.style.display = 'none'; 
+  }
+  
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
     successDiv.style.display = 'none';
+    
+    // Split full name into first and last name for Django Models
+    const fullName = document.getElementById('fullName').value.trim();
+    const nameParts = fullName.split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+    
+    // Grab passwords
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    // Local validation for matching passwords
+    if (password !== confirmPassword) {
+        showError('Passwords do not match.');
+        return;
+    }
+
+    // Build payload matching serializers.py perfectly
     const data = {
-      full_name: document.getElementById('fullName').value.trim(),
+      first_name: firstName,
+      last_name: lastName,
       email: document.getElementById('email').value.trim(),
       phone: document.getElementById('phone').value.trim(),
-      nrc_number: document.getElementById('nrc').value.trim(),
       role: document.getElementById('role').value,
-      password: document.getElementById('password').value,
+      password: password,
+      confirm_password: confirmPassword
     };
-    if (!data.full_name || !data.email || !data.phone || !data.password) {
+
+    if (!firstName || !data.email || !data.phone || !data.password) {
       showError('Please fill all required fields.');
       return;
     }
+    
     try {
       await api.auth.register(data);
       successDiv.style.display = 'block';
       setTimeout(() => { window.location.href = 'login.html'; }, 1500);
     } catch (err) {
+      // Show validation errors cleanly
       showError(err.message || 'Registration failed. Please try again.');
     }
   });

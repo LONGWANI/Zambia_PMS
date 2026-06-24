@@ -1,15 +1,12 @@
-/**
- * ZambiaPMS – Financial Ledger Processing Engine
- * Handles structural transaction logs, search indices, and programmatic payment collection tracking.
- */
-
 let masterFinancialLedgerCache = [];
 
 async function render_payments() {
   const tableBody = document.getElementById('paymentTableBody');
   const counterSubtext = document.getElementById('paymentsSubtext');
-  const searchInput = document.getElementById('paymentSearch');
-  const monthFilterInput = document.getElementById('paymentMonthFilter');
+  
+  let searchInput = document.getElementById('paymentSearch');
+  let monthFilterInput = document.getElementById('paymentMonthFilter');
+  let methodFilterInput = document.getElementById('paymentMethodFilter');
 
   try {
     const responsePayload = await api.payments.list();
@@ -21,19 +18,24 @@ async function render_payments() {
       counterSubtext.textContent = `Aggregated gross revenue capture total: ${zmw(calculatedGrossCollection)} (${masterFinancialLedgerCache.length} transactions processed)`;
     }
 
-    // Trigger operational layout compilation
     executeFinancialUIRenderFilter();
 
-    // Attach text search anchors cleanly
     if (searchInput) {
       searchInput.replaceWith(searchInput.cloneNode(true));
-      document.getElementById('paymentSearch').addEventListener('input', executeFinancialUIRenderFilter);
+      searchInput = document.getElementById('paymentSearch');
+      searchInput.addEventListener('input', executeFinancialUIRenderFilter);
     }
 
-    // Attach dynamic chronological filter parameters
     if (monthFilterInput) {
       monthFilterInput.replaceWith(monthFilterInput.cloneNode(true));
-      document.getElementById('paymentMonthFilter').addEventListener('input', executeFinancialUIRenderFilter);
+      monthFilterInput = document.getElementById('paymentMonthFilter');
+      monthFilterInput.addEventListener('input', executeFinancialUIRenderFilter);
+    }
+    
+    if (methodFilterInput) {
+      methodFilterInput.replaceWith(methodFilterInput.cloneNode(true));
+      methodFilterInput = document.getElementById('paymentMethodFilter');
+      methodFilterInput.addEventListener('change', executeFinancialUIRenderFilter);
     }
 
   } catch (err) {
@@ -43,19 +45,17 @@ async function render_payments() {
   }
 }
 
-/**
- * Filter evaluation processing engine map. Builds standard tabular blocks matching parameters.
- */
 function executeFinancialUIRenderFilter() {
   const tableBody = document.getElementById('paymentTableBody');
-  const textQuery = (document.getElementById('paymentSearch')?.value || '').toLowerCase().trim();
-  const targetsTargetMonth = document.getElementById('paymentMonthFilter')?.value || ''; // Returns format structural format 'YYYY-MM'
-
   if (!tableBody) return;
+
+  const textQuery = (document.getElementById('paymentSearch')?.value || '').toLowerCase().trim();
+  const targetsTargetMonth = document.getElementById('paymentMonthFilter')?.value || ''; 
+  const selectedMethod = document.getElementById('paymentMethodFilter')?.value || 'all';
 
   const processedSubset = masterFinancialLedgerCache.filter(item => {
     const textMatches = 
-      item.tenant_name.toLowerCase().includes(textQuery) ||
+      (item.tenant_name && item.tenant_name.toLowerCase().includes(textQuery)) ||
       (item.reference_number && item.reference_number.toLowerCase().includes(textQuery)) ||
       (item.property_name && item.property_name.toLowerCase().includes(textQuery));
 
@@ -63,8 +63,10 @@ function executeFinancialUIRenderFilter() {
     if (targetsTargetMonth && item.payment_date) {
       dateMatches = item.payment_date.startsWith(targetsTargetMonth);
     }
+    
+    const methodMatches = (selectedMethod === 'all' || item.payment_method === selectedMethod);
 
-    return textMatches && dateMatches;
+    return textMatches && dateMatches && methodMatches;
   });
 
   if (processedSubset.length === 0) {
@@ -99,15 +101,11 @@ function executeFinancialUIRenderFilter() {
   }).join('');
 }
 
-/**
- * Compiles transaction collection sheets into open views
- */
 async function openRecordPaymentModal() {
   try {
     const targetedUsers = await api.tenants.list();
     const structuredUserOptions = targetedUsers.map(t => `<option value="${t.id}">${t.full_name} (${t.property_name || 'Contract'} - Unit ${t.unit_number || '?'})</option>`).join('');
 
-    // Default current time configuration limits
     const currentZambianDateStamp = new Date().toISOString().split('T')[0];
 
     openModal(`
@@ -162,9 +160,6 @@ async function openRecordPaymentModal() {
   }
 }
 
-/**
- * Evaluates execution forms and routes payload parameters back down into backend processing threads
- */
 async function submitPayment() {
   const activePaymentForm = document.getElementById('ledgerPaymentEntryForm');
   if (activePaymentForm && !activePaymentForm.checkValidity()) {
@@ -172,22 +167,16 @@ async function submitPayment() {
     return;
   }
 
-  const tenantId = document.getElementById('modalPaymentTenant').value;
-  const paymentAmount = parseFloat(document.getElementById('modalPaymentAmount').value);
-  const selectedMethod = document.getElementById('modalPaymentMethod').value;
-  const trackingReference = document.getElementById('modalPaymentRef').value.trim();
-  const compilationDate = document.getElementById('modalPaymentDate').value;
-
-  const executionPayload = {
-    tenant_id: tenantId,
-    amount: paymentAmount,
-    payment_method: selectedMethod,
-    reference_number: trackingReference,
-    payment_date: compilationDate
+  const payload = {
+    tenant_id: document.getElementById('modalPaymentTenant').value,
+    amount: parseFloat(document.getElementById('modalPaymentAmount').value),
+    payment_method: document.getElementById('modalPaymentMethod').value,
+    reference_number: document.getElementById('modalPaymentRef').value.trim(),
+    payment_date: document.getElementById('modalPaymentDate').value
   };
 
   try {
-    await api.payments.create(executionPayload);
+    await api.payments.create(payload);
     closeModal();
     toast(`Payment capture event registered successfully into structural indexes`, 'ok');
     await render_payments();
@@ -196,9 +185,6 @@ async function submitPayment() {
   }
 }
 
-/**
- * Triggers spreadsheet generation parameters out to client processing systems
- */
 function exportLedger() {
   if (masterFinancialLedgerCache.length === 0) {
     toast('No operational indices available inside current view trace to map.', 'warn');
@@ -207,8 +193,9 @@ function exportLedger() {
   toast('Compiling unified balance ledger workbook sheets... download initialization active', 'ok');
 }
 
-// Bind interfaces securely to global environments
+// BIND TO GLOBAL SCOPE
 window.render_payments = render_payments;
+window.executeFinancialUIRenderFilter = executeFinancialUIRenderFilter;
 window.openRecordPaymentModal = openRecordPaymentModal;
 window.submitPayment = submitPayment;
 window.exportLedger = exportLedger;

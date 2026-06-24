@@ -1,0 +1,56 @@
+<div class="page-header">
+    <div class="page-header-left">
+        <h2>Property Portfolio</h2>
+        <p id="propertySubtext">Track structural layout models, physical complexes, and individual units</p>
+    </div>
+    <div class="page-header-actions">
+        <button class="btn-primary" onclick="openCreatePropertyModal()">
+            <i class="bi bi-plus-lg"></i> Add Asset Property
+        </button>
+    </div>
+</div>
+
+<div class="table-container">
+    
+    <div class="table-toolbar">
+        <div class="search-input-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text" class="search-input" placeholder="Search by property name or city..." id="propertySearch">
+        </div>
+        
+        <div class="flex gap-2 ml-auto">
+            <select class="form-select" id="propertyTypeFilter">
+                <option value="all">All Real Estate Types</option>
+                <option value="residential">Residential Units</option>
+                <option value="commercial">Commercial Sites</option>
+            </select>
+            <button class="btn-secondary">
+                <i class="bi bi-sliders"></i> Advanced Filter
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="saas-table">
+            <thead>
+                <tr>
+                    <th>Property Name Asset</th>
+                    <th>Location Province</th>
+                    <th>Configured Units</th>
+                    <th>Occupancy Profile</th>
+                    <th>Operational Status</th>
+                    <th class="text-right">Management Actions</th>
+                </tr>
+            </thead>
+            <tbody id="propertyTableBody">
+                <tr class="loading-row">
+                    <td colspan="6">
+                        <div class="spinner-core" style="margin: 0 auto 10px;"></div>
+                        Fetching asset registrations...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</div>

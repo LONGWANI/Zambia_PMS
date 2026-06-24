@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, UserRole
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -20,6 +21,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+
 class UserPublicSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
 
@@ -31,6 +33,7 @@ class UserPublicSerializer(serializers.ModelSerializer):
     def get_full_name(self, obj):
         return obj.get_full_name()
 
+
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True, min_length=8, validators=[validate_password])
@@ -38,5 +41,27 @@ class ChangePasswordSerializer(serializers.Serializer):
     def validate_old_password(self, value):
         user = self.context['request'].user
         if not user.check_password(value):
-            raise serializers.ValidationError('Current password is incorrect.')
+            raise serializers.ValidationError("Your old password was entered incorrectly.")
         return value
+
+    def validate(self, attrs):
+        if attrs['old_password'] == attrs['new_password']:
+            raise serializers.ValidationError({'new_password': "The new password cannot be the same as the old password."})
+        return attrs
+
+
+# --- NEW: Custom Token Serializer to support Frontend auth.js ---
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Inject the role directly into the token payload claims
+        token['role'] = user.role
+        return token
+
+    def validate(self, attrs):
+        # Grab default access/refresh pairs
+        data = super().validate(attrs)
+        # Nest the frontend-friendly public user representation 
+        data['user'] = UserPublicSerializer(self.user).data
+        return data

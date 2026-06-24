@@ -1,0 +1,60 @@
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-sm-items-center gap-3 mb-4">
+    <div>
+        <h2 class="fs-4 fw-bold mb-1" style="color: var(--text-primary);">Financial Ledger</h2>
+        <p class="text-muted small mb-0" id="paymentsSubtext">Real-time recording, tracking, auditing, and reconciliation of incoming asset distributions</p>
+    </div>
+    <div class="d-flex gap-2 w-100 w-sm-auto">
+        <button class="btn btn-white border bg-white text-secondary fw-semibold d-flex align-items-center gap-2" onclick="exportLedger()">
+            <i class="bi bi-download"></i> CSV Export
+        </button>
+        <button class="btn-primary" onclick="openRecordPaymentModal()">
+            <i class="bi bi-receipt me-2"></i> Record Direct Payment
+        </button>
+    </div>
+</div>
+
+<div class="saas-card p-0 overflow-hidden">
+    <div class="p-3 border-bottom bg-light">
+        <div class="row g-3">
+            <div class="col-12 col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-start-0" placeholder="Search reference id hashes or names..." id="paymentSearch">
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <input type="month" class="form-control" id="paymentMonthFilter">
+            </div>
+            <div class="col-12 col-md-3">
+                <select class="form-select" id="paymentMethodFilter">
+                    <option value="all">All Formats</option>
+                    <option value="bank">Direct Wire Transfer</option>
+                    <option value="mobile_money">Mobile Money Gateway</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="saas-table">
+            <thead>
+                <tr>
+                    <th>Payee Client Account</th>
+                    <th>Asset Target Vector</th>
+                    <th>Transacted Value (ZMW)</th>
+                    <th>Gateway Mode</th>
+                    <th>Settlement Date</th>
+                    <th class="text-end">Audit Controls</th>
+                </tr>
+            </thead>
+            <tbody id="paymentTableBody">
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
+                        Reconciling balance journals...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZambiaPMS — Sign In</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f8fafc;
+    }
+    .left-panel {
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 56px;
+    }
+    .brand-mark {
+      width: 50px;
+      height: 50px;
+      background: #0d9488;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 36px;
+    }
+    .left-panel h1 { color: #f1f5f9; font-size: 30px; font-weight: 600; margin-bottom: 14px; }
+    .left-panel p { color: #64748b; font-size: 14px; margin-bottom: 36px; }
+    .feature-list { list-style: none; }
+    .feature-list li {
+      color: #94a3b8; font-size: 13.5px; padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .feature-list li i { color: #0d9488; }
+    .left-footer { margin-top: 48px; color: #334155; font-size: 12px; }
+    .right-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 48px;
+      background: #fff;
+    }
+    .login-box { width: 100%; max-width: 400px; }
+    .login-box .top-label { font-size: 12px; font-weight: 600; color: #0d9488; text-transform: uppercase; margin-bottom: 10px; }
+    .login-box h2 { font-size: 24px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
+    .login-box .subtitle { font-size: 14px; color: #64748b; margin-bottom: 32px; }
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: #64748b; margin-bottom: 6px; }
+    .input-wrap { position: relative; }
+    .input-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+    .form-input {
+      width: 100%;
+      padding: 10px 12px 10px 38px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-input:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13,148,136,.12); }
+    .password-toggle {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: #94a3b8; cursor: pointer;
+    }
+    .form-row { display: flex; justify-content: space-between; margin-bottom: 22px; font-size: 13px; }
+    .remember-label { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+    .forgot-link { color: #0d9488; text-decoration: none; }
+    .error-msg {
+      display: none; background: #fef2f2; border: 1px solid #fecaca;
+      border-radius: 7px; padding: 10px 14px; font-size: 13px; color: #dc2626;
+      margin-bottom: 16px; align-items: center; gap: 8px;
+    }
+    .btn-submit {
+      width: 100%; padding: 11px; background: #0d9488; border: none;
+      border-radius: 8px; color: #fff; font-weight: 600; font-size: 14px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover { background: #0f766e; }
+    .btn-spinner { display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .success-flash { display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 7px; padding: 10px 14px; margin-bottom: 16px; color: #15803d; }
+    .login-footer { margin-top: 24px; text-align: center; font-size: 12.5px; color: #94a3b8; }
+    @media (max-width: 768px) { body { grid-template-columns: 1fr; } .left-panel { display: none; } .right-panel { padding: 32px 24px; } }
+  </style>
+</head>
+<body>
+<div class="left-panel">
+  <div class="brand-mark">ZP</div>
+  <h1>Property Management Built for Zambia</h1>
+  <p>Manage your rental portfolio, track rent payments, split utility bills, and resolve maintenance requests — all from one secure dashboard.</p>
+  <ul class="feature-list">
+    <li><i class="bi bi-graph-up-arrow"></i> Smart arrears detection — never miss a late payment</li>
+    <li><i class="bi bi-lightning-charge"></i> Utility auto-split for ZESCO and LWSC bills</li>
+    <li><i class="bi bi-tools"></i> Maintenance request workflow — tenant to resolution</li>
+    <li><i class="bi bi-bar-chart-line"></i> Financial reports and dashboard analytics</li>
+    <li><i class="bi bi-shield-check"></i> JWT secured — role-based access for landlords and tenants</li>
+  </ul>
+  <div class="left-footer">ZambiaPMS &copy; 2025 · Final Year Project</div>
+</div>
+<div class="right-panel">
+  <div class="login-box">
+    <div class="top-label">Welcome back</div>
+    <h2>Sign in to ZambiaPMS</h2>
+    <p class="subtitle">Enter your credentials to access your dashboard</p>
+    <div class="error-msg" id="errorMsg"><i class="bi bi-exclamation-circle-fill"></i><span id="errorText"></span></div>
+    <div class="success-flash" id="successMsg"><i class="bi bi-check-circle-fill"></i><span>Login successful! Redirecting…</span></div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <div class="input-wrap"><i class="bi bi-envelope"></i><input class="form-input" id="email" type="email" placeholder="you@example.com" required></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-wrap">
+          <i class="bi bi-lock"></i>
+          <input class="form-input" id="password" type="password" placeholder="Enter your password" required>
+          <button type="button" class="password-toggle" onclick="togglePasswordVisibility()"><i class="bi bi-eye" id="eyeIcon"></i></button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="remember-label"><input type="checkbox" id="remember"> Remember me</label>
+        <a href="#" class="forgot-link">Forgot password?</a>
+      </div>
+      <button class="btn-submit" type="submit" id="submitBtn">
+        <div class="btn-spinner" id="btnSpinner"></div>
+        <span id="btnText"><i class="bi bi-box-arrow-in-right"></i> Sign In</span>
+      </button>
+    </form>
+    <div class="login-footer">Don't have an account? <a href="register.html" style="color:#0d9488;font-weight:600;">Register here</a></div>
+  </div>
+</div>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script>
+  function togglePasswordVisibility() {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('eyeIcon');
+    if (input.type === 'password') { input.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+    else { input.type = 'password'; icon.className = 'bi bi-eye'; }
+  }
+  function showError(message) {
+    const box = document.getElementById('errorMsg');
+    document.getElementById('errorText').textContent = message;
+    box.style.display = 'flex';
+  }
+  function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
+  function setLoading(loading) {
+    const btn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('btnSpinner');
+    const text = document.getElementById('btnText');
+    btn.disabled = loading;
+    spinner.style.display = loading ? 'block' : 'none';
+    text.style.display = loading ? 'none' : 'flex';
+  }
+  async function handleLogin(event) {
+    event.preventDefault();
+    hideError();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    if (!email || !password) { showError('Please enter both email and password.'); return; }
+    setLoading(true);
+    try {
+      await auth.login(email, password);
+      document.getElementById('successMsg').style.display = 'flex';
+      setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+    } catch (err) {
+      setLoading(false);
+      showError(err.message || 'Login failed. Please check your credentials.');
+    }
+  }
+  window.addEventListener('DOMContentLoaded', () => {
+    if (auth.isAuthenticated()) window.location.href = 'index.html';
+  });
+</script>
+</body>
+</html>

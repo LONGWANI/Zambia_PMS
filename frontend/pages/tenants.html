@@ -1,3 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_title %}Tenant Directory{% endblock %}
+{% block page_subtitle %}Direct operational overview of active contracts and commercial lease pipelines{% endblock %}
+
+{% block content %}
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-sm-items-center gap-3 mb-4">
     <div>
         <h2 class="fs-4 fw-bold mb-1" style="color: var(--text-primary);">Tenant Directory</h2>
@@ -8,14 +14,14 @@
     </button>
 </div>
 
-<div class="saas-card p-0 overflow-hidden">
+<div class="saas-card p-0 overflow-hidden shadow-sm">
     <div class="p-3 border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-sm-items-center gap-3 bg-light">
         <div class="input-group" style="max-width: 400px;">
             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control border-start-0" placeholder="Search legal identity, email, or unit room..." id="tenantSearch">
         </div>
         <div>
-            <select class="form-select" id=\"tenantStatusFilter\" style=\"width: auto;\">
+            <select class="form-select" id="tenantStatusFilter" style="width: auto;">
                 <option value="all">All Accounting States</option>
                 <option value="active">Active Accounts</option>
                 <option value="arrears">Accounts in Arrears (Deficits)</option>
@@ -24,7 +30,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="saas-table">
+        <table class="table table-hover align-middle saas-table m-0">
             <thead>
                 <tr>
                     <th>Legal Identity Name</th>
@@ -46,3 +52,19 @@
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/tenants.js' %}"></script>
+<script>
+    // Boot out anyone who isn't an admin or landlord
+    auth.protectRoute(['admin', 'landlord']);
+
+    // Trigger rendering automatically
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof render_tenants === 'function') {
+            render_tenants();
+        }
+    });
+</script>
+{% endblock %}

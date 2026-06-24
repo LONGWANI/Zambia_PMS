@@ -980,3 +980,91 @@ body {
 .w-full { width: 100%; }
 .overflow-hidden { overflow: hidden; }
 .table-responsive { overflow-x: auto; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CUSTOM SAAS PROPERTIES TABLE (ADDED)
+   ══════════════════════════════════════════════════════════════════════════ */
+.saas-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--surface-card);
+}
+
+.saas-table th {
+    background-color: var(--background-canvas);
+    color: var(--sidebar-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    border-bottom: 2px solid var(--border-color);
+    text-align: left;
+}
+
+.saas-table td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.saas-table tbody tr:hover {
+    background-color: var(--primary-subtle);
+    transition: background-color 0.2s ease;
+}
+
+/* ── STATUS BADGES ── */
+.badge-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.badge-vacant {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-commercial {
+    background-color: #e0e7ff;
+    color: #3730a3;
+}
+
+/* ── ACTION BUTTONS ── */
+.action-group {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--sidebar-text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    background-color: var(--background-canvas);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-action.delete:hover {
+    color: #dc2626;
+    border-color: #fca5a5;
+    background-color: #fef2f2;
+}

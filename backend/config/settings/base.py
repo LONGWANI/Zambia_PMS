@@ -76,10 +76,9 @@ AUTH_USER_MODEL = 'authentication.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Look for the frontend folder either outside the backend folder, or inside it.
+        # Look for the frontend folder strictly outside the backend folder
         'DIRS': [
             BASE_DIR.parent / 'frontend', 
-            BASE_DIR / 'frontend'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -120,7 +119,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # This tells Django where to find the CSS, JS, and Images for your index.html
 STATICFILES_DIRS = [
     BASE_DIR.parent / 'frontend',
-    BASE_DIR / 'frontend',
 ]
 
 MEDIA_URL = '/media/'

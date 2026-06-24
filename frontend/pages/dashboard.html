@@ -1,3 +1,9 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Real-time portfolio overview{% endblock %}
+
+{% block content %}
 <div id="alertsContainer" class="mb-4"></div>
 
 <div class="row g-4 mb-4">
@@ -70,7 +76,7 @@
                     <h3 class="fs-5 fw-bold m-0" style="color: var(--text-primary);">Recent Payments</h3>
                     <p class="text-muted small m-0">Latest verified incoming property revenue</p>
                 </div>
-                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="navigate('payments')">
+                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="window.location.href='{% url 'payments' %}'">
                     View Ledger <i class="bi bi-arrow-right ms-1"></i>
                 </button>
             </div>
@@ -103,7 +109,7 @@
                     <h3 class="fs-5 fw-bold m-0" style="color: var(--text-primary);">Open Maintenance Issues</h3>
                     <p class="text-muted small m-0">Urgent facility repairs requiring assignments</p>
                 </div>
-                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="navigate('maintenance')">
+                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="window.location.href='{% url 'maintenance' %}'">
                     View Queue <i class="bi bi-arrow-right ms-1"></i>
                 </button>
             </div>
@@ -129,3 +135,4 @@
         </div>
     </div>
 </div>
+{% endblock %}

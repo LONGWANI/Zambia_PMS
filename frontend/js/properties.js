@@ -1,8 +1,3 @@
-/**
- * ZambiaPMS – Properties Controller Engine
- * Binds property lists, client search filtering, and record processing hooks.
- */
-
 let originalPropertiesCache = [];
 
 async function render_properties() {
@@ -11,22 +6,18 @@ async function render_properties() {
   const searchInput = document.getElementById('propertySearch');
 
   try {
-    // Request raw objects from the endpoint layer
     const networkResponse = await api.properties.list();
     originalPropertiesCache = networkResponse.results || networkResponse || [];
 
-    // Calculate portfolio summaries
     const calculatedTotalUnits = originalPropertiesCache.reduce((sum, current) => sum + (parseInt(current.total_units) || 0), 0);
     if (subtextWrapper) {
       subtextWrapper.textContent = `Displaying ${originalPropertiesCache.length} managed buildings across ${calculatedTotalUnits} localized units`;
     }
 
-    // Trigger base UI compilation
     populatePropertiesTable(originalPropertiesCache);
 
-    // Bind real-time search interface triggers
     if (searchInput) {
-      searchInput.replaceWith(searchInput.cloneNode(true)); // Wipe dangling duplicate event registrations cleanly
+      searchInput.replaceWith(searchInput.cloneNode(true)); 
       const freshlyBoundSearch = document.getElementById('propertySearch');
       freshlyBoundSearch.addEventListener('input', (e) => {
         const structuralQuery = e.target.value.toLowerCase().trim();
@@ -46,10 +37,6 @@ async function render_properties() {
   }
 }
 
-/**
- * Builds HTML Table rows into properties viewport container
- * @param {Array} propertiesList 
- */
 function populatePropertiesTable(propertiesList) {
   const tableBody = document.getElementById('propertyTableBody');
   if (!tableBody) return;
@@ -61,19 +48,22 @@ function populatePropertiesTable(propertiesList) {
 
   tableBody.innerHTML = propertiesList.map(building => {
     const total = parseInt(building.total_units) || 0;
-    const occupied = parseInt(building.occupied_units) || 0;
+    const occupied = parseInt(building.occupied_units) || (building.occupancy_rate ? Math.round(total * building.occupancy_rate / 100) : 0);
     const vacantCount = total - occupied;
-    const computeOccupancyRate = total > 0 ? Math.round((occupied / total) * 100) : 0;
+    const computeOccupancyRate = building.occupancy_rate !== undefined ? building.occupancy_rate : (total > 0 ? Math.round((occupied / total) * 100) : 0);
     
-    let occupancyColorIndicator = 'text-danger';
-    if (computeOccupancyRate >= 85) occupancyColorIndicator = 'text-success';
-    else if (computeOccupancyRate >= 50) occupancyColorIndicator = 'text-warning';
+    let statusBadgeHTML = '';
+    if (computeOccupancyRate > 0 || occupied > 0) {
+        statusBadgeHTML = `<span class="badge-status badge-active">Active</span>`;
+    } else {
+        statusBadgeHTML = `<span class="badge-status badge-vacant">Vacant</span>`;
+    }
 
     return `
       <tr>
         <td class="align-middle">
           <div class="fw-semibold text-slate-900">${building.name}</div>
-          <div class="text-muted" style="font-size: 11px;">ID: ${building.id}</div>
+          <small class="text-muted text-uppercase" style="font-size: 11px;">${building.property_type || 'Residential'}</small>
         </td>
         <td class="align-middle text-slate-700">
           <i class="bi bi-geo-alt text-muted me-1"></i>${building.district || 'Central District'}, ${building.city || 'Lusaka'}
@@ -81,27 +71,77 @@ function populatePropertiesTable(propertiesList) {
         <td class="align-middle fw-medium">
           <span class="text-slate-900">${total}</span> <span class="text-muted" style="font-size:12px;">Units</span>
         </td>
-        <td class="align-middle fw-semibold ${occupancyColorIndicator}">
-          ${computeOccupancyRate}% <small class="text-muted fw-normal">(${vacantCount} vacant)</small>
+        <td class="align-middle">
+            <div class="d-flex align-items-center gap-2">
+                <div class="progress flex-grow-1" style="height: 6px; max-width: 100px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: ${computeOccupancyRate}%"></div>
+                </div>
+                <small class="fw-medium">${computeOccupancyRate}%</small>
+            </div>
         </td>
         <td class="align-middle">
-          ${statusBadge(building.status || (vacantCount === 0 ? 'active' : 'open'))}
+          ${statusBadgeHTML}
         </td>
         <td class="text-end align-middle">
-          <div class="d-flex justify-content-end gap-1">
-            <button class="btn btn-sm btn-light border text-slate-700 px-3" onclick="toast('Direct building profile configurations coming soon', 'warn')">
-              <i class="bi bi-eye me-1"></i> View
-            </button>
-          </div>
+            <div class="action-group">
+                <button class="btn-action view-btn" data-id="${building.id}" title="View Details">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn-action edit-btn" data-id="${building.id}" title="Edit Property">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn-action delete delete-btn" data-id="${building.id}" title="Delete Property">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
         </td>
       </tr>
     `;
   }).join('');
+
+  attachActionListeners();
 }
 
-/**
- * Spawns structured modal capture payload container matching pages/properties.html setup
- */
+function attachActionListeners() {
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            toast('View details initialized for ID: ' + id, 'ok');
+        });
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            openEditPropertyModal(id); 
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            if (confirm('Are you sure you want to remove this property and all its units?')) {
+                await executeDeleteProperty(id);
+            }
+        });
+    });
+}
+
+async function executeDeleteProperty(propertyId) {
+    try {
+        if (api.properties && typeof api.properties.delete === 'function') {
+            await api.properties.delete(propertyId);
+            toast('Property successfully deleted', 'ok');
+            await render_properties();
+        } else {
+            console.warn("api.properties.delete is not bound correctly.");
+            toast('API connection error: Could not execute delete', 'err');
+        }
+    } catch (err) {
+        toast(`Failed to delete property: ${err.message}`, 'err');
+    }
+}
+
 function openCreatePropertyModal() {
   openModal(`
     <div class="modal-header border-0 pb-2">
@@ -151,9 +191,10 @@ function openCreatePropertyModal() {
   `);
 }
 
-/**
- * Validates, compiles data, and ships payload structure back down to system API endpoint
- */
+function openEditPropertyModal(id) {
+    toast(`Edit property interface loading for ID: ${id}`, 'info');
+}
+
 async function submitAddProperty() {
   const propertyForm = document.getElementById('propertyCreationForm');
   if (propertyForm && !propertyForm.checkValidity()) {
@@ -161,33 +202,29 @@ async function submitAddProperty() {
     return;
   }
 
-  const nameValue = document.getElementById('modalPropName').value.trim();
-  const addressValue = document.getElementById('modalPropAddress').value.trim();
-  const cityValue = document.getElementById('modalPropCity').value.trim();
-  const districtValue = document.getElementById('modalPropDistrict').value.trim();
-  const typeValue = document.getElementById('modalPropType').value;
-  const unitsValue = parseInt(document.getElementById('modalPropUnits').value) || 1;
-
   const requestPayload = {
-    name: nameValue,
-    address: addressValue,
-    city: cityValue,
-    district: districtValue,
-    property_type: typeValue,
-    total_units: unitsValue
+    name: document.getElementById('modalPropName').value.trim(),
+    address: document.getElementById('modalPropAddress').value.trim(),
+    city: document.getElementById('modalPropCity').value.trim(),
+    district: document.getElementById('modalPropDistrict').value.trim(),
+    property_type: document.getElementById('modalPropType').value,
+    total_units: parseInt(document.getElementById('modalPropUnits').value) || 1
   };
 
   try {
     await api.properties.create(requestPayload);
     closeModal();
-    toast(`Successfully recorded structural profile: "${nameValue}"`, 'ok');
-    await render_properties(); // Reload live data trace cleanly
+    toast(`Successfully recorded structural profile: "${requestPayload.name}"`, 'ok');
+    await render_properties(); 
   } catch (err) {
     toast(`Record generation execution exception: ${err.message}`, 'err');
   }
 }
 
-// Bind handlers to root window scope configuration maps
+// BIND TO GLOBAL SCOPE
 window.render_properties = render_properties;
+window.populatePropertiesTable = populatePropertiesTable;
 window.openCreatePropertyModal = openCreatePropertyModal;
+window.openEditPropertyModal = openEditPropertyModal;
 window.submitAddProperty = submitAddProperty;
+window.executeDeleteProperty = executeDeleteProperty;

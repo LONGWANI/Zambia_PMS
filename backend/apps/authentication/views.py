@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import (UserRegistrationSerializer, UserPublicSerializer,
-                          ChangePasswordSerializer)
+                          ChangePasswordSerializer, CustomTokenObtainPairSerializer)
 from .models import User
 
 
@@ -13,7 +13,6 @@ class RegisterView(generics.CreateAPIView):
     """
     POST /api/auth/register/
     Public endpoint — no authentication required to create an account.
-    After registration, the client should call /login/ to get tokens.
     """
     queryset         = User.objects.all()
     serializer_class = UserRegistrationSerializer
@@ -23,7 +22,6 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        # Return the safe public representation, not the write serializer
         return Response(
             UserPublicSerializer(user).data,
             status=status.HTTP_201_CREATED
@@ -33,17 +31,16 @@ class RegisterView(generics.CreateAPIView):
 class LoginView(TokenObtainPairView):
     """
     POST /api/auth/login/
-    Returns: { access: "...", refresh: "..." }
-    Uses simplejwt's built-in view — no need to reinvent token generation.
+    Returns: { access: "...", refresh: "...", user: { ... } }
+    Uses our custom serializer to eliminate extra profile network calls.
     """
-    permission_classes = [permissions.AllowAny]
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 class LogoutView(APIView):
     """
     POST /api/auth/logout/
     Blacklists the refresh token so it cannot be used again.
-    The access token expires naturally (8 hours) — no server-side revocation needed.
     """
     def post(self, request):
         try:
@@ -59,24 +56,25 @@ class LogoutView(APIView):
 
 class MeView(generics.RetrieveUpdateAPIView):
     """
-    GET  /api/auth/me/   → returns current user's profile
-    PUT  /api/auth/me/   → updates current user's profile
-    PATCH /api/auth/me/  → partial update
-
-    Uses request.user directly — no need for a pk lookup.
+    GET/PUT/PATCH /api/auth/me/
     """
     serializer_class = UserPublicSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         return self.request.user
 
 
 class ChangePasswordView(APIView):
-    """POST /api/auth/change-password/"""
+    """
+    POST /api/auth/change-password/
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data,
                                               context={'request': request})
         serializer.is_valid(raise_exception=True)
         request.user.set_password(serializer.validated_data['new_password'])
         request.user.save()
-        return Response({'message': 'Password updated successfully.'})
+        return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)

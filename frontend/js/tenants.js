@@ -1,15 +1,11 @@
-/**
- * ZambiaPMS – Tenant Directory Logic Module
- * Controls user directory maps, balance tracking loops, and unit linking hooks.
- */
-
 let tenantDirectoryMasterCache = [];
 
 async function render_tenants() {
   const tableBody = document.getElementById('tenantTableBody');
   const subtextWrapper = document.getElementById('tenantSubtext');
-  const searchInput = document.getElementById('tenantSearch');
-  const statusFilterSelect = document.getElementById('tenantStatusFilter');
+  
+  let searchInput = document.getElementById('tenantSearch');
+  let statusFilterSelect = document.getElementById('tenantStatusFilter');
 
   try {
     const serverResult = await api.tenants.list();
@@ -19,19 +15,18 @@ async function render_tenants() {
       subtextWrapper.textContent = `Tracking ${tenantDirectoryMasterCache.length} system user account assignments`;
     }
 
-    // Baseline directory generation execution
     executeTenantUIRenderFilter();
 
-    // Attach search query listener
     if (searchInput) {
       searchInput.replaceWith(searchInput.cloneNode(true));
-      document.getElementById('tenantSearch').addEventListener('input', executeTenantUIRenderFilter);
+      searchInput = document.getElementById('tenantSearch');
+      searchInput.addEventListener('input', executeTenantUIRenderFilter);
     }
 
-    // Attach programmatic state selectors
     if (statusFilterSelect) {
       statusFilterSelect.replaceWith(statusFilterSelect.cloneNode(true));
-      document.getElementById('tenantStatusFilter').addEventListener('change', executeTenantUIRenderFilter);
+      statusFilterSelect = document.getElementById('tenantStatusFilter');
+      statusFilterSelect.addEventListener('change', executeTenantUIRenderFilter);
     }
 
   } catch (err) {
@@ -41,19 +36,16 @@ async function render_tenants() {
   }
 }
 
-/**
- * Reads parameters, extracts state properties, and compiles active rows onto DOM element structures
- */
 function executeTenantUIRenderFilter() {
+  const tableBody = document.getElementById('tenantTableBody');
+  if (!tableBody) return;
+
   const searchQuery = (document.getElementById('tenantSearch')?.value || '').toLowerCase().trim();
   const activeFilterStatus = document.getElementById('tenantStatusFilter')?.value || 'all';
-  const tableBody = document.getElementById('tenantTableBody');
-
-  if (!tableBody) return;
 
   const subsetData = tenantDirectoryMasterCache.filter(tenant => {
     const matchesSearch = 
-      tenant.full_name.toLowerCase().includes(searchQuery) ||
+      (tenant.full_name && tenant.full_name.toLowerCase().includes(searchQuery)) ||
       (tenant.email && tenant.email.toLowerCase().includes(searchQuery)) ||
       (tenant.phone && tenant.phone.includes(searchQuery)) ||
       (tenant.unit_number && tenant.unit_number.toLowerCase().includes(searchQuery));
@@ -96,7 +88,7 @@ function executeTenantUIRenderFilter() {
         <td class="align-middle">
           ${statusBadge(operationalStatusKey)}
         </td>
-        <td class="align-middle fw-bold style="font-family: monospace;" style="color: ${computedBalance > 0 ? 'var(--red)' : 'var(--green)'};">
+        <td class="align-middle fw-bold" style="font-family: monospace; color: ${computedBalance > 0 ? 'var(--red)' : 'var(--green)'};">
           ${zmw(computedBalance)}
         </td>
         <td class="text-end align-middle">
@@ -109,9 +101,6 @@ function executeTenantUIRenderFilter() {
   }).join('');
 }
 
-/**
- * Builds user onboarding form container matching layout scopes cleanly
- */
 async function openOnboardTenantModal() {
   try {
     const systemProperties = await api.properties.list();
@@ -169,7 +158,6 @@ async function openOnboardTenantModal() {
       </div>
     `);
 
-    // Dynamically retrieve associated child units upon choosing specific structural entities
     const buildingSelector = document.getElementById('modalTenantProperty');
     if (buildingSelector) {
       buildingSelector.addEventListener('change', async (e) => {
@@ -182,7 +170,6 @@ async function openOnboardTenantModal() {
         unitSelector.innerHTML = `<option value="" disabled selected>Loading open units...</option>`;
 
         try {
-          // Look up explicit structural components matching endpoints
           const unitDataTrace = await api.units.list(`?property_id=${selectedBuildingId}`);
           if (unitDataTrace && unitDataTrace.length > 0) {
             unitSelector.innerHTML = '<option value="" disabled selected>Select Unit ID</option>' + 
@@ -202,45 +189,35 @@ async function openOnboardTenantModal() {
   }
 }
 
-/**
- * Packages structural parameters, checks constraints, and processes backend tenant registration
- */
 async function submitOnboardTenant() {
-  const structuralFormInstance = document.getElementById('tenantOnboardingForm');
-  if (structuralFormInstance && !structuralFormInstance.checkValidity()) {
-    structuralFormInstance.reportValidity();
+  const formInstance = document.getElementById('tenantOnboardingForm');
+  if (formInstance && !formInstance.checkValidity()) {
+    formInstance.reportValidity();
     return;
   }
 
-  const nameVal = document.getElementById('modalTenantName').value.trim();
-  const emailVal = document.getElementById('modalTenantEmail').value.trim();
-  const phoneVal = document.getElementById('modalTenantPhone').value.trim();
-  const nrcVal = document.getElementById('modalTenantNRC').value.trim();
-  const propertyIdVal = document.getElementById('modalTenantProperty').value;
-  const unitIdVal = document.getElementById('modalTenantUnit').value;
-  const passwordVal = document.getElementById('modalTenantPassword').value;
-
-  const structuralPayload = {
-    full_name: nameVal,
-    email: emailVal,
-    phone: phoneVal,
-    nrc_number: nrcVal,
-    property_id: propertyIdVal,
-    unit_id: unitIdVal,
-    password: passwordVal
+  const payload = {
+    full_name: document.getElementById('modalTenantName').value.trim(),
+    email: document.getElementById('modalTenantEmail').value.trim(),
+    phone: document.getElementById('modalTenantPhone').value.trim(),
+    nrc_number: document.getElementById('modalTenantNRC').value.trim(),
+    property_id: document.getElementById('modalTenantProperty').value,
+    unit_id: document.getElementById('modalTenantUnit').value,
+    password: document.getElementById('modalTenantPassword').value
   };
 
   try {
-    await api.tenants.create(structuralPayload);
+    await api.tenants.create(payload);
     closeModal();
-    toast(`Account deployment configuration complete: "${nameVal}"`, 'ok');
+    toast(`Account deployment configuration complete`, 'ok');
     await render_tenants();
   } catch (err) {
     toast(`Tenant deployment error exception: ${err.message}`, 'err');
   }
 }
 
-// Bind handlers explicitly to workspace scopes
+// BIND TO GLOBAL SCOPE
 window.render_tenants = render_tenants;
+window.executeTenantUIRenderFilter = executeTenantUIRenderFilter;
 window.openOnboardTenantModal = openOnboardTenantModal;
 window.submitOnboardTenant = submitOnboardTenant;
