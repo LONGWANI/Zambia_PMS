@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block page_title %}Dashboard{% endblock %}
 {% block page_subtitle %}Real-time portfolio overview{% endblock %}
 
 {% block content %}
+<!-- Arrears alert injected here by dashboard.js -->
 <div id="alertsContainer" class="mb-4"></div>
 
+<!-- KPI Cards -->
 <div class="row g-4 mb-4">
     <div class="col-12 col-md-6 col-xl-3">
         <div class="saas-card h-100 p-4">
@@ -62,12 +65,39 @@
             </div>
             <h2 class="display-6 fw-bold mb-2" id="kpiCollectionRate" style="color: var(--text-primary);">--%</h2>
             <div class="d-flex align-items-center gap-1 small text-danger fw-semibold">
-                <i class="bi bi-exclamation-circle"></i> <span>View active invoice deficits</span>
+                <i class="bi bi-exclamation-circle"></i>
+                <a href="{% url 'reports' %}" class="text-danger fw-semibold text-decoration-none">View active invoice deficits</a>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Revenue Chart + Property Occupancy -->
+<div class="row g-4 mb-4">
+    <div class="col-12 col-xl-8">
+        <div class="saas-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fs-5 fw-bold m-0" style="color: var(--text-primary);">Revenue Tracking (ZMW)</h3>
+            </div>
+            <div style="position: relative; height: 240px;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-4">
+        <div class="saas-card p-4 h-100">
+            <h3 class="fs-5 fw-bold mb-4" style="color: var(--text-primary);">Property Occupancy</h3>
+            <div id="occList">
+                <div class="text-center py-4 text-muted">
+                    <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Payments + Open Maintenance -->
 <div class="row g-4">
     <div class="col-12 col-xl-6">
         <div class="saas-card p-0 h-100 overflow-hidden">
@@ -76,9 +106,9 @@
                     <h3 class="fs-5 fw-bold m-0" style="color: var(--text-primary);">Recent Payments</h3>
                     <p class="text-muted small m-0">Latest verified incoming property revenue</p>
                 </div>
-                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="window.location.href='{% url 'payments' %}'">
+                <a href="{% url 'payments' %}" class="btn btn-sm text-decoration-none fw-semibold" style="color: var(--accent);">
                     View Ledger <i class="bi bi-arrow-right ms-1"></i>
-                </button>
+                </a>
             </div>
             <div class="table-responsive">
                 <table class="saas-table mb-0">
@@ -93,7 +123,7 @@
                         <tr>
                             <td colspan="3" class="text-center text-muted py-5">
                                 <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
-                                Loading system data...
+                                Loading...
                             </td>
                         </tr>
                     </tbody>
@@ -107,18 +137,18 @@
             <div class="p-4 d-flex justify-content-between align-items-center bg-white border-bottom">
                 <div>
                     <h3 class="fs-5 fw-bold m-0" style="color: var(--text-primary);">Open Maintenance Issues</h3>
-                    <p class="text-muted small m-0">Urgent facility repairs requiring assignments</p>
+                    <p class="text-muted small m-0">Urgent facility repairs requiring attention</p>
                 </div>
-                <button class="btn btn-sm text-decoration-none fw-semibold tracking-wide" style="color: var(--accent);" onclick="window.location.href='{% url 'maintenance' %}'">
+                <a href="{% url 'maintenance' %}" class="btn btn-sm text-decoration-none fw-semibold" style="color: var(--accent);">
                     View Queue <i class="bi bi-arrow-right ms-1"></i>
-                </button>
+                </a>
             </div>
             <div class="table-responsive">
                 <table class="saas-table mb-0">
                     <thead>
                         <tr>
-                            <th>Issue Description</th>
-                            <th>Unit Location</th>
+                            <th>Issue</th>
+                            <th>Unit</th>
                             <th class="text-end">Priority</th>
                         </tr>
                     </thead>
@@ -126,7 +156,7 @@
                         <tr>
                             <td colspan="3" class="text-center text-muted py-5">
                                 <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
-                                Loading operational queue...
+                                Loading...
                             </td>
                         </tr>
                     </tbody>
@@ -135,4 +165,15 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof render_dashboard === 'function') {
+            render_dashboard();
+        }
+    });
+</script>
 {% endblock %}

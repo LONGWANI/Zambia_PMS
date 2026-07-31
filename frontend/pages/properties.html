@@ -1,37 +1,36 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block page_title %}Property Portfolio{% endblock %}
-{% block page_subtitle %}Track structural layout models, physical complexes, and individual units{% endblock %}
+{% block page_subtitle %}Track physical properties, building units, and occupancy across your portfolio{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <div class="page-header-left">
-        <h2>Property Portfolio</h2>
-        <p id="propertySubtext">Track structural layout models, physical complexes, and individual units</p>
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-sm-items-center gap-3 mb-4">
+    <div>
+        <h2 class="fs-4 fw-bold mb-1" style="color: var(--text-primary);">Property Portfolio</h2>
+        <p class="text-muted small mb-0" id="propertySubtext">Track physical properties, building units, and occupancy across your portfolio</p>
     </div>
     <div class="page-header-actions">
         <button class="btn-primary" onclick="openCreatePropertyModal()">
-            <i class="bi bi-plus-lg"></i> Add Asset Property
+            <i class="bi bi-plus-lg me-2"></i> Add Property
         </button>
     </div>
 </div>
 
-<div class="table-container shadow-sm rounded bg-white mt-3">
-    <div class="table-toolbar p-3 border-bottom d-flex align-items-center justify-content-between gap-3">
-        <div class="search-input-wrap input-group" style="max-width: 400px;">
+<div class="saas-card p-0 overflow-hidden shadow-sm">
+    <div class="p-3 border-bottom d-flex align-items-center justify-content-between gap-3 bg-light">
+        <div class="input-group" style="max-width: 380px;">
             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-            <input type="text" class="form-control border-start-0" placeholder="Search by property name or city..." id="propertySearch">
+            <input type="text" class="form-control border-start-0"
+                   placeholder="Search by name, city, or district..." id="propertySearch">
         </div>
-        
         <div class="d-flex gap-2">
-            <select class="form-select" id="propertyTypeFilter">
-                <option value="all">All Real Estate Types</option>
-                <option value="residential">Residential Units</option>
-                <option value="commercial">Commercial Sites</option>
+            <select class="form-select" id="propertyTypeFilter" style="width: auto;">
+                <option value="all">All Types</option>
+                <option value="residential">Residential</option>
+                <option value="commercial">Commercial</option>
+                <option value="mixed">Mixed-Use</option>
             </select>
-            <button class="btn btn-secondary">
-                <i class="bi bi-sliders"></i> Advanced Filter
-            </button>
         </div>
     </div>
 
@@ -39,19 +38,19 @@
         <table class="table table-hover align-middle saas-table m-0">
             <thead>
                 <tr>
-                    <th>Property Name Asset</th>
-                    <th>Location Province</th>
-                    <th>Configured Units</th>
-                    <th>Occupancy Profile</th>
-                    <th>Operational Status</th>
-                    <th class="text-end">Management Actions</th>
+                    <th>Property Name</th>
+                    <th>Location</th>
+                    <th>Units</th>
+                    <th>Occupancy</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody id="propertyTableBody">
-                <tr class="loading-row">
+                <tr>
                     <td colspan="6" class="text-center py-5 text-muted">
-                        <div class="spinner-border spinner-border-sm text-teal me-2" role="status"></div>
-                        Fetching asset registrations...
+                        <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                        Loading property portfolio...
                     </td>
                 </tr>
             </tbody>
@@ -63,10 +62,8 @@
 {% block extra_js %}
 <script src="{% static 'js/properties.js' %}"></script>
 <script>
-    // Boot out anyone who isn't an admin or landlord
     auth.protectRoute(['admin', 'landlord']);
 
-    // Trigger rendering automatically
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof render_properties === 'function') {
             render_properties();

@@ -1,201 +1,230 @@
-let masterFinancialLedgerCache = [];
+/**
+ * ZambiaPMS – Financial Ledger (Payments)
+ */
+
+let paymentsCache = [];
+
+// ─── Main render ─────────────────────────────────────────────────────────────
 
 async function render_payments() {
-  const tableBody = document.getElementById('paymentTableBody');
-  const counterSubtext = document.getElementById('paymentsSubtext');
-  
-  let searchInput = document.getElementById('paymentSearch');
-  let monthFilterInput = document.getElementById('paymentMonthFilter');
-  let methodFilterInput = document.getElementById('paymentMethodFilter');
+    showLoader('paymentTableBody', 6);
 
-  try {
-    const responsePayload = await api.payments.list();
-    masterFinancialLedgerCache = responsePayload.results || responsePayload || [];
+    try {
+        const response = await api.payments.list();
+        paymentsCache = response.results || response || [];
 
-    const calculatedGrossCollection = masterFinancialLedgerCache.reduce((accum, curr) => accum + (parseFloat(curr.amount) || 0), 0);
-    
-    if (counterSubtext) {
-      counterSubtext.textContent = `Aggregated gross revenue capture total: ${zmw(calculatedGrossCollection)} (${masterFinancialLedgerCache.length} transactions processed)`;
+        const total = paymentsCache.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+        const subtextEl = document.getElementById('paymentsSubtext');
+        if (subtextEl) {
+            subtextEl.textContent =
+                `${paymentsCache.length} transaction${paymentsCache.length !== 1 ? 's' : ''} · ` +
+                `Gross total: ${zmw(total)}`;
+        }
+
+        applyPaymentFilters();
+        bindPaymentFilters();
+
+    } catch (err) {
+        const tbody = document.getElementById('paymentTableBody');
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-danger fw-medium">
+                        <i class="bi bi-exclamation-circle me-1"></i> ${err.message}
+                    </td>
+                </tr>`;
+        }
     }
-
-    executeFinancialUIRenderFilter();
-
-    if (searchInput) {
-      searchInput.replaceWith(searchInput.cloneNode(true));
-      searchInput = document.getElementById('paymentSearch');
-      searchInput.addEventListener('input', executeFinancialUIRenderFilter);
-    }
-
-    if (monthFilterInput) {
-      monthFilterInput.replaceWith(monthFilterInput.cloneNode(true));
-      monthFilterInput = document.getElementById('paymentMonthFilter');
-      monthFilterInput.addEventListener('input', executeFinancialUIRenderFilter);
-    }
-    
-    if (methodFilterInput) {
-      methodFilterInput.replaceWith(methodFilterInput.cloneNode(true));
-      methodFilterInput = document.getElementById('paymentMethodFilter');
-      methodFilterInput.addEventListener('change', executeFinancialUIRenderFilter);
-    }
-
-  } catch (err) {
-    if (tableBody) {
-      tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger fw-medium"><i class="bi bi-exclamation-circle me-1"></i> Financial pipeline trace error: ${err.message}</td></tr>`;
-    }
-  }
 }
 
-function executeFinancialUIRenderFilter() {
-  const tableBody = document.getElementById('paymentTableBody');
-  if (!tableBody) return;
+// ─── Filtering ────────────────────────────────────────────────────────────────
 
-  const textQuery = (document.getElementById('paymentSearch')?.value || '').toLowerCase().trim();
-  const targetsTargetMonth = document.getElementById('paymentMonthFilter')?.value || ''; 
-  const selectedMethod = document.getElementById('paymentMethodFilter')?.value || 'all';
-
-  const processedSubset = masterFinancialLedgerCache.filter(item => {
-    const textMatches = 
-      (item.tenant_name && item.tenant_name.toLowerCase().includes(textQuery)) ||
-      (item.reference_number && item.reference_number.toLowerCase().includes(textQuery)) ||
-      (item.property_name && item.property_name.toLowerCase().includes(textQuery));
-
-    let dateMatches = true;
-    if (targetsTargetMonth && item.payment_date) {
-      dateMatches = item.payment_date.startsWith(targetsTargetMonth);
-    }
-    
-    const methodMatches = (selectedMethod === 'all' || item.payment_method === selectedMethod);
-
-    return textMatches && dateMatches && methodMatches;
-  });
-
-  if (processedSubset.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted fw-medium fs-6">No matching transactions discovered inside ledger indices.</td></tr>`;
-    return;
-  }
-
-  tableBody.innerHTML = processedSubset.map(entry => {
-    return `
-      <tr>
-        <td class="align-middle fw-semibold text-slate-900">
-          ${entry.tenant_name}
-        </td>
-        <td class="align-middle text-slate-800">
-          <div>${entry.property_name || 'Portfolio Contract'}</div>
-          <div class="text-muted small">Unit ${entry.unit_number || '—'}</div>
-        </td>
-        <td class="align-middle fw-bold font-monospace text-slate-900">
-          ${zmw(entry.amount)}
-        </td>
-        <td class="align-middle">
-          <span class="badge bg-light text-slate-700 border px-2 py-1 fs-8 fw-medium">${entry.payment_method_display || entry.payment_method || 'Bank Transfer'}</span>
-        </td>
-        <td class="align-middle text-muted small" style="font-family: monospace;">
-          ${entry.reference_number || 'Internal Transfer'}
-        </td>
-        <td class="align-middle text-slate-700" style="font-size:13px;">
-          <i class="bi bi-calendar3 text-muted me-1"></i>${entry.payment_date || '—'}
-        </td>
-      </tr>
-    `;
-  }).join('');
+function bindPaymentFilters() {
+    ['paymentSearch', 'paymentMonthFilter', 'paymentMethodFilter'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const fresh = el.cloneNode(true);
+        el.replaceWith(fresh);
+        fresh.addEventListener(id === 'paymentMethodFilter' ? 'change' : 'input', applyPaymentFilters);
+    });
 }
+
+function applyPaymentFilters() {
+    const tbody = document.getElementById('paymentTableBody');
+    if (!tbody) return;
+
+    const query  = (document.getElementById('paymentSearch')?.value || '').toLowerCase().trim();
+    const month  = document.getElementById('paymentMonthFilter')?.value || '';
+    const method = document.getElementById('paymentMethodFilter')?.value || 'all';
+
+    const results = paymentsCache.filter(p => {
+        const textMatch =
+            (p.tenant_name       || '').toLowerCase().includes(query) ||
+            (p.reference_number  || '').toLowerCase().includes(query) ||
+            (p.property_name     || '').toLowerCase().includes(query);
+
+        const monthMatch  = !month || (p.payment_date || '').startsWith(month);
+        const methodMatch = method === 'all' || p.payment_method === method;
+
+        return textMatch && monthMatch && methodMatch;
+    });
+
+    if (results.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-5 text-muted fw-medium">
+                    No payments match the current filters.
+                </td>
+            </tr>`;
+        return;
+    }
+
+    tbody.innerHTML = results.map(p => `
+        <tr>
+            <td class="align-middle fw-semibold text-slate-900">${p.tenant_name || '—'}</td>
+            <td class="align-middle text-slate-800">
+                <div>${p.property_name || '—'}</div>
+                <div class="text-muted small">Unit ${p.unit_number || '—'}</div>
+            </td>
+            <td class="align-middle fw-bold font-monospace text-slate-900">${zmw(p.amount)}</td>
+            <td class="align-middle">
+                <span class="badge bg-light text-slate-700 border px-2 py-1 fw-medium">
+                    ${p.payment_method_display || p.payment_method || 'Bank Transfer'}
+                </span>
+            </td>
+            <td class="align-middle text-muted small font-monospace">
+                ${p.reference_number || '—'}
+            </td>
+            <td class="align-middle text-slate-700" style="font-size: 13px;">
+                <i class="bi bi-calendar3 text-muted me-1"></i>${p.payment_date || '—'}
+            </td>
+        </tr>`).join('');
+}
+
+// ─── Record payment modal ─────────────────────────────────────────────────────
 
 async function openRecordPaymentModal() {
-  try {
-    const targetedUsers = await api.tenants.list();
-    const structuredUserOptions = targetedUsers.map(t => `<option value="${t.id}">${t.full_name} (${t.property_name || 'Contract'} - Unit ${t.unit_number || '?'})</option>`).join('');
+    try {
+        const tenants = await api.tenants.list();
+        const tenantOptions = (tenants.results || tenants || [])
+            .map(t => `<option value="${t.id}">${t.full_name} — Unit ${t.unit_number || '?'}</option>`)
+            .join('');
 
-    const currentZambianDateStamp = new Date().toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
 
-    openModal(`
-      <div class="modal-header border-0 pb-2">
-        <h5 class="modal-title fw-bold text-slate-900 fs-5">Record Ledger Payment</h5>
-        <button type="button" class="btn-close fs-7" onclick="closeModal()"></button>
-      </div>
-      <div class="modal-body border-0 py-2">
-        <form id="ledgerPaymentEntryForm" class="d-flex flex-column gap-3">
-          <div>
-            <label class="form-label text-slate-700 fw-medium small mb-1">Payer Account (Tenant Link) *</label>
-            <select class="form-select" id="modalPaymentTenant" required>
-              <option value="" disabled selected>Select associated member profile</option>
-              ${structuredUserOptions}
-            </select>
-          </div>
-          <div class="row g-2">
-            <div class="col-6">
-              <label class="form-label text-slate-700 fw-medium small mb-1">Amount Transferred (ZMW) *</label>
-              <input type="number" class="form-control fw-bold" id="modalPaymentAmount" step="0.01" min="1" placeholder="0.00" required>
+        openModal(`
+            <div class="modal-header border-0 pb-2">
+                <h5 class="modal-title fw-bold text-slate-900 fs-5">Record Payment</h5>
+                <button type="button" class="btn-close" onclick="closeModal()"></button>
             </div>
-            <div class="col-6">
-              <label class="form-label text-slate-700 fw-medium small mb-1">Transaction Channel *</label>
-              <select class="form-select" id="modalPaymentMethod" required>
-                <option value="bank_transfer" selected>Bank Transfer / EFT</option>
-                <option value="airtel_money">Airtel Money</option>
-                <option value="mtn_momo">MTN MoMo</option>
-                <option value="cheque">Corporate Cheque</option>
-                <option value="cash">Direct Cash Receipt</option>
-              </select>
+            <div class="modal-body border-0 py-2">
+                <form id="paymentForm" class="d-flex flex-column gap-3">
+                    <div>
+                        <label class="form-label text-slate-700 fw-medium small mb-1">Tenant *</label>
+                        <select class="form-select" id="modalPaymentTenant" required>
+                            <option value="" disabled selected>Select tenant</option>
+                            ${tenantOptions}
+                        </select>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label text-slate-700 fw-medium small mb-1">Amount (ZMW) *</label>
+                            <input type="number" class="form-control fw-bold" id="modalPaymentAmount"
+                                   step="0.01" min="1" placeholder="0.00" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-slate-700 fw-medium small mb-1">Payment Method *</label>
+                            <select class="form-select" id="modalPaymentMethod" required>
+                                <option value="bank_transfer" selected>Bank Transfer</option>
+                                <option value="airtel_money">Airtel Money</option>
+                                <option value="mtn_momo">MTN MoMo</option>
+                                <option value="cheque">Cheque</option>
+                                <option value="cash">Cash</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label text-slate-700 fw-medium small mb-1">Reference Number</label>
+                            <input type="text" class="form-control" id="modalPaymentRef" placeholder="e.g. TXN1234567">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-slate-700 fw-medium small mb-1">Payment Date *</label>
+                            <input type="date" class="form-control" id="modalPaymentDate" value="${today}" required>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </div>
-          <div class="row g-2">
-            <div class="col-6">
-              <label class="form-label text-slate-700 fw-medium small mb-1">Reference Code / ID</label>
-              <input type="text" class="form-control" id="modalPaymentRef" placeholder="e.g., TXN1039485">
-            </div>
-            <div class="col-6">
-              <label class="form-label text-slate-700 fw-medium small mb-1">Execution Date *</label>
-              <input type="date" class="form-control" id="modalPaymentDate" value="${currentZambianDateStamp}" required>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer border-0 pt-3 d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-light border px-4" onclick="closeModal()">Cancel</button>
-        <button type="button" class="btn btn-teal text-white px-4" onclick="submitPayment()">Record Payment</button>
-      </div>
-    `);
-  } catch (err) {
-    toast(`Failed to load structural workflow dependency layers: ${err.message}`, 'err');
-  }
+            <div class="modal-footer border-0 pt-3 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-light border px-4" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-teal text-white px-4" onclick="submitPayment()">Record Payment</button>
+            </div>`);
+
+    } catch (err) {
+        toast(`Failed to load tenant list: ${err.message}`, 'err');
+    }
 }
+
+// ─── Submit payment ───────────────────────────────────────────────────────────
 
 async function submitPayment() {
-  const activePaymentForm = document.getElementById('ledgerPaymentEntryForm');
-  if (activePaymentForm && !activePaymentForm.checkValidity()) {
-    activePaymentForm.reportValidity();
-    return;
-  }
+    const form = document.getElementById('paymentForm');
+    if (form && !form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
 
-  const payload = {
-    tenant_id: document.getElementById('modalPaymentTenant').value,
-    amount: parseFloat(document.getElementById('modalPaymentAmount').value),
-    payment_method: document.getElementById('modalPaymentMethod').value,
-    reference_number: document.getElementById('modalPaymentRef').value.trim(),
-    payment_date: document.getElementById('modalPaymentDate').value
-  };
+    const payload = {
+        tenant_id:        document.getElementById('modalPaymentTenant').value,
+        amount:           parseFloat(document.getElementById('modalPaymentAmount').value),
+        payment_method:   document.getElementById('modalPaymentMethod').value,
+        reference_number: document.getElementById('modalPaymentRef').value.trim(),
+        payment_date:     document.getElementById('modalPaymentDate').value,
+    };
 
-  try {
-    await api.payments.create(payload);
-    closeModal();
-    toast(`Payment capture event registered successfully into structural indexes`, 'ok');
-    await render_payments();
-  } catch (err) {
-    toast(`Ledger allocation error exception: ${err.message}`, 'err');
-  }
+    try {
+        await api.payments.create(payload);
+        closeModal();
+        toast('Payment recorded successfully.', 'ok');
+        await render_payments();
+    } catch (err) {
+        toast(`Failed to record payment: ${err.message}`, 'err');
+    }
 }
+
+// ─── Export ───────────────────────────────────────────────────────────────────
 
 function exportLedger() {
-  if (masterFinancialLedgerCache.length === 0) {
-    toast('No operational indices available inside current view trace to map.', 'warn');
-    return;
-  }
-  toast('Compiling unified balance ledger workbook sheets... download initialization active', 'ok');
+    if (paymentsCache.length === 0) {
+        toast('No payments to export.', 'warn');
+        return;
+    }
+
+    const headers = ['Tenant', 'Property', 'Unit', 'Amount', 'Method', 'Reference', 'Date'];
+    const rows = paymentsCache.map(p => [
+        p.tenant_name || '',
+        p.property_name || '',
+        p.unit_number || '',
+        parseFloat(p.amount).toFixed(2),
+        p.payment_method || '',
+        p.reference_number || '',
+        p.payment_date || '',
+    ]);
+
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `payments_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('CSV export downloaded.', 'ok');
 }
 
-// BIND TO GLOBAL SCOPE
-window.render_payments = render_payments;
-window.executeFinancialUIRenderFilter = executeFinancialUIRenderFilter;
-window.openRecordPaymentModal = openRecordPaymentModal;
-window.submitPayment = submitPayment;
-window.exportLedger = exportLedger;
+// ─── Exports ─────────────────────────────────────────────────────────────────
+window.render_payments         = render_payments;
+window.applyPaymentFilters     = applyPaymentFilters;
+window.openRecordPaymentModal  = openRecordPaymentModal;
+window.submitPayment           = submitPayment;
+window.exportLedger            = exportLedger;

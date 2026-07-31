@@ -1,31 +1,32 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block page_title %}Maintenance Queue{% endblock %}
-{% block page_subtitle %}Monitor facility structural statuses, technical emergency issues, and dispatch dispatches{% endblock %}
+{% block page_subtitle %}Monitor facility issues, track repair status, and manage work orders{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-sm-items-center gap-3 mb-4">
     <div>
         <h2 class="fs-4 fw-bold mb-1" style="color: var(--text-primary);">Maintenance Operations Queue</h2>
-        <p class="text-muted small mb-0" id="maintenanceSubtext">Monitor facility structural statuses, technical emergency issues, and dispatch dispatches</p>
+        <p class="text-muted small mb-0" id="maintenanceSubtext">Monitor facility issues, track repair status, and manage work orders</p>
     </div>
     <button class="btn-primary" onclick="openCreateMaintenanceModal()">
-        <i class="bi bi-plus-lg me-2"></i> File Emergency Request
+        <i class="bi bi-plus-lg me-2"></i> File New Request
     </button>
 </div>
 
 <div class="saas-card p-0 overflow-hidden shadow-sm">
     <div class="p-3 border-bottom d-flex flex-wrap gap-2 bg-light">
-        <select class="form-select" id="maintStatusFilter" style="max-width: 200px;">
-            <option value="all">All Workflow Lifecycle States</option>
-            <option value="open">Open Incident Ticket</option>
-            <option value="in_progress">Active Diagnostics</option>
-            <option value="resolved">Resolved Closed Archive</option>
+        <select class="form-select" id="maintStatusFilter" style="max-width: 220px;">
+            <option value="all">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
         </select>
-        <select class="form-select" id="maintPriorityFilter" style="max-width: 200px;">
-            <option value="all">All Priority Urgencies</option>
-            <option value="high">High & Critical System Emergencies</option>
-            <option value="normal">Standard Operational Procedures</option>
+        <select class="form-select" id="maintPriorityFilter" style="max-width: 220px;">
+            <option value="all">All Priorities</option>
+            <option value="high">High &amp; Emergency</option>
+            <option value="normal">Medium &amp; Low</option>
         </select>
     </div>
 
@@ -33,19 +34,19 @@
         <table class="table table-hover align-middle saas-table m-0">
             <thead>
                 <tr>
-                    <th>Reported Incident Issue</th>
-                    <th>Target Property Vector</th>
-                    <th>Triage Urgency Priority</th>
-                    <th>Workflow Assignment State</th>
-                    <th>Ingress Creation Timestamp</th>
-                    <th class="text-end">Engineering Actions</th>
+                    <th>Issue</th>
+                    <th>Tenant / Property</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Reported</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody id="maintenanceTableBody">
                 <tr>
                     <td colspan="6" class="text-center py-5 text-muted">
-                        <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
-                        Parsing live engineering tickets...
+                        <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                        Loading maintenance queue...
                     </td>
                 </tr>
             </tbody>
@@ -57,7 +58,6 @@
 {% block extra_js %}
 <script src="{% static 'js/maintenance.js' %}"></script>
 <script>
-    // Trigger rendering automatically
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof render_maintenance === 'function') {
             render_maintenance();
