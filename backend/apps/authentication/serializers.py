@@ -34,6 +34,24 @@ class UserPublicSerializer(serializers.ModelSerializer):
         return obj.get_full_name()
 
 
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    """
+    Used for PUT/PATCH /api/auth/me/
+    Allows editing all profile fields including avatar.
+    """
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 'last_name', 'phone', 'nrc_passport',
+            'physical_address', 'emergency_contact_name',
+            'emergency_contact_phone', 'emergency_contact_relation',
+            'avatar'
+        ]
+        extra_kwargs = {
+            'avatar': {'required': False, 'allow_null': True},
+        }
+
+
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True, min_length=8, validators=[validate_password])

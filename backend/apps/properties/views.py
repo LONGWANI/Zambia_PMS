@@ -36,6 +36,26 @@ class PropertyViewSet(viewsets.ModelViewSet):
         data = PropertyService.get_occupancy_summary(property_obj)
         return Response(data)
 
+    # ─── NEW: List units for this property ──────────────────────────
+    @action(detail=True, methods=['get'], url_path='units')
+    def units(self, request, pk=None):
+        """
+        Returns all units belonging to this property.
+        Accessible via /api/properties/{id}/units/
+        """
+        property_obj = self.get_object()
+
+        # Ensure the user owns this property or is admin
+        user = request.user
+        if not (user.is_admin or property_obj.owner == user):
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("You do not have access to this property's units.")
+
+        units = property_obj.units.all()
+        serializer = UnitSerializer(units, many=True)
+        return Response(serializer.data)
+
+
 class UnitViewSet(viewsets.ModelViewSet):
     serializer_class = UnitSerializer
     permission_classes = [IsLandlord]

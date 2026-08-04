@@ -5,6 +5,7 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
 from django.conf import settings
+from django.conf.urls.static import static
 from django.http import Http404
 from rest_framework.routers import DefaultRouter
 
@@ -29,7 +30,7 @@ router.register(r'notifications',  NotificationViewSet,        basename='notific
 
 def dynamic_frontend_serve(request, path):
     """
-    Custom server view that dynamically locates frontend assets in either 
+    Custom server view that dynamically locates frontend assets in either
     the sibling or nested directory, and explicitly overrides Content-Type headers
     to bypass Windows Registry MIME-type bugs (e.g., serving .js as text/plain).
     """
@@ -93,3 +94,7 @@ urlpatterns = [
     # This stays at the bottom to catch your CSS, JS, and Images!
     re_path(r'^(?P<path>.*)$', dynamic_frontend_serve),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

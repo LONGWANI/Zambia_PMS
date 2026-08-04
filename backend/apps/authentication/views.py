@@ -5,7 +5,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import (UserRegistrationSerializer, UserPublicSerializer,
-                          ChangePasswordSerializer, CustomTokenObtainPairSerializer)
+                          UserProfileUpdateSerializer, ChangePasswordSerializer,
+                          CustomTokenObtainPairSerializer)
 from .models import User
 
 
@@ -56,10 +57,15 @@ class LogoutView(APIView):
 
 class MeView(generics.RetrieveUpdateAPIView):
     """
-    GET/PUT/PATCH /api/auth/me/
+    GET /api/auth/me/   → returns user public data
+    PUT/PATCH /api/auth/me/ → updates profile (includes avatar)
     """
-    serializer_class = UserPublicSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return UserProfileUpdateSerializer
+        return UserPublicSerializer
 
     def get_object(self):
         return self.request.user

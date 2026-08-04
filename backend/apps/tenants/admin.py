@@ -4,7 +4,7 @@ from .models import Tenant, Lease
 @admin.register(Tenant)
 class TenantAdmin(admin.ModelAdmin):
     # Columns shown in the main list
-    list_display = ('user', 'nrc_number', 'get_has_active_lease', 'get_active_lease')
+    list_display = ('user', 'get_has_active_lease', 'get_active_lease')
     
     # Search bar (searching across the related User model and the NRC number)
     search_fields = ('user__first_name', 'user__last_name', 'user__email', 'nrc_number', 'employer_name')

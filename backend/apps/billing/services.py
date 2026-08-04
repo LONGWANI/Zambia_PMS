@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.db import transaction
 from django.utils import timezone
 from apps.tenants.models import Lease
+from apps.properties.models import UnitStatus
 from apps.notifications.services import NotificationService
 from .models import Payment, UtilityBill, UtilityAllocation
 
@@ -104,8 +105,6 @@ class ArrearsDetectionService:
         Runs arrears detection across ALL active leases for a landlord.
         Called daily by Celery task. Returns summary statistics.
         """
-        from apps.properties.models import Property
-
         active_leases = Lease.objects.filter(
             status='active',
             unit__property__owner=landlord
@@ -140,39 +139,63 @@ class ArrearsDetectionService:
 class UtilityBillService:
     """
     Utility bill auto-split algorithm.
-    Supports three strategies: equal, by floor area, by occupant count.
+    Supports four strategies: equal, by floor area, by occupant count, and manual.
     """
 
-    @staticmethod
+    @classmethod
     @transaction.atomic
-    def split_bill(bill: UtilityBill) -> list:
-        """Splits a UtilityBill into UtilityAllocation rows."""
+    def create_and_split_bill(cls, property_obj, utility_type, total_amount,
+                               billing_period, split_method='equal',
+                               manual_allocations=None) -> UtilityBill:
+        """
+        Creates a new UtilityBill record and allocates charges across occupied units.
+        billing_period: Date (e.g., first of the month) indicating the billing month.
+        """
+        bill = UtilityBill.objects.create(
+            property=property_obj,
+            utility_type=utility_type,
+            total_amount=Decimal(str(total_amount)),
+            billing_period=billing_period,
+            split_method=split_method,
+            status='pending'
+        )
+
+        cls.split_bill(bill, manual_allocations=manual_allocations)
+        return bill
+
+    @classmethod
+    @transaction.atomic
+    def split_bill(cls, bill: UtilityBill, manual_allocations=None) -> list:
+        """Splits an existing UtilityBill into UtilityAllocation rows."""
         if bill.status == 'split':
             raise ValueError('This bill has already been split.')
 
         occupied_units = bill.property.units.filter(
-            status='occupied'
+            status=UnitStatus.OCCUPIED
         ).select_related('current_lease')
 
         if not occupied_units.exists():
-            raise ValueError('No occupied units found for this property.')
+            raise ValueError('Cannot split utility bill: No occupied units found for this property.')
 
         # Delete any previous allocations before re-splitting
         bill.allocations.all().delete()
 
         method = bill.split_method
         if method == 'equal':
-            allocations = UtilityBillService._split_equal(bill, occupied_units)
+            allocations = cls._split_equal(bill, occupied_units)
         elif method == 'by_area':
-            allocations = UtilityBillService._split_by_area(bill, occupied_units)
+            allocations = cls._split_by_area(bill, occupied_units)
         elif method == 'by_occupants':
-            allocations = UtilityBillService._split_by_occupants(bill, occupied_units)
+            allocations = cls._split_by_occupants(bill, occupied_units)
+        elif method == 'manual':
+            allocations = cls._split_manual(bill, occupied_units, manual_allocations)
         else:
             raise ValueError(f"Unknown split method: {method}")
 
         bill.status = 'split'
         bill.save(update_fields=['status', 'updated_at'])
 
+        # Notify affected tenants
         for allocation in allocations:
             NotificationService.notify_utility_bill(allocation)
 
@@ -198,7 +221,7 @@ class UtilityBillService:
 
     @staticmethod
     def _split_by_area(bill, units) -> list:
-        total_area = sum(u.floor_area_sqm for u in units if u.floor_area_sqm)
+        total_area = sum(u.floor_area_sqm for u in units if getattr(u, 'floor_area_sqm', None))
         if not total_area or total_area == 0:
             return UtilityBillService._split_equal(bill, units)
 
@@ -207,7 +230,7 @@ class UtilityBillService:
         units_list = list(units)
 
         for i, unit in enumerate(units_list):
-            area = unit.floor_area_sqm or (total_area / len(units_list))
+            area = getattr(unit, 'floor_area_sqm', None) or (total_area / len(units_list))
             basis = Decimal(str(round(float(area / total_area), 4)))
 
             if i == len(units_list) - 1:
@@ -226,12 +249,9 @@ class UtilityBillService:
 
     @staticmethod
     def _split_by_occupants(bill, units) -> list:
-        # Count occupants per unit – default to 1 if lease has no occupant_count field
         occupant_counts = {}
         for unit in units:
-            lease = unit.current_lease
-            # The Lease model currently does not have occupant_count.
-            # This is a placeholder; you may add an occupant_count field later.
+            lease = getattr(unit, 'current_lease', None)
             occupant_counts[unit.id] = getattr(lease, 'occupant_count', 1) or 1
 
         total_occupants = sum(occupant_counts.values())
@@ -255,4 +275,36 @@ class UtilityBillService:
                 allocated_amount=amount,
                 allocation_basis=basis,
             ))
+        return allocations
+
+    @staticmethod
+    def _split_manual(bill, units, manual_allocations: list) -> list:
+        """
+        Manual split logic.
+        manual_allocations format: [{'unit_id': 1, 'amount': 500.00}, ...]
+        """
+        if not manual_allocations:
+            raise ValueError("Manual allocation list cannot be empty for manual split strategy.")
+
+        units_dict = {unit.id: unit for unit in units}
+        allocations = []
+        total_allocated = Decimal('0.00')
+
+        for item in manual_allocations:
+            unit_id = item.get('unit_id')
+            if unit_id not in units_dict:
+                continue
+
+            unit = units_dict[unit_id]
+            amt = Decimal(str(item['amount'])).quantize(Decimal('0.01'))
+            total_allocated += amt
+            basis = Decimal(str(round(amt / bill.total_amount, 4))) if bill.total_amount > 0 else Decimal('0.00')
+
+            allocations.append(UtilityAllocation.objects.create(
+                bill=bill,
+                unit=unit,
+                allocated_amount=amt,
+                allocation_basis=basis,
+            ))
+
         return allocations

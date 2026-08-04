@@ -128,7 +128,10 @@
       setTimeout(() => { window.location.href = 'login.html'; }, 1500);
     } catch (err) {
       // Show validation errors cleanly
-      showError(err.message || 'Registration failed. Please try again.');
+      const msg = err.data && typeof err.data === 'object' 
+        ? Object.values(err.data).flat().join(' ') 
+        : err.message || 'Registration failed. Please try again.';
+      showError(msg);
     }
   });
 </script>

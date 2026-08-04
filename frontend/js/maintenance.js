@@ -1,17 +1,5 @@
 /**
  * ZambiaPMS – Maintenance
- *
- * FIX: render_maintenance() previously called
- *   document.getElementById('contentWorkspace').innerHTML = html
- * which replaced the entire Django-rendered page — including the filter
- * dropdowns — with its own generated markup, and those filters had no event
- * listeners anyway.
- *
- * The function now:
- *   • Populates only #maintenanceTableBody (which already exists in the template).
- *   • Caches fetched requests so the status/priority filter selects can filter
- *     client-side without another network request.
- *   • Binds change listeners to #maintStatusFilter and #maintPriorityFilter.
  */
 
 let maintenanceCache = [];
@@ -50,7 +38,6 @@ async function render_maintenance() {
 // ─── Filter helpers ──────────────────────────────────────────────────────────
 
 function bindMaintenanceFilters() {
-    // Clone-replace to clear any stale listeners from a previous render.
     ['maintStatusFilter', 'maintPriorityFilter'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -123,12 +110,72 @@ function renderMaintenanceRows(requests) {
 
 async function openCreateMaintenanceModal() {
     try {
-        const tenants = await api.tenants.list();
-        const tenantOptions = (tenants.results || tenants || [])
-            .map(t => `<option value="${t.id}">${t.full_name}</option>`)
-            .join('');
+        // 1) Get current user info
+        const user = await api.auth.me();
+        const isLandlord = user && (user.role === 'landlord' || user.role === 'admin');
 
-        openModal(`
+        let tenantOptionsHtml = '';
+        let tenantId = '';
+        let unitId = '';
+
+        if (isLandlord) {
+            // Landlord: fetch tenants and show dropdowns
+            try {
+                const tenants = await api.tenants.list();
+                const tenantOptions = (tenants.results || tenants || [])
+                    .map(t => `<option value="${t.id}">${t.full_name}</option>`)
+                    .join('');
+                tenantOptionsHtml = `
+                    <div class="col-md-6">
+                        <label class="form-label text-slate-700 fw-medium small mb-1">Tenant *</label>
+                        <select class="form-select" id="maint_tenant" required>
+                            <option value="" disabled selected>Select tenant</option>
+                            ${tenantOptions}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-slate-700 fw-medium small mb-1">Unit *</label>
+                        <select class="form-select" id="maint_unit" required>
+                            <option value="" disabled selected>Select unit</option>
+                        </select>
+                    </div>
+                `;
+            } catch (err) {
+                toast(`Failed to load tenant list: ${err.message}`, 'err');
+                return;
+            }
+        } else {
+            // Tenant: auto‑populate from their active lease
+            const tenantProfile = user.tenant_profile;
+            if (!tenantProfile) {
+                toast('You do not have a tenant profile. Please contact support.', 'err');
+                return;
+            }
+            const tenantIdFromProfile = tenantProfile.id;
+            // Fetch full tenant details to get unit and property name
+            try {
+                const tenantData = await api.tenants.get(tenantIdFromProfile);
+                const unit = tenantData.unit; // from serializer's get_unit
+                const propertyName = tenantData.property_name;
+                const unitNumber = unit ? unit.unit_number : 'N/A';
+                unitId = unit ? unit.id : '';
+                tenantId = tenantIdFromProfile;
+
+                tenantOptionsHtml = `
+                    <div class="col-md-12">
+                        <p class="text-muted small">You are submitting this request for your current unit: <strong>${propertyName || 'N/A'} - Unit ${unitNumber}</strong></p>
+                        <input type="hidden" id="maint_tenant" value="${tenantId}">
+                        <input type="hidden" id="maint_unit" value="${unitId || ''}">
+                    </div>
+                `;
+            } catch (err) {
+                toast(`Failed to load your tenant details: ${err.message}`, 'err');
+                return;
+            }
+        }
+
+        // Build the modal HTML
+        const modalHtml = `
             <div class="modal-header border-0 pb-2">
                 <h5 class="modal-title fw-bold text-slate-900 fs-5">File Maintenance Request</h5>
                 <button type="button" class="btn-close" onclick="closeModal()"></button>
@@ -144,13 +191,7 @@ async function openCreateMaintenanceModal() {
                         <textarea class="form-control" id="maint_description" rows="3" placeholder="Provide details about the issue..."></textarea>
                     </div>
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label text-slate-700 fw-medium small mb-1">Tenant *</label>
-                            <select class="form-select" id="maint_tenant" required>
-                                <option value="" disabled selected>Select tenant</option>
-                                ${tenantOptions}
-                            </select>
-                        </div>
+                        ${tenantOptionsHtml}
                         <div class="col-md-6">
                             <label class="form-label text-slate-700 fw-medium small mb-1">Priority</label>
                             <select class="form-select" id="maint_priority">
@@ -166,10 +207,41 @@ async function openCreateMaintenanceModal() {
             <div class="modal-footer border-0 pt-3 d-flex justify-content-end gap-2">
                 <button type="button" class="btn btn-light border" onclick="closeModal()">Cancel</button>
                 <button type="button" class="btn btn-teal text-white px-4" onclick="submitMaintenance()">Submit Request</button>
-            </div>`);
+            </div>`;
+
+        openModal(modalHtml);
+
+        // If landlord, add listener to load units when tenant changes
+        if (isLandlord) {
+            const tenantSelect = document.getElementById('maint_tenant');
+            if (tenantSelect) {
+                tenantSelect.addEventListener('change', function() {
+                    loadUnitsForTenant(this.value);
+                });
+            }
+        }
 
     } catch (err) {
-        toast(`Failed to load tenant list: ${err.message}`, 'err');
+        toast(`Failed to load user info: ${err.message}`, 'err');
+    }
+}
+
+// ─── Helper for landlord: load units for selected tenant ──────────────────
+async function loadUnitsForTenant(tenantId) {
+    if (!tenantId) return;
+    try {
+        const tenant = await api.tenants.get(tenantId);
+        const unit = tenant.unit; // comes from serializer's get_unit
+        const unitSelect = document.getElementById('maint_unit');
+        if (unitSelect) {
+            if (unit) {
+                unitSelect.innerHTML = `<option value="${unit.id}">Unit ${unit.unit_number}</option>`;
+            } else {
+                unitSelect.innerHTML = `<option value="">No active unit</option>`;
+            }
+        }
+    } catch (err) {
+        toast('Failed to load unit for tenant.', 'err');
     }
 }
 
@@ -184,16 +256,25 @@ async function submitMaintenance() {
 
     const title    = document.getElementById('maint_title')?.value.trim();
     const desc     = document.getElementById('maint_description')?.value.trim();
-    const tenantId = document.getElementById('maint_tenant')?.value;
     const priority = document.getElementById('maint_priority')?.value;
 
-    if (!title || !tenantId) {
-        toast('Issue title and tenant are required.', 'warn');
+    // Get tenant and unit IDs (works for both hidden fields and selects)
+    const tenantEl = document.getElementById('maint_tenant');
+    const unitEl = document.getElementById('maint_unit');
+    const tenantId = tenantEl ? tenantEl.value : null;
+    const unitId = unitEl ? unitEl.value : null;
+
+    if (!title) {
+        toast('Issue title is required.', 'warn');
         return;
     }
 
+    const payload = { title, description: desc, priority };
+    if (tenantId) payload.tenant_id = tenantId;
+    if (unitId) payload.unit = unitId;
+
     try {
-        await api.maintenance.create({ title, description: desc, tenant_id: tenantId, priority });
+        await api.maintenance.create(payload);
         closeModal();
         toast('Maintenance request submitted successfully.', 'ok');
         await render_maintenance();

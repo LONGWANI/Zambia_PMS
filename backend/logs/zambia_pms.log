@@ -1,0 +1,18 @@
+INFO 2026-08-04 21:30:57,038 views 17436 16000 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-04 21:30:57,370 views 17436 16000 Tenant queryset count: 1
+INFO 2026-08-04 21:32:38,192 views 17436 16000 Creating tenant with data: {'first_name': 'Kangwa', 'last_name': 'Musonda', 'email': 'tenants@zmps.com', 'phone': '0960040934', 'nrc_passport': '300098/09/1', 'password': 'L0ngwani', 'employer_name': '', 'employer_phone': '', 'notes': '', 'property_id': 'e3939505-afeb-4a28-9e49-22bf78fa59f6', 'unit_number': '1'}
+INFO 2026-08-04 21:32:41,534 views 17436 16000 Tenant created with ID: d8f3db2c-9c88-4445-bf9c-43e5d008b84c
+INFO 2026-08-04 21:32:41,548 views 17436 16000 Leases for tenant: 1
+INFO 2026-08-04 21:32:41,745 views 17436 16000 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-04 21:32:41,782 views 17436 16000 Tenant queryset count: 2
+INFO 2026-08-04 21:32:49,465 views 17436 16000 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-04 21:32:49,500 views 17436 16000 Tenant queryset count: 2
+INFO 2026-08-04 21:35:12,872 views 17436 16000 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-04 21:35:12,901 views 17436 16000 Tenant queryset count: 2
+INFO 2026-08-04 21:36:58,170 views 17436 16000 Creating tenant with data: {'first_name': 'Comfort', 'last_name': 'Longwani', 'email': 'example@gmail.com', 'phone': '0944444444', 'nrc_passport': '444444/44/4', 'password': 'L0ngwani', 'employer_name': '', 'employer_phone': '', 'notes': '', 'property_id': '72ab4e4f-8592-4313-811e-c8f5601759a1', 'unit_number': '4'}
+INFO 2026-08-04 21:37:00,788 views 17436 16000 Tenant created with ID: 451aa539-3561-47a0-b312-7e48702717cf
+INFO 2026-08-04 21:37:00,799 views 17436 16000 Leases for tenant: 1
+INFO 2026-08-04 21:37:01,890 views 17436 16000 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-04 21:37:01,920 views 17436 16000 Tenant queryset count: 3
+INFO 2026-08-04 21:44:34,193 views 17436 3224 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-04 21:44:34,225 views 17436 3224 Tenant queryset count: 3

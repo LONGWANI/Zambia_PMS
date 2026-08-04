@@ -13,8 +13,11 @@ class NotificationType(models.TextChoices):
 
 class Notification(TimeStampedModel):
     # Unique related_name avoids clashes with other models
-    user                = models.ForeignKey(User, on_delete=models.CASCADE,
-                                            related_name='general_notifications')
+    user                = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        related_name='general_notifications'
+    )
     notification_type   = models.CharField(max_length=50, choices=NotificationType.choices)
     title               = models.CharField(max_length=200)
     message             = models.TextField()
@@ -31,4 +34,4 @@ class Notification(TimeStampedModel):
         ]
 
     def __str__(self):
-        return f"[{self.notification_type}] → {self.user}"
+        return f"[{self.get_notification_type_display()}] → {self.user.get_full_name() or self.user.email}"

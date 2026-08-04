@@ -3,18 +3,45 @@
  * All fetch() calls go through this module.
  */
 
+class APIError extends Error {
+    constructor(message, status, data = null) {
+        super(message);
+        this.name = 'APIError';
+        this.status = status;
+        this.data = data;
+    }
+}
+
 const api = {
+    /**
+     * Core request wrapper. Automatically attaches Bearer token,
+     * handles token refresh on 401, and safely formats JSON or FormData payloads.
+     */
     async request(method, endpoint, data = null) {
-        const token   = auth.getAccessToken();
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const token = auth.getAccessToken();
+        const headers = {};
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
 
         const config = { method, headers };
-        if (data) config.body = JSON.stringify(data);
+
+        if (data !== null && data !== undefined) {
+            if (data instanceof FormData) {
+                // Do NOT set Content-Type header so the browser automatically
+                // sets 'multipart/form-data' with the correct boundary.
+                config.body = data;
+            } else {
+                headers['Content-Type'] = 'application/json';
+                config.body = JSON.stringify(data);
+            }
+        }
 
         try {
             let response = await fetch(`${window.API_BASE}${endpoint}`, config);
 
+            // Handle token expiration & automatic refresh
             if (response.status === 401) {
                 const refreshed = await auth.refreshToken();
                 if (refreshed) {
@@ -26,9 +53,18 @@ const api = {
                 }
             }
 
+            // Handle 204 No Content
+            if (response.status === 204) {
+                return null;
+            }
+
             const json = await response.json();
             if (!response.ok) {
-                throw new APIError(json.message || json.detail || 'Request failed', response.status, json);
+                throw new APIError(
+                    json.message || json.detail || 'Request failed',
+                    response.status,
+                    json
+                );
             }
             return json;
         } catch (err) {
@@ -39,34 +75,38 @@ const api = {
 
     get:    (endpoint)       => api.request('GET',    endpoint),
     post:   (endpoint, data) => api.request('POST',   endpoint, data),
-    put:    (endpoint, data) => api.request('PUT',    endpoint, data),
     patch:  (endpoint, data) => api.request('PATCH',  endpoint, data),
+    put:    (endpoint, data) => api.request('PUT',    endpoint, data),
     delete: (endpoint)       => api.request('DELETE', endpoint),
 
+    // ==========================================
+    // Authentication Module (NEW)
+    // ==========================================
     auth: {
-        login:          (d) => api.post('/auth/login/',           d),
-        register:       (d) => api.post('/auth/register/',        d),
-        logout:         (d) => api.post('/auth/logout/',          d),
-        me:             ()  => api.get('/auth/me/'),
-        changePassword: (d) => api.post('/auth/change-password/', d),
-        refreshToken:   (d) => api.post('/auth/token/refresh/',   d),
+        register: (data) => api.post('/auth/register/', data),
+        login:    (data) => api.post('/auth/login/', data),
+        refresh:  (data) => api.post('/auth/token/refresh/', data),
+        logout:   (data) => api.post('/auth/logout/', data),
+        me:       ()     => api.get('/auth/me/'),
+        update:   (data) => api.patch('/auth/me/', data), // for profile updates
     },
 
+    // ==========================================
+    // Core Modules
+    // ==========================================
+
     properties: {
-        list:      (params = '') => api.get(`/properties/${params}`),
-        get:       (id)          => api.get(`/properties/${id}/`),
-        create:    (d)           => api.post('/properties/', d),
-        update:    (id, d)       => api.patch(`/properties/${id}/`, d),
-        delete:    (id)          => api.delete(`/properties/${id}/`),
-        occupancy: (id)          => api.get(`/properties/${id}/occupancy/`),
+        list:   (params = '') => api.get(`/properties/${params}`),
+        get:    (id)          => api.get(`/properties/${id}/`),
+        create: (d)           => api.post('/properties/', d),
+        update: (id, d)       => api.patch(`/properties/${id}/`, d),
+        delete: (id)          => api.delete(`/properties/${id}/`),
     },
 
     units: {
-        list:   (params = '') => api.get(`/units/${params}`),
-        get:    (id)          => api.get(`/units/${id}/`),
-        create: (d)           => api.post('/units/', d),
-        update: (id, d)       => api.patch(`/units/${id}/`, d),
-        delete: (id)          => api.delete(`/units/${id}/`),
+        listByProperty: (propId)     => api.get(`/properties/${propId}/units/`),
+        assignTenant:   (unitId, d)  => api.post(`/units/${unitId}/assign-tenant/`, d),
+        vacateTenant:   (unitId)     => api.post(`/units/${unitId}/vacate/`),
     },
 
     tenants: {
@@ -77,25 +117,38 @@ const api = {
     },
 
     leases: {
-        list:      (params = '') => api.get(`/leases/${params}`),
-        get:       (id)          => api.get(`/leases/${id}/`),
-        create:    (d)           => api.post('/leases/', d),
-        terminate: (id, d)       => api.post(`/leases/${id}/terminate/`, d),
-        statement: (id)          => api.get(`/leases/${id}/statement/`),
+        list:   (params = '') => api.get(`/leases/${params}`),
+        get:    (id)          => api.get(`/leases/${id}/`),
+        create: (d)           => api.post('/leases/', d),
+        update: (id, d)       => api.patch(`/leases/${id}/`, d),
+    },
+
+    leaseAgreements: {
+        create:      (d)      => api.post('/lease-agreements/', d),
+        getByUnit:   (unitId) => api.get(`/lease-agreements/unit/${unitId}/`),
+        downloadPDF: (id)     => `${window.API_BASE}/lease-agreements/${id}/pdf/`,
     },
 
     payments: {
-        list:    (params = '') => api.get(`/payments/${params}`),
-        get:     (id)          => api.get(`/payments/${id}/`),
-        create:  (d)           => api.post('/payments/', d),
-        receipt: (id)          => api.get(`/payments/${id}/receipt/`),
+        list:          (params = '') => api.get(`/payments/${params}`),
+        get:           (id)          => api.get(`/payments/${id}/`),
+        record:        (d)           => api.post('/payments/', d),
+        receipt:       (id)          => api.get(`/payments/${id}/receipt/`),
+        processOnline: (d)           => api.post('/payments/process_online_payment/', d),
+    },
+
+    gateway: {
+        getSettings:    ()     => api.get('/gateway/settings/'),
+        saveSettings:   (d)    => api.post('/gateway/settings/', d),
+        processPayment: (d)    => api.post('/gateway/process-payment/', d),
     },
 
     utilityBills: {
-        list:   (params = '') => api.get(`/utility-bills/${params}`),
-        get:    (id)          => api.get(`/utility-bills/${id}/`),
-        create: (d)           => api.post('/utility-bills/', d),
-        split:  (id)          => api.post(`/utility-bills/${id}/split/`),
+        list:           (propId = '') => api.get(`/utility-bills/${propId ? '?property_id=' + propId : ''}`),
+        get:            (id)          => api.get(`/utility-bills/${id}/`),
+        create:         (d)           => api.post('/utility-bills/', d),
+        split:          (id)          => api.post(`/utility-bills/${id}/split/`),
+        createAndSplit: (d)           => api.post('/utility-bills/split/', d),
     },
 
     maintenance: {
@@ -124,13 +177,11 @@ const api = {
         update: (id, d)       => api.patch(`/expenses/${id}/`, d),
         delete: (id)          => api.delete(`/expenses/${id}/`),
     },
-};
 
-class APIError extends Error {
-    constructor(message, status, data = null) {
-        super(message);
-        this.name   = 'APIError';
-        this.status = status;
-        this.data   = data;
-    }
-}
+    // The profile module is now deprecated – use api.auth.me and api.auth.update instead,
+    // but we keep it for backward compatibility.
+    profile: {
+        get:    ()         => api.get('/auth/me/'),
+        update: (formData) => api.patch('/auth/me/', formData),
+    },
+};
