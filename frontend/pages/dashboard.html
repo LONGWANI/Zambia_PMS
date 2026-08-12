@@ -13,13 +13,13 @@
     <div class="col-12 col-md-6 col-xl-3">
         <div class="saas-card h-100 p-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <span class="text-muted fw-medium small text-uppercase tracking-wider">Portfolio Size</span>
+                <span id="kpiLabel1" class="text-muted fw-medium small text-uppercase tracking-wider">Portfolio Size</span>
                 <div class="p-2 rounded-3" style="background-color: var(--accent-light); color: var(--accent);">
                     <i class="bi bi-building fs-5"></i>
                 </div>
             </div>
-            <h2 class="display-6 fw-bold mb-2" id="kpiTotalUnits" style="color: var(--text-primary);">--</h2>
-            <div class="d-flex align-items-center gap-1 small text-success fw-semibold" id="kpiOccupancy">
+            <h2 class="display-6 fw-bold mb-2" id="kpiValue1" style="color: var(--text-primary);">--</h2>
+            <div class="d-flex align-items-center gap-1 small text-success fw-semibold" id="kpiSub1">
                 <i class="bi bi-graph-up-arrow"></i> <span>--% Occupancy Rate</span>
             </div>
         </div>
@@ -28,13 +28,13 @@
     <div class="col-12 col-md-6 col-xl-3">
         <div class="saas-card h-100 p-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <span class="text-muted fw-medium small text-uppercase tracking-wider">Gross Revenue</span>
+                <span id="kpiLabel2" class="text-muted fw-medium small text-uppercase tracking-wider">Gross Revenue</span>
                 <div class="p-2 rounded-3 bg-success-subtle text-success">
                     <i class="bi bi-cash-stack fs-5"></i>
                 </div>
             </div>
-            <h2 class="display-6 fw-bold mb-2" id="kpiRevenue" style="color: var(--text-primary);">ZMW 0.00</h2>
-            <div class="d-flex align-items-center gap-1 small text-success fw-semibold" id="kpiRevenueChange">
+            <h2 class="display-6 fw-bold mb-2" id="kpiValue2" style="color: var(--text-primary);">ZMW 0.00</h2>
+            <div class="d-flex align-items-center gap-1 small text-success fw-semibold" id="kpiSub2">
                 <i class="bi bi-arrow-up-right"></i> <span>+--% MoM growth</span>
             </div>
         </div>
@@ -43,13 +43,13 @@
     <div class="col-12 col-md-6 col-xl-3">
         <div class="saas-card h-100 p-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <span class="text-muted fw-medium small text-uppercase tracking-wider">Vacant Spaces</span>
+                <span id="kpiLabel3" class="text-muted fw-medium small text-uppercase tracking-wider">Vacant Spaces</span>
                 <div class="p-2 rounded-3 bg-warning-subtle text-warning">
                     <i class="bi bi-door-open fs-5"></i>
                 </div>
             </div>
-            <h2 class="display-6 fw-bold mb-2" id="kpiVacant" style="color: var(--text-primary);">--</h2>
-            <div class="d-flex align-items-center gap-1 small text-muted fw-medium">
+            <h2 class="display-6 fw-bold mb-2" id="kpiValue3" style="color: var(--text-primary);">--</h2>
+            <div class="d-flex align-items-center gap-1 small text-muted fw-medium" id="kpiSub3">
                 <i class="bi bi-clock-history"></i> <span>Ready for onboarding</span>
             </div>
         </div>
@@ -58,13 +58,13 @@
     <div class="col-12 col-md-6 col-xl-3">
         <div class="saas-card h-100 p-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <span class="text-muted fw-medium small text-uppercase tracking-wider">Collection Efficiency</span>
+                <span id="kpiLabel4" class="text-muted fw-medium small text-uppercase tracking-wider">Collection Efficiency</span>
                 <div class="p-2 rounded-3 bg-info-subtle text-info">
                     <i class="bi bi-pie-chart fs-5"></i>
                 </div>
             </div>
-            <h2 class="display-6 fw-bold mb-2" id="kpiCollectionRate" style="color: var(--text-primary);">--%</h2>
-            <div class="d-flex align-items-center gap-1 small text-danger fw-semibold">
+            <h2 class="display-6 fw-bold mb-2" id="kpiValue4" style="color: var(--text-primary);">--%</h2>
+            <div class="d-flex align-items-center gap-1 small text-danger fw-semibold" id="kpiSub4">
                 <i class="bi bi-exclamation-circle"></i>
                 <a href="{% url 'reports' %}" class="text-danger fw-semibold text-decoration-none">View active invoice deficits</a>
             </div>
@@ -72,7 +72,7 @@
     </div>
 </div>
 
-<!-- Revenue Chart + Property Occupancy -->
+<!-- Revenue Chart + Right Panel (changes per role) -->
 <div class="row g-4 mb-4">
     <div class="col-12 col-xl-8">
         <div class="saas-card p-4 h-100">
@@ -85,9 +85,24 @@
         </div>
     </div>
     <div class="col-12 col-xl-4">
+        <div class="saas-card p-4 h-100" id="rightPanel">
+            <h3 class="fs-5 fw-bold mb-4" style="color: var(--text-primary);" id="rightPanelTitle">Property Occupancy</h3>
+            <div id="rightPanelContent">
+                <div class="text-center py-4 text-muted">
+                    <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Landlord: Rent Due Reminders -->
+<div id="landlordReminders" class="row g-4 mb-4" style="display:none;">
+    <div class="col-12">
         <div class="saas-card p-4 h-100">
-            <h3 class="fs-5 fw-bold mb-4" style="color: var(--text-primary);">Property Occupancy</h3>
-            <div id="occList">
+            <h3 class="fs-5 fw-bold mb-3" style="color: var(--text-primary);">Upcoming Rent Due Dates</h3>
+            <div id="rentDueList">
                 <div class="text-center py-4 text-muted">
                     <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
                     Loading...
@@ -171,7 +186,6 @@
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Ensure the chart canvas exists before calling render
         const chartCanvas = document.getElementById('revenueChart');
         if (!chartCanvas) {
             console.warn('Chart canvas not found – dashboard may not render correctly.');

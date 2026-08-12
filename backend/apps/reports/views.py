@@ -40,13 +40,12 @@ class FinancialReportView(APIView):
 
             monthly_summary = []
             for item in finance.get('monthly_breakdown', []):
-                revenue = float(item['amount'])
-                # Expenses are not yet in the service – set to 0 for now
+                # Use the new fields from the service
                 monthly_summary.append({
                     'month': item['month'],
-                    'total_revenue': revenue,
-                    'total_expenses': 0,
-                    'net_profit': revenue,   # profit = revenue - expenses
+                    'total_revenue': item['total_revenue'],
+                    'total_expenses': item['total_expenses'],
+                    'net_profit': item['net_profit'],
                 })
 
             return Response({'monthly_summary': monthly_summary}, status=status.HTTP_200_OK)

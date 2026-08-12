@@ -18,7 +18,9 @@ class TenantSerializer(serializers.ModelSerializer):
     property_name = serializers.SerializerMethodField()
     balance = serializers.SerializerMethodField()
     lease_status = serializers.SerializerMethodField()
-    monthly_rent = serializers.SerializerMethodField()   # new
+    monthly_rent = serializers.SerializerMethodField()
+    lease_start = serializers.SerializerMethodField()   # new
+    lease_end = serializers.SerializerMethodField()     # new
 
     class Meta:
         model = Tenant
@@ -27,6 +29,7 @@ class TenantSerializer(serializers.ModelSerializer):
             'emergency_contact', 'emergency_phone', 'emergency_relation',
             'employer_name', 'employer_phone',
             'unit', 'property_name', 'balance', 'lease_status', 'monthly_rent',
+            'lease_start', 'lease_end',  # new fields
             'notes', 'created_at'
         ]
         read_only_fields = ['id', 'created_at']
@@ -50,6 +53,14 @@ class TenantSerializer(serializers.ModelSerializer):
     def get_monthly_rent(self, obj):
         lease = obj.active_lease
         return str(lease.monthly_rent) if lease else '0.00'
+
+    def get_lease_start(self, obj):
+        lease = obj.active_lease
+        return lease.start_date if lease else None
+
+    def get_lease_end(self, obj):
+        lease = obj.active_lease
+        return lease.end_date if lease else None
 
 
 class TenantCreateSerializer(serializers.Serializer):
@@ -118,7 +129,6 @@ class TenantCreateSerializer(serializers.Serializer):
             if monthly_rent is None:
                 attrs['monthly_rent'] = unit.rent_amount
             else:
-                # validate positive
                 if monthly_rent <= 0:
                     raise serializers.ValidationError("Monthly rent must be positive.")
                 attrs['monthly_rent'] = monthly_rent
@@ -161,7 +171,7 @@ class TenantCreateSerializer(serializers.Serializer):
                 unit=unit,
                 start_date=date.today(),
                 end_date=None,
-                monthly_rent=monthly_rent,   # use provided or unit's rent
+                monthly_rent=monthly_rent,
                 deposit_amount=0,
                 status='active',
                 balance_due=monthly_rent,

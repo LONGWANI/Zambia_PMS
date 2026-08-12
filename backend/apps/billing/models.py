@@ -4,11 +4,13 @@ from apps.tenants.models import Lease
 from apps.properties.models import Property, Unit
 from apps.authentication.models import User
 
+
 class PaymentProvider(models.TextChoices):
     PAYPAL = 'paypal', 'PayPal Sandbox'
     STRIPE = 'stripe', 'Stripe Test Mode'
     FLUTTERWAVE = 'flutterwave', 'Flutterwave Test Mode'
     PAYSTACK = 'paystack', 'Paystack Test Mode'
+
 
 class PaymentGatewaySettings(TimeStampedModel):
     landlord = models.OneToOneField(User, on_delete=models.CASCADE, related_name='gateway_settings')
@@ -22,6 +24,7 @@ class PaymentGatewaySettings(TimeStampedModel):
     class Meta:
         db_table = 'payment_gateway_settings'
 
+
 class PaymentMethod(models.TextChoices):
     CASH          = 'cash',          'Cash'
     BANK_TRANSFER = 'bank_transfer', 'Bank Transfer'
@@ -29,9 +32,14 @@ class PaymentMethod(models.TextChoices):
     CHEQUE        = 'cheque',        'Cheque'
     GATEWAY       = 'sandbox_gateway', 'Online Sandbox Gateway'
 
+
 class Payment(TimeStampedModel):
     lease            = models.ForeignKey(Lease, on_delete=models.RESTRICT, related_name='payments')
-    charge_type      = models.CharField(max_length=30, choices=[('rent', 'Rent'), ('utility', 'Utility'), ('maintenance', 'Maintenance'), ('deposit', 'Security Deposit')], default='rent')
+    charge_type      = models.CharField(
+        max_length=30,
+        choices=[('rent', 'Rent'), ('utility', 'Utility'), ('maintenance', 'Maintenance'), ('deposit', 'Security Deposit')],
+        default='rent'
+    )
     amount           = models.DecimalField(max_digits=12, decimal_places=2)
     balance_before   = models.DecimalField(max_digits=12, decimal_places=2)
     balance_after    = models.DecimalField(max_digits=12, decimal_places=2)
@@ -43,7 +51,11 @@ class Payment(TimeStampedModel):
     notes            = models.TextField(blank=True)
     receipt_pdf      = models.FileField(upload_to='receipts/', null=True, blank=True)
     recorded_by      = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='recorded_payments')
-    status           = models.CharField(max_length=20, default='pending', choices=[('confirmed','Confirmed'), ('pending','Pending'), ('reversed','Reversed')])
+    status           = models.CharField(
+        max_length=20,
+        default='pending',
+        choices=[('confirmed', 'Confirmed'), ('pending', 'Pending'), ('reversed', 'Reversed')]
+    )
 
     class Meta:
         db_table = 'payments'
@@ -52,6 +64,7 @@ class Payment(TimeStampedModel):
     def __str__(self):
         return f"ZMW {self.amount} — {self.lease} on {self.payment_date}"
 
+
 class UtilityType(models.TextChoices):
     ELECTRICITY = 'electricity', 'Electricity (ZESCO)'
     WATER       = 'water',       'Water (LWSC)'
@@ -59,11 +72,13 @@ class UtilityType(models.TextChoices):
     GARBAGE     = 'garbage',     'Garbage Collection'
     OTHER       = 'other',       'Other'
 
+
 class SplitMethod(models.TextChoices):
     EQUAL      = 'equal',        'Equal Split'
     BY_AREA    = 'by_area',      'By Floor Area'
     BY_PERSONS = 'by_occupants', 'By Number of Occupants'
     CUSTOM     = 'custom',       'Custom Weights'
+
 
 class UtilityBill(TimeStampedModel):
     property       = models.ForeignKey(Property, on_delete=models.RESTRICT, related_name='utility_bills')
@@ -73,7 +88,11 @@ class UtilityBill(TimeStampedModel):
     billing_period = models.DateField()
     due_date       = models.DateField(null=True, blank=True)
     invoice_number = models.CharField(max_length=100, blank=True)
-    status         = models.CharField(max_length=20, default='pending', choices=[('pending','Pending'), ('split','Split'), ('paid','Paid'), ('overdue','Overdue')])
+    status         = models.CharField(
+        max_length=20,
+        default='pending',
+        choices=[('pending', 'Pending'), ('split', 'Split'), ('paid', 'Paid'), ('overdue', 'Overdue')]
+    )
     notes          = models.TextField(blank=True)
 
     class Meta:
@@ -83,6 +102,7 @@ class UtilityBill(TimeStampedModel):
 
     def __str__(self):
         return f"{self.get_utility_type_display()} — {self.property.name}"
+
 
 class UtilityAllocation(TimeStampedModel):
     bill             = models.ForeignKey(UtilityBill, on_delete=models.CASCADE, related_name='allocations')
@@ -99,3 +119,55 @@ class UtilityAllocation(TimeStampedModel):
 
     def __str__(self):
         return f"ZMW {self.allocated_amount} — {self.unit}"
+
+
+# ─── NEW: Expense model for maintenance costs ───────────────────────────────
+
+class ExpenseCategory(models.TextChoices):
+    MAINTENANCE = 'maintenance', 'Maintenance & Repairs'
+    UTILITIES   = 'utilities',   'Utilities'
+    TAXES       = 'taxes',       'Property Taxes'
+    INSURANCE   = 'insurance',   'Insurance'
+    OTHER       = 'other',       'Other'
+
+
+class Expense(TimeStampedModel):
+    """
+    Records operating expenses (maintenance, utilities, etc.)
+    """
+    amount          = models.DecimalField(max_digits=12, decimal_places=2)
+    category        = models.CharField(max_length=50, choices=ExpenseCategory.choices, default=ExpenseCategory.MAINTENANCE)
+    description     = models.TextField(blank=True)
+    expense_date    = models.DateField()
+    maintenance     = models.ForeignKey(
+        'maintenance.MaintenanceRequest',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='expenses'
+    )
+    property        = models.ForeignKey(
+        'properties.Property',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='expenses'
+    )
+    recorded_by     = models.ForeignKey(
+        'authentication.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='recorded_expenses'
+    )
+
+    class Meta:
+        db_table = 'billing_expenses'
+        ordering = ['-expense_date']
+        indexes = [
+            models.Index(fields=['expense_date']),
+            models.Index(fields=['category']),
+        ]
+
+    def __str__(self):
+        return f"{self.category} – {self.amount} ({self.expense_date})"

@@ -1,9 +1,10 @@
 # apps/reports/services.py
 from decimal import Decimal
 from django.db.models import Sum, Count, Q, Avg
+from django.db.models.functions import TruncMonth
 from django.utils import timezone
 from datetime import date, timedelta
-from apps.billing.models import Payment
+from apps.billing.models import Payment, Expense
 from apps.tenants.models import Lease
 from apps.properties.models import Property
 
@@ -19,21 +20,17 @@ class ReportService:
         """
         cutoff = timezone.now().date() - timedelta(days=months * 30)
 
+        # ─── Revenue (payments) ──────────────────────────────────────
         payments = Payment.objects.filter(
             payment_date__gte=cutoff,
             status='confirmed',
         )
-        # If not admin, filter by owner (landlord)
         if not user.is_admin:
             payments = payments.filter(lease__unit__property__owner=user)
 
-        total_collected = payments.aggregate(
-            total=Sum('amount')
-        )['total'] or Decimal('0.00')
+        total_collected = payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
 
-        # Monthly breakdown for Chart.js
-        from django.db.models.functions import TruncMonth
-        monthly = (
+        monthly_revenue = (
             payments
             .annotate(month=TruncMonth('payment_date'))
             .values('month')
@@ -41,15 +38,55 @@ class ReportService:
             .order_by('month')
         )
 
+        # ─── Expenses (from Expense model) ──────────────────────────
+        expenses = Expense.objects.filter(expense_date__gte=cutoff)
+        if not user.is_admin:
+            # If the user is a landlord, only show expenses for their properties
+            expenses = expenses.filter(property__owner=user)
+
+        monthly_expenses = (
+            expenses
+            .annotate(month=TruncMonth('expense_date'))
+            .values('month')
+            .annotate(total=Sum('amount'))
+            .order_by('month')
+        )
+
+        # ─── Merge revenue and expenses into a single monthly dict ──
+        month_dict = {}
+        for item in monthly_revenue:
+            month = item['month'].strftime('%b %Y')
+            month_dict[month] = {
+                'month': month,
+                'total_revenue': float(item['total']),
+                'total_expenses': 0,
+            }
+        for item in monthly_expenses:
+            month = item['month'].strftime('%b %Y')
+            if month in month_dict:
+                month_dict[month]['total_expenses'] = float(item['total'])
+            else:
+                month_dict[month] = {
+                    'month': month,
+                    'total_revenue': 0,
+                    'total_expenses': float(item['total']),
+                }
+
+        # Sort by month
+        monthly_breakdown = sorted(month_dict.values(), key=lambda x: x['month'])
+
         return {
             'total_collected': str(total_collected),
             'months_covered': months,
             'monthly_breakdown': [
                 {
-                    'month': m['month'].strftime('%b %Y'),
-                    'amount': str(m['total']),
+                    'month': item['month'],
+                    'amount': str(item['total_revenue']),  # keep for backward compatibility
+                    'total_revenue': item['total_revenue'],
+                    'total_expenses': item['total_expenses'],
+                    'net_profit': item['total_revenue'] - item['total_expenses'],
                 }
-                for m in monthly
+                for item in monthly_breakdown
             ],
         }
 

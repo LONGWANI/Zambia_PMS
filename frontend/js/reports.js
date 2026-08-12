@@ -101,9 +101,12 @@ async function renderFinancialReport(titleEl, contentEl) {
         summary.sort((a, b) => new Date(a.month) - new Date(b.month));
     }
 
+    // Ensure every row has total_revenue, total_expenses, net_profit
     summary = summary.map(row => ({
         ...row,
-        net_profit: row.net_profit ?? row.total_revenue - (row.total_expenses || 0)
+        total_revenue: row.total_revenue ?? parseFloat(row.amount) ?? 0,
+        total_expenses: row.total_expenses ?? 0,
+        net_profit: row.net_profit ?? (row.total_revenue - row.total_expenses),
     }));
 
     contentEl.innerHTML = `
@@ -125,7 +128,7 @@ async function renderFinancialReport(titleEl, contentEl) {
                         <tr>
                             <td class="fw-medium text-slate-900">${row.month}</td>
                             <td class="font-monospace text-success fw-medium">+${zmw(row.total_revenue)}</td>
-                            <td class="font-monospace text-danger">-${zmw(row.total_expenses || 0)}</td>
+                            <td class="font-monospace text-danger">-${zmw(row.total_expenses)}</td>
                             <td class="font-monospace fw-semibold text-slate-900">
                                 ${zmw(row.net_profit)}
                             </td>

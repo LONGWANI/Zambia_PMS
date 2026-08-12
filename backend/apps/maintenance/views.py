@@ -7,8 +7,9 @@ from apps.authentication.permissions import IsLandlordOrReadOnly
 from .models import MaintenanceRequest
 from .serializers import MaintenanceRequestSerializer, ResolveMaintenanceSerializer
 
-#  Add this import
+# ─── Imports for notifications and expenses ─────────────────────────────
 from apps.notifications.services import NotificationService
+from apps.billing.models import Expense, ExpenseCategory  # <-- new import
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class MaintenanceRequestViewSet(viewsets.ModelViewSet):
             if not active_lease:
                 raise serializers.ValidationError("You do not have an active lease to submit a maintenance request.")
             request_obj = serializer.save(tenant=tenant, unit=active_lease.unit)
-            # 🔔 Notify landlord (property owner)
+            # Notify landlord
             landlord = active_lease.unit.property.owner
             NotificationService._create(
                 user=landlord,
@@ -51,7 +52,7 @@ class MaintenanceRequestViewSet(viewsets.ModelViewSet):
                 related_id=request_obj.id,
                 related_type='maintenance',
             )
-            # Also notify tenant (confirmation)
+            # Notify tenant (confirmation)
             NotificationService._create(
                 user=user,
                 notif_type='maintenance_update',
@@ -63,7 +64,6 @@ class MaintenanceRequestViewSet(viewsets.ModelViewSet):
         else:
             # Landlords: tenant and unit must be in the validated data
             request_obj = serializer.save()
-            # Notify tenant that landlord created a request on their behalf
             tenant = request_obj.tenant
             if tenant:
                 NotificationService._create(
@@ -97,7 +97,22 @@ class MaintenanceRequestViewSet(viewsets.ModelViewSet):
         req.resolved_at = timezone.now()
         req.save()
 
-        # Notify tenant that the issue is resolved
+        # ─── Create an expense record if actual_cost is provided ────
+        actual_cost = resolver_serializer.validated_data.get('actual_cost')
+        if actual_cost and actual_cost > 0:
+            # Determine the property from the unit
+            property_obj = req.unit.property if req.unit else None
+            Expense.objects.create(
+                amount=actual_cost,
+                category=ExpenseCategory.MAINTENANCE,
+                description=f"Maintenance: {req.title} – {req.resolution_notes[:100]}",
+                expense_date=timezone.now().date(),
+                maintenance=req,
+                property=property_obj,
+                recorded_by=request.user,
+            )
+
+        # ─── Notify tenant that the issue is resolved ────────────────
         NotificationService._create(
             user=req.tenant.user,
             notif_type='maintenance_update',
