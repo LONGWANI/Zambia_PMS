@@ -1,21 +1,30 @@
 # apps/billing/serializers.py
 from rest_framework import serializers
 from .models import Payment, UtilityBill, UtilityAllocation
-from apps.tenants.models import Lease
+from apps.tenants.models import Lease, Tenant   # added Tenant
 
 
 class PaymentCreateSerializer(serializers.ModelSerializer):
     """
     Write-only serializer for recording a new payment.
-    Accepts lease, amount, payment method, reference, date, period, notes.
-    Does NOT include balance_before/after or status – those are set by the service.
+    Accepts tenant_id instead of lease; resolves the active lease automatically.
     """
+    tenant_id = serializers.PrimaryKeyRelatedField(
+        queryset=Tenant.objects.all(),
+        write_only=True,
+        help_text="ID of the tenant (their active lease will be used)."
+    )
 
     class Meta:
         model = Payment
         fields = [
-            'lease', 'amount', 'payment_method', 'reference_number',
-            'payment_date', 'period_month', 'notes'
+            'tenant_id',
+            'amount',
+            'payment_method',
+            'reference_number',
+            'payment_date',
+            'period_month',
+            'notes'
         ]
 
     def validate_amount(self, value):
@@ -23,12 +32,25 @@ class PaymentCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Payment amount must be positive.')
         return value
 
-    def validate_lease(self, value):
-        if value.status != 'active':
+    def validate(self, attrs):
+        # Resolve the active lease from the provided tenant
+        tenant = attrs.get('tenant_id')
+        if not tenant:
+            raise serializers.ValidationError({'tenant_id': 'Tenant is required.'})
+
+        lease = tenant.active_lease
+        if not lease:
             raise serializers.ValidationError(
-                'Cannot record payment for an inactive lease.'
+                {'tenant_id': 'This tenant has no active lease.'}
             )
-        return value
+        if lease.status != 'active':
+            raise serializers.ValidationError(
+                {'tenant_id': 'Tenant’s lease is not active.'}
+            )
+
+        # Inject the lease into validated_data for the view to use
+        attrs['lease'] = lease
+        return attrs
 
 
 class PaymentReadSerializer(serializers.ModelSerializer):

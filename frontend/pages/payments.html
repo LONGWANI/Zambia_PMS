@@ -11,13 +11,20 @@
         <p class="text-muted small mb-0" id="paymentsSubtext">Record, track, audit, and reconcile incoming rent payments</p>
     </div>
     <div class="d-flex gap-2 w-100 w-sm-auto">
-        <button class="btn btn-white border bg-white text-secondary fw-semibold d-flex align-items-center gap-2" onclick="exportLedger()">
+        <!-- Landlord actions -->
+        <button class="btn btn-white border bg-white text-secondary fw-semibold d-flex align-items-center gap-2" onclick="exportLedger()" id="exportBtn" style="display:none;">
             <i class="bi bi-download"></i> CSV Export
         </button>
-        <button class="btn-primary" onclick="openRecordPaymentModal()">
+        <button class="btn-primary" onclick="openRecordPaymentModal()" id="recordPaymentBtn" style="display:none;">
             <i class="bi bi-receipt me-2"></i> Record Payment
         </button>
     </div>
+</div>
+
+<!-- ─── Tenant Balance Card ─────────────────────────────────────────── -->
+<div id="tenantBalanceCard" style="display:none;" class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+    <span><i class="bi bi-wallet2 me-2"></i> <strong>Your outstanding balance:</strong></span>
+    <span class="fw-bold fs-5" id="tenantTotalBalance">ZMW 0.00</span>
 </div>
 
 <div class="saas-card p-0 overflow-hidden shadow-sm">
@@ -29,17 +36,18 @@
                     <input type="text" class="form-control border-start-0" placeholder="Search tenant name or reference number..." id="paymentSearch">
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-4" id="monthFilterContainer">
                 <input type="month" class="form-control" id="paymentMonthFilter">
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3" id="methodFilterContainer">
                 <select class="form-select" id="paymentMethodFilter">
                     <option value="all">All Methods</option>
+                    <option value="mobile_money">Mobile Money (MTN / Airtel)</option>
                     <option value="bank_transfer">Bank Transfer</option>
-                    <option value="airtel_money">Airtel Money</option>
-                    <option value="mtn_momo">MTN MoMo</option>
-                    <option value="cheque">Cheque</option>
                     <option value="cash">Cash</option>
+                    <option value="cheque">Cheque</option>
+                    <!-- 'sandbox_gateway' is also possible if any online payments -->
+                    <option value="sandbox_gateway">Online Sandbox Gateway</option>
                 </select>
             </div>
         </div>
@@ -73,12 +81,40 @@
 {% block extra_js %}
 <script src="{% static 'js/payments.js' %}"></script>
 <script>
-    // Allow admin, landlord, and tenant to view the ledger
     auth.protectRoute(['admin', 'landlord', 'tenant']);
 
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof render_payments === 'function') {
+    document.addEventListener('DOMContentLoaded', async () => {
+        const user = await auth.me();
+        const isLandlord = user && (user.role === 'landlord' || user.role === 'admin');
+
+        // Landlord-specific UI
+        const exportBtn = document.getElementById('exportBtn');
+        const recordBtn = document.getElementById('recordPaymentBtn');
+        const balanceCard = document.getElementById('tenantBalanceCard');
+        const methodFilter = document.getElementById('paymentMethodFilter');
+
+        if (isLandlord) {
+            exportBtn.style.display = 'inline-flex';
+            recordBtn.style.display = 'inline-flex';
+            if (balanceCard) balanceCard.style.display = 'none';
+            document.getElementById('monthFilterContainer').style.display = 'block';
+            document.getElementById('methodFilterContainer').style.display = 'block';
+
+            // ★ RESET method filter to "all" on load ★
+            if (methodFilter) methodFilter.value = 'all';
+        } else {
+            exportBtn.style.display = 'none';
+            recordBtn.style.display = 'none';
+            if (balanceCard) balanceCard.style.display = 'flex';
+            document.getElementById('monthFilterContainer').style.display = 'none';
+            document.getElementById('methodFilterContainer').style.display = 'none';
+        }
+
+        // Render the appropriate table
+        if (typeof render_payments === 'function' && isLandlord) {
             render_payments();
+        } else if (typeof renderTenantFinancials === 'function') {
+            renderTenantFinancials();
         }
     });
 </script>

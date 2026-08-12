@@ -1,6 +1,5 @@
 /**
  * ZambiaPMS – Central API Client
- * All fetch() calls go through this module.
  */
 
 class APIError extends Error {
@@ -13,10 +12,6 @@ class APIError extends Error {
 }
 
 const api = {
-    /**
-     * Core request wrapper. Automatically attaches Bearer token,
-     * handles token refresh on 401, and safely formats JSON or FormData payloads.
-     */
     async request(method, endpoint, data = null) {
         const token = auth.getAccessToken();
         const headers = {};
@@ -29,8 +24,6 @@ const api = {
 
         if (data !== null && data !== undefined) {
             if (data instanceof FormData) {
-                // Do NOT set Content-Type header so the browser automatically
-                // sets 'multipart/form-data' with the correct boundary.
                 config.body = data;
             } else {
                 headers['Content-Type'] = 'application/json';
@@ -41,7 +34,6 @@ const api = {
         try {
             let response = await fetch(`${window.API_BASE}${endpoint}`, config);
 
-            // Handle token expiration & automatic refresh
             if (response.status === 401) {
                 const refreshed = await auth.refreshToken();
                 if (refreshed) {
@@ -53,7 +45,6 @@ const api = {
                 }
             }
 
-            // Handle 204 No Content
             if (response.status === 204) {
                 return null;
             }
@@ -79,21 +70,14 @@ const api = {
     put:    (endpoint, data) => api.request('PUT',    endpoint, data),
     delete: (endpoint)       => api.request('DELETE', endpoint),
 
-    // ==========================================
-    // Authentication Module (NEW)
-    // ==========================================
     auth: {
         register: (data) => api.post('/auth/register/', data),
         login:    (data) => api.post('/auth/login/', data),
         refresh:  (data) => api.post('/auth/token/refresh/', data),
         logout:   (data) => api.post('/auth/logout/', data),
         me:       ()     => api.get('/auth/me/'),
-        update:   (data) => api.patch('/auth/me/', data), // for profile updates
+        update:   (data) => api.patch('/auth/me/', data),
     },
-
-    // ==========================================
-    // Core Modules
-    // ==========================================
 
     properties: {
         list:   (params = '') => api.get(`/properties/${params}`),
@@ -104,6 +88,8 @@ const api = {
     },
 
     units: {
+        // ✅ ADDED: generic list for all units (used by landlord dashboard)
+        list:           (params = '') => api.get(`/units/${params}`),
         listByProperty: (propId)     => api.get(`/properties/${propId}/units/`),
         assignTenant:   (unitId, d)  => api.post(`/units/${unitId}/assign-tenant/`, d),
         vacateTenant:   (unitId)     => api.post(`/units/${unitId}/vacate/`),
@@ -114,6 +100,7 @@ const api = {
         get:    (id)          => api.get(`/tenants/${id}/`),
         create: (d)           => api.post('/tenants/', d),
         update: (id, d)       => api.patch(`/tenants/${id}/`, d),
+        current: ()           => api.get('/tenants/current/'),
     },
 
     leases: {
@@ -151,6 +138,11 @@ const api = {
         createAndSplit: (d)           => api.post('/utility-bills/split/', d),
     },
 
+    // ✅ ADDED: utility object for tenant dashboard (allocations)
+    utility: {
+        allocations: () => api.get('/utility-allocations/'), // adjust endpoint if needed
+    },
+
     maintenance: {
         list:    (params = '') => api.get(`/maintenance/${params}`),
         get:     (id)          => api.get(`/maintenance/${id}/`),
@@ -178,8 +170,6 @@ const api = {
         delete: (id)          => api.delete(`/expenses/${id}/`),
     },
 
-    // The profile module is now deprecated – use api.auth.me and api.auth.update instead,
-    // but we keep it for backward compatibility.
     profile: {
         get:    ()         => api.get('/auth/me/'),
         update: (formData) => api.patch('/auth/me/', formData),

@@ -19,6 +19,9 @@ const auth = {
         try { return raw ? JSON.parse(raw) : null; } catch { return null; }
     },
 
+    // ─── Alias for getCurrentUser ──────────────────────────────────
+    me() { return this.getCurrentUser(); },
+
     isAuthenticated() { return !!this.getAccessToken(); },
 
     setTokens(access, refresh) {
@@ -101,23 +104,29 @@ const auth = {
         return true;
     },
 
-    // Role checks
+    // ─── Role checks ────────────────────────────────────────────────
     isAdmin()    { return this.getCurrentUser()?.role === 'admin'; },
     isLandlord() { const r = this.getCurrentUser()?.role; return r === 'landlord' || r === 'admin'; },
     isTenant()   { return this.getCurrentUser()?.role === 'tenant'; },
 
-    // UI role filtering — removes sidebar links the current role cannot access.
+    // ─── UI Filtering (shows/hides menu items by role) ─────────────
     enforceUI() {
-        const user        = this.getCurrentUser();
+        const user = this.getCurrentUser();
         const currentRole = user?.role?.toLowerCase() || 'guest';
 
+        // Show/hide sidebar links based on data-allowed-roles
         document.querySelectorAll('[data-allowed-roles]').forEach(el => {
             const allowed = el.getAttribute('data-allowed-roles').split(',');
-            if (!allowed.includes(currentRole)) el.remove();
+            if (allowed.includes(currentRole)) {
+                el.style.display = '';
+            } else {
+                el.style.display = 'none';
+            }
         });
+
+        this.populateSidebarUser();
     },
 
-    // Route protection — redirects to root if the current role isn't in allowedRoles.
     protectRoute(allowedRoles) {
         const user        = this.getCurrentUser();
         const currentRole = user?.role?.toLowerCase() || 'guest';

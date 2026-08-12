@@ -18,6 +18,7 @@ class TenantSerializer(serializers.ModelSerializer):
     property_name = serializers.SerializerMethodField()
     balance = serializers.SerializerMethodField()
     lease_status = serializers.SerializerMethodField()
+    monthly_rent = serializers.SerializerMethodField()   # new
 
     class Meta:
         model = Tenant
@@ -25,7 +26,7 @@ class TenantSerializer(serializers.ModelSerializer):
             'id', 'user_id', 'full_name', 'email', 'phone', 'nrc_number',
             'emergency_contact', 'emergency_phone', 'emergency_relation',
             'employer_name', 'employer_phone',
-            'unit', 'property_name', 'balance', 'lease_status',
+            'unit', 'property_name', 'balance', 'lease_status', 'monthly_rent',
             'notes', 'created_at'
         ]
         read_only_fields = ['id', 'created_at']
@@ -46,6 +47,10 @@ class TenantSerializer(serializers.ModelSerializer):
         lease = obj.active_lease
         return lease.status if lease else None
 
+    def get_monthly_rent(self, obj):
+        lease = obj.active_lease
+        return str(lease.monthly_rent) if lease else '0.00'
+
 
 class TenantCreateSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -63,6 +68,7 @@ class TenantCreateSerializer(serializers.Serializer):
 
     property_id = serializers.CharField(required=False, allow_null=True, allow_blank=True)
     unit_number = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    monthly_rent = serializers.DecimalField(max_digits=12, decimal_places=2, required=False, allow_null=True)
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
@@ -75,6 +81,7 @@ class TenantCreateSerializer(serializers.Serializer):
 
         property_id = attrs.get('property_id')
         unit_number = attrs.get('unit_number', '').strip()
+        monthly_rent = attrs.get('monthly_rent')
 
         if property_id and unit_number:
             try:
@@ -107,10 +114,20 @@ class TenantCreateSerializer(serializers.Serializer):
 
             attrs['unit'] = unit
 
+            # If monthly_rent not provided, use unit's rent_amount
+            if monthly_rent is None:
+                attrs['monthly_rent'] = unit.rent_amount
+            else:
+                # validate positive
+                if monthly_rent <= 0:
+                    raise serializers.ValidationError("Monthly rent must be positive.")
+                attrs['monthly_rent'] = monthly_rent
+
         return attrs
 
     def create(self, validated_data):
         unit = validated_data.pop('unit', None)
+        monthly_rent = validated_data.pop('monthly_rent', 0)
 
         user_data = {
             'email': validated_data['email'],
@@ -144,10 +161,10 @@ class TenantCreateSerializer(serializers.Serializer):
                 unit=unit,
                 start_date=date.today(),
                 end_date=None,
-                monthly_rent=unit.rent_amount,
+                monthly_rent=monthly_rent,   # use provided or unit's rent
                 deposit_amount=0,
-                status='active',          # ← changed from 'pending'
-                balance_due=unit.rent_amount,
+                status='active',
+                balance_due=monthly_rent,
                 payment_frequency='Monthly',
             )
 

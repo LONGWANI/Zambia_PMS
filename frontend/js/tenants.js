@@ -53,26 +53,21 @@ function applyTenantFilters() {
     const statusFilter = document.getElementById('tenantStatusFilter')?.value || 'all';
 
     const filtered = tenantsCache.filter(t => {
-        // 1) Match search query (name, email, phone, NRC)
         const matchesQuery = !query ||
             (t.full_name && t.full_name.toLowerCase().includes(query)) ||
             (t.email && t.email.toLowerCase().includes(query)) ||
             (t.phone && t.phone.includes(query)) ||
             (t.nrc_number && t.nrc_number.toLowerCase().includes(query));
 
-        // 2) Match status filter
         let matchesStatus = true;
         if (statusFilter !== 'all' && statusFilter !== '') {
             const leaseStatus = (t.lease_status || 'No Lease').toLowerCase();
             if (statusFilter === 'active') {
-                // "Current (No Balance)" – shows tenants with an active lease
                 matchesStatus = leaseStatus === 'active';
             } else if (statusFilter === 'arrears') {
-                // "In Arrears" – balance > 0 (assuming positive balance means overdue)
                 const balance = parseFloat(t.balance) || 0;
                 matchesStatus = balance > 0;
             } else {
-                // fallback – treat other values as exact match on lease_status
                 matchesStatus = leaseStatus === statusFilter.toLowerCase();
             }
         }
@@ -193,18 +188,25 @@ function openOnboardTenantModal() {
                     </div>
                 </div>
                 <div class="row g-2 mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label small fw-medium">Assigned Property</label>
                         <select id="modalTenantProperty" class="form-select" required>
                             <option value="">Select Property...</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label small fw-medium">Available Unit</label>
                         <select id="modalTenantUnit" class="form-select" required>
                             <option value="">Select Unit...</option>
                         </select>
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-medium">Monthly Rent (ZMW)</label>
+                        <input type="number" step="0.01" id="modalMonthlyRent" class="form-control" placeholder="Auto from unit">
+                    </div>
+                </div>
+                <div class="text-muted small mt-2">
+                    <i class="bi bi-info-circle"></i> If rent is left empty, the unit's default rent will be used.
                 </div>
             </form>
         </div>
@@ -246,10 +248,12 @@ async function loadPropertiesForTenantModal() {
 
 async function loadUnitsForProperty(propertyId) {
     const unitSelect = document.getElementById('modalTenantUnit');
+    const rentInput = document.getElementById('modalMonthlyRent');
     if (!unitSelect) return;
 
     if (!propertyId) {
         unitSelect.innerHTML = '<option value="">Select Unit...</option>';
+        if (rentInput) rentInput.value = '';
         return;
     }
 
@@ -264,33 +268,39 @@ async function loadUnitsForProperty(propertyId) {
 
         if (available.length === 0) {
             unitSelect.innerHTML = '<option value="">No available units in this property</option>';
+            if (rentInput) rentInput.value = '';
         } else {
-            unitSelect.innerHTML = available.map(u => 
-                `<option value="${u.unit_number}">${u.unit_number}</option>`
-            ).join('');
+            unitSelect.innerHTML = available.map(u => {
+                const rent = u.rent_amount || u.monthly_rent || 0;
+                return `<option value="${u.unit_number}" data-rent="${rent}">${u.unit_number} (ZMW ${rent})</option>`;
+            }).join('');
+            // Auto-fill rent when unit changes
+            unitSelect.addEventListener('change', function() {
+                const selected = this.options[this.selectedIndex];
+                const rent = selected?.getAttribute('data-rent') || '';
+                if (rentInput) rentInput.value = rent;
+            });
+            // Trigger change to fill first unit's rent
+            unitSelect.dispatchEvent(new Event('change'));
         }
     } catch (err) {
         console.error('Failed to load units:', err);
         unitSelect.innerHTML = '<option value="">Error loading units</option>';
+        if (rentInput) rentInput.value = '';
         toast('Could not load units for this property.', 'err');
     }
 }
 
 async function submitOnboardTenant() {
-    console.log('🚀 Starting submitOnboardTenant...');
-
     const form = document.getElementById('tenantForm');
     if (form && !form.checkValidity()) {
         form.reportValidity();
-        console.log('❌ Form validation failed.');
         return;
     }
 
     const password = document.getElementById('modalTenantPassword').value;
     if (password.length < 8) {
-        const msg = 'Password must be at least 8 characters.';
-        console.warn('⚠️ ' + msg);
-        showError(msg);
+        showError('Password must be at least 8 characters.');
         return;
     }
 
@@ -298,18 +308,15 @@ async function submitOnboardTenant() {
     const unitNumber = document.getElementById('modalTenantUnit').value.trim();
 
     if (!propertyId) {
-        const msg = 'Please select a property.';
-        console.warn('⚠️ ' + msg);
-        showError(msg);
+        showError('Please select a property.');
         return;
     }
     if (!unitNumber) {
-        const msg = 'Please select a unit.';
-        console.warn('⚠️ ' + msg);
-        showError(msg);
+        showError('Please select a unit.');
         return;
     }
 
+    const monthlyRent = document.getElementById('modalMonthlyRent').value;
     const payload = {
         first_name: document.getElementById('modalTenantFirstName').value.trim(),
         last_name: document.getElementById('modalTenantLastName').value.trim(),
@@ -324,21 +331,17 @@ async function submitOnboardTenant() {
         unit_number: unitNumber,
     };
 
-    console.log('📦 Payload being sent:', JSON.stringify(payload, null, 2));
+    if (monthlyRent && !isNaN(parseFloat(monthlyRent)) && parseFloat(monthlyRent) > 0) {
+        payload.monthly_rent = parseFloat(monthlyRent);
+    }
 
     try {
-        console.log('⏳ Calling api.tenants.create...');
-        const result = await api.tenants.create(payload);
-        console.log('✅ API response:', result);
+        await api.tenants.create(payload);
         closeModal();
         showSuccess('Tenant onboarded successfully.');
         await render_tenants();
     } catch (err) {
-        console.error('❌ Error caught in submitOnboardTenant:', err);
-        console.error('Full error object:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
-
         let errorMsg = err.message || 'Onboarding failed.';
-
         if (err.response && err.response.data) {
             const data = err.response.data;
             if (data.details) {
@@ -346,13 +349,9 @@ async function submitOnboardTenant() {
                     .filter(([key]) => key !== 'non_field_errors')
                     .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(' ') : msgs}`)
                     .join('\n');
-                if (fieldErrors) {
-                    errorMsg = fieldErrors;
-                } else if (data.details.non_field_errors) {
-                    errorMsg = data.details.non_field_errors.join(' ');
-                } else {
-                    errorMsg = data.message || data.detail || errorMsg;
-                }
+                if (fieldErrors) errorMsg = fieldErrors;
+                else if (data.details.non_field_errors) errorMsg = data.details.non_field_errors.join(' ');
+                else errorMsg = data.message || data.detail || errorMsg;
             } else if (data.message) {
                 errorMsg = data.message;
             } else if (data.detail) {
@@ -364,46 +363,29 @@ async function submitOnboardTenant() {
                     .filter(([key]) => key !== 'detail' && key !== 'message')
                     .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(' ') : msgs}`)
                     .join('\n');
-                if (fieldErrors) {
-                    errorMsg = fieldErrors;
-                } else if (err.data.detail) {
-                    errorMsg = err.data.detail;
-                } else if (err.data.message) {
-                    errorMsg = err.data.message;
-                }
+                if (fieldErrors) errorMsg = fieldErrors;
+                else if (err.data.detail) errorMsg = err.data.detail;
+                else if (err.data.message) errorMsg = err.data.message;
             } else {
                 errorMsg = err.data;
             }
         }
-
         showError(`Onboarding failed:\n${errorMsg}`);
     }
 }
 
-// ─── Helper functions to show errors safely ────────────────────────────────
-
 function showError(message) {
     try {
-        if (typeof toast === 'function') {
-            toast(message, 'err');
-        } else {
-            alert(message);
-        }
-    } catch (e) {
-        alert(message);
-    }
+        if (typeof toast === 'function') toast(message, 'err');
+        else alert(message);
+    } catch (e) { alert(message); }
 }
 
 function showSuccess(message) {
     try {
-        if (typeof toast === 'function') {
-            toast(message, 'ok');
-        } else {
-            alert(message);
-        }
-    } catch (e) {
-        alert(message);
-    }
+        if (typeof toast === 'function') toast(message, 'ok');
+        else alert(message);
+    } catch (e) { alert(message); }
 }
 
 // ─── Multi-Unit Assignment Modal ─────────────────────────────────────────────

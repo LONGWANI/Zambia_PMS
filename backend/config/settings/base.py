@@ -143,14 +143,14 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ),
     'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',   
-        'rest_framework.throttling.UserRateThrottle',   
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/hour',      
-        'user': '100/hour',     
-    },
+    #'DEFAULT_THROTTLE_CLASSES': [
+    #    'rest_framework.throttling.AnonRateThrottle',   
+    #    'rest_framework.throttling.UserRateThrottle',   
+    #],
+    #'DEFAULT_THROTTLE_RATES': {
+    #    'anon': '10/hour',      
+    #    'user': '100/hour',     
+    #},
 }
 
 # ---------- JWT Settings ----------

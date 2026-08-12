@@ -171,6 +171,11 @@
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Ensure the chart canvas exists before calling render
+        const chartCanvas = document.getElementById('revenueChart');
+        if (!chartCanvas) {
+            console.warn('Chart canvas not found – dashboard may not render correctly.');
+        }
         if (typeof render_dashboard === 'function') {
             render_dashboard();
         }

@@ -1,37 +1,35 @@
 /**
  * ZambiaPMS – Analytics & Reports
- *
- * FIX: The previous version called document.getElementById('reportTitle') and
- * document.getElementById('reportContent') but the HTML had:
- *   • id="renderedReportTitle"  (wrong name)
- *   • No element with id="reportContent" at all
- * Both are now corrected in reports.html so the IDs below resolve correctly.
+ * Fully dynamic: fetches live data from the API and renders charts/tables.
  */
 
 let activeChart = null;
 
-// ─── Page init ────────────────────────────────────────────────────────────────
+// ─── Safe array extractor (mirrors dashboard.js) ──────────────────────────
+function safeExtract(response) {
+    if (!response) return [];
+    if (Array.isArray(response)) return response;
+    if (response.results && Array.isArray(response.results)) return response.results;
+    if (response.data && Array.isArray(response.data)) return response.data;
+    return [];
+}
+
+// ─── Page init ──────────────────────────────────────────────────────────────
 
 async function render_reports() {
-    // Hide the output panel on initial load; it shows once a report is generated.
     const panel = document.getElementById('reportRenderArea');
     if (panel) panel.classList.add('d-none');
 }
 
-// ─── Report generator ─────────────────────────────────────────────────────────
+// ─── Report generator ──────────────────────────────────────────────────────
 
-/**
- * Fetches data for the requested report type and renders it into #reportContent.
- * @param {'financial'|'arrears'|'occupancy'} reportType
- */
 async function generateReport(reportType) {
-    const panel       = document.getElementById('reportRenderArea');
-    const titleEl     = document.getElementById('reportTitle');
-    const contentEl   = document.getElementById('reportContent');
+    const panel     = document.getElementById('reportRenderArea');
+    const titleEl   = document.getElementById('reportTitle');
+    const contentEl = document.getElementById('reportContent');
 
     if (!panel || !contentEl) return;
 
-    // Reveal the panel and show a loading state.
     panel.classList.remove('d-none');
     contentEl.innerHTML = `
         <div class="text-center py-5 text-muted">
@@ -39,13 +37,11 @@ async function generateReport(reportType) {
             Generating report...
         </div>`;
 
-    // Destroy any previous Chart.js instance to avoid canvas re-use errors.
     if (activeChart) {
         activeChart.destroy();
         activeChart = null;
     }
 
-    // Scroll the panel into view smoothly.
     panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     try {
@@ -65,13 +61,50 @@ async function generateReport(reportType) {
     }
 }
 
-// ─── Financial report ─────────────────────────────────────────────────────────
+// ─── Financial Report ──────────────────────────────────────────────────────
 
 async function renderFinancialReport(titleEl, contentEl) {
-    if (titleEl) titleEl.textContent = 'Financial Performance Statement — 6-Month Range';
+    if (titleEl) titleEl.textContent = 'Financial Performance — 6-Month Rolling';
 
-    const data    = await api.reports.financial('?months=6');
-    const summary = data.monthly_summary || [];
+    let data;
+    try {
+        data = await api.reports.financial('?months=6');
+    } catch {
+        data = { monthly_summary: [] };
+    }
+
+    let summary = data.monthly_summary || [];
+
+    if (summary.length === 0) {
+        const payments = safeExtract(await api.payments.list());
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        const monthMap = {};
+        for (let i = 5; i >= 0; i--) {
+            const m = new Date(currentYear, currentMonth - i, 1);
+            const label = m.toLocaleString('default', { month: 'short', year: 'numeric' });
+            monthMap[label] = { month: label, total_revenue: 0, total_expenses: 0 };
+        }
+
+        payments.forEach(p => {
+            if (p.status !== 'confirmed') return;
+            const d = new Date(p.payment_date);
+            const label = d.toLocaleString('default', { month: 'short', year: 'numeric' });
+            if (monthMap[label]) {
+                monthMap[label].total_revenue += parseFloat(p.amount || 0);
+            }
+        });
+
+        summary = Object.values(monthMap);
+        summary.sort((a, b) => new Date(a.month) - new Date(b.month));
+    }
+
+    summary = summary.map(row => ({
+        ...row,
+        net_profit: row.net_profit ?? row.total_revenue - (row.total_expenses || 0)
+    }));
 
     contentEl.innerHTML = `
         <div class="mb-4" style="height: 260px; position: relative;">
@@ -88,21 +121,23 @@ async function renderFinancialReport(titleEl, contentEl) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${summary.map(row => `
+                    ${summary.length ? summary.map(row => `
                         <tr>
                             <td class="fw-medium text-slate-900">${row.month}</td>
                             <td class="font-monospace text-success fw-medium">+${zmw(row.total_revenue)}</td>
                             <td class="font-monospace text-danger">-${zmw(row.total_expenses || 0)}</td>
                             <td class="font-monospace fw-semibold text-slate-900">
-                                ${zmw(row.net_profit ?? row.total_revenue)}
+                                ${zmw(row.net_profit)}
                             </td>
-                        </tr>`).join('')}
+                        </tr>`).join('') : `
+                        <tr><td colspan="4" class="text-center text-muted py-3">No financial data available</td></tr>
+                    `}
                 </tbody>
             </table>
         </div>`;
 
     const ctx = document.getElementById('analyticsReportChart')?.getContext('2d');
-    if (ctx) {
+    if (ctx && summary.length) {
         activeChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -130,12 +165,18 @@ async function renderFinancialReport(titleEl, contentEl) {
     }
 }
 
-// ─── Arrears report ───────────────────────────────────────────────────────────
+// ─── Arrears Report ────────────────────────────────────────────────────────
 
 async function renderArrearsReport(titleEl, contentEl) {
     if (titleEl) titleEl.textContent = 'Aged Arrears Ledger';
 
-    const data    = await api.reports.arrears();
+    let data;
+    try {
+        data = await api.reports.arrears();
+    } catch {
+        data = { arrears_list: [] };
+    }
+
     const arrears = data.arrears_list || [];
 
     if (arrears.length === 0) {
@@ -166,7 +207,7 @@ async function renderArrearsReport(titleEl, contentEl) {
                             <td class="fw-semibold text-slate-900">${r.tenant_name}</td>
                             <td>${r.property_name || '—'} / Unit ${r.unit_number || '—'}</td>
                             <td class="font-monospace fw-bold text-danger">${zmw(r.balance_due)}</td>
-                            <td class="fw-medium text-slate-700">${r.days_overdue} days</td>
+                            <td class="fw-medium text-slate-700">${r.days_overdue ?? '—'} days</td>
                             <td>${statusBadge('arrears')}</td>
                         </tr>`).join('')}
                 </tbody>
@@ -174,17 +215,23 @@ async function renderArrearsReport(titleEl, contentEl) {
         </div>`;
 }
 
-// ─── Occupancy report ─────────────────────────────────────────────────────────
+// ─── Occupancy Report ──────────────────────────────────────────────────────
 
 async function renderOccupancyReport(titleEl, contentEl) {
     if (titleEl) titleEl.textContent = 'Portfolio Occupancy Distribution';
 
-    const data     = await api.reports.dashboard();
+    let data;
+    try {
+        data = await api.reports.dashboard();
+    } catch {
+        data = { portfolio: {} };
+    }
+
     const portfolio = data.portfolio || {};
-    const total    = parseInt(portfolio.total_units)    || 0;
-    const occupied = parseInt(portfolio.occupied_units) || 0;
-    const vacant   = total - occupied;
-    const rate     = total > 0 ? Math.round((occupied / total) * 100) : 0;
+    const total     = parseInt(portfolio.total_units)    || 0;
+    const occupied  = parseInt(portfolio.occupied_units) || 0;
+    const vacant    = total - occupied;
+    const rate      = total > 0 ? Math.round((occupied / total) * 100) : 0;
 
     contentEl.innerHTML = `
         <div class="row align-items-center py-3 g-4">
@@ -223,6 +270,12 @@ async function renderOccupancyReport(titleEl, contentEl) {
         </div>`;
 }
 
-// ─── Exports ─────────────────────────────────────────────────────────────────
+function statusBadge(type) {
+    if (type === 'arrears') {
+        return `<span class="badge bg-danger">Overdue</span>`;
+    }
+    return `<span class="badge bg-secondary">—</span>`;
+}
+
 window.render_reports   = render_reports;
 window.generateReport   = generateReport;

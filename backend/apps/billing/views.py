@@ -4,6 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from decimal import Decimal
 from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
+
 from apps.authentication.permissions import IsLandlord, IsTenant
 from .models import Payment, UtilityBill, PaymentMethod
 from .serializers import (PaymentCreateSerializer, PaymentReadSerializer,
@@ -11,24 +13,26 @@ from .serializers import (PaymentCreateSerializer, PaymentReadSerializer,
 from .services import PaymentService, UtilityBillService
 from apps.tenants.models import Tenant
 
+# 👇 Add this import
+from apps.notifications.services import NotificationService
+
 
 class PaymentViewSet(viewsets.ModelViewSet):
-    """
-    GET    /api/payments/            → all payments (landlord sees all, tenant sees own)
-    POST   /api/payments/            → record a new payment
-    GET    /api/payments/{id}/       → payment detail
-    GET    /api/payments/{id}/receipt/ → generate receipt JSON
-    POST   /api/payments/process_online_payment/ → tenant online payment (sandbox)
-    """
-    filter_backends  = ['django_filters.rest_framework.DjangoFilterBackend']
+    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status', 'payment_method', 'payment_date']
 
+    def get_permissions(self):
+        if self.action == 'list':
+            return [permissions.IsAuthenticated()]
+        if self.action == 'process_online_payment':
+            return [permissions.IsAuthenticated()]
+        if self.action == 'receipt':
+            return [permissions.IsAuthenticated()]
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsLandlord()]
+        return [IsLandlord()]
+
     def get_serializer_class(self):
-        """
-        WHY: read and write serializers have different fields.
-        DRF calls get_serializer_class() before every action —
-        this switch is the standard DRF pattern.
-        """
         if self.action in ['create', 'update', 'partial_update']:
             return PaymentCreateSerializer
         return PaymentReadSerializer
@@ -46,10 +50,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
         return qs.filter(lease__tenant__user=user)
 
     def create(self, request, *args, **kwargs):
-        """
-        Delegates ALL business logic to PaymentService.
-        The view only handles HTTP: parse → validate → service → respond.
-        """
         serializer = PaymentCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -63,6 +63,16 @@ class PaymentViewSet(viewsets.ModelViewSet):
             notes        = serializer.validated_data.get('notes', ''),
             recorded_by  = request.user,
         )
+
+        # 🔔 Trigger notification for the tenant
+        try:
+            NotificationService.notify_payment_received(payment)
+        except Exception as e:
+            # Log the error but don't break the response
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to send payment notification: {e}")
+
         return Response(
             PaymentReadSerializer(payment).data,
             status=status.HTTP_201_CREATED
@@ -70,28 +80,26 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def receipt(self, request, pk=None):
-        """GET /api/payments/{id}/receipt/  — returns receipt-formatted data"""
         payment = self.get_object()
+        user = request.user
+        if not (user.is_admin or user.is_landlord or payment.lease.tenant.user == user):
+            return Response(
+                {'detail': 'You do not have permission to view this receipt.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
         return Response(PaymentService.generate_receipt(payment))
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def process_online_payment(self, request):
-        """
-        POST /api/payments/process_online_payment/
-        Expects: amount, provider, account_number (optional), reference_number (optional)
-        For tenants only.
-        """
         user = request.user
         if not user.is_tenant:
             return Response({'error': 'Only tenants can make online payments.'}, status=status.HTTP_403_FORBIDDEN)
 
-        # Get tenant profile
         try:
             tenant = user.tenant_profile
         except Tenant.DoesNotExist:
             return Response({'error': 'Tenant profile not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Get active lease
         lease = tenant.active_lease
         if not lease:
             return Response({'error': 'No active lease found for this tenant.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -107,7 +115,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
         if amount <= 0:
             return Response({'error': 'Amount must be greater than zero.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Use sandbox_gateway as the method
         method = 'sandbox_gateway'
         reference = request.data.get('reference_number', f'ONLINE-{timezone.now().strftime("%Y%m%d%H%M%S")}')
         payment_date = timezone.now().date()
@@ -124,6 +131,14 @@ class PaymentViewSet(viewsets.ModelViewSet):
             recorded_by=user,
         )
 
+        # 🔔 Trigger notification for online payment
+        try:
+            NotificationService.notify_payment_received(payment)
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to send online payment notification: {e}")
+
         receipt_data = PaymentService.generate_receipt(payment)
         return Response({
             'message': 'Payment processed successfully.',
@@ -133,12 +148,9 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
 
 class UtilityBillViewSet(viewsets.ModelViewSet):
-    """
-    POST /api/utility-bills/             → create bill
-    POST /api/utility-bills/{id}/split/  → run auto-split algorithm
-    """
     serializer_class   = UtilityBillSerializer
     permission_classes = [IsLandlord]
+    filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
         user = self.request.user
@@ -151,11 +163,6 @@ class UtilityBillViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def split(self, request, pk=None):
-        """
-        POST /api/utility-bills/{id}/split/
-        Triggers the utility bill auto-split algorithm.
-        Returns the allocation breakdown.
-        """
         bill        = self.get_object()
         allocations = UtilityBillService.split_bill(bill)
         return Response({

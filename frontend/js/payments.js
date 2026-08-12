@@ -3,6 +3,7 @@
  */
 
 let paymentsCache = [];
+let currentUserRole = '';
 
 // ─── Landlord Ledger View ─────────────────────────────────────────────────────
 
@@ -37,69 +38,125 @@ async function render_payments() {
     }
 }
 
-// ─── Tenant Financial View & Payment Table ─────────────────────────────────────
+// ─── Tenant Financial View ─────────────────────────────────────────────────────
 
 async function renderTenantFinancials() {
     showLoader('paymentTableBody', 6);
     try {
-        const response = await api.payments.list();
-        const payments = response.results || response || [];
+        // 1) Get tenant profile
+        let tenantProfile;
+        try {
+            tenantProfile = await api.tenants.current();
+        } catch (err) {
+            toast(`Could not load tenant profile: ${err.message}`, 'err');
+            // Fallback: use empty profile
+            tenantProfile = { balance: '0.00', full_name: 'You', property_name: 'N/A', unit: 'N/A' };
+        }
+
+        const balance = parseFloat(tenantProfile.balance) || 0;
+        const fullName = tenantProfile.full_name || 'You';
+        const propertyName = tenantProfile.property_name || 'N/A';
+        const unitNumber = tenantProfile.unit || 'N/A';
+
+        // Update balance card
+        const balanceEl = document.getElementById('tenantTotalBalance');
+        if (balanceEl) balanceEl.textContent = zmw(balance);
+
+        // 2) Get payment history (might fail if permissions not set)
+        let payments = [];
+        try {
+            const response = await api.payments.list();
+            payments = response.results || response || [];
+        } catch (err) {
+            console.warn('Could not load payment history:', err);
+            // Continue – we'll show the balance row anyway
+        }
 
         const tbody = document.getElementById('paymentTableBody');
         if (!tbody) return;
 
-        let totalDue = 0;
         let html = '';
 
-        payments.forEach(p => {
-            const isPending = (p.status || '').toLowerCase() === 'pending';
-            const amountVal = parseFloat(p.amount) || 0;
-            if (isPending) totalDue += amountVal;
+        // ─── Always show a payment row with a Pay Now button ────
+        const rowClass = balance > 0 ? 'table-warning' : 'table-success';
+        const statusText = balance > 0 ? 'Outstanding' : 'All Clear';
+        const btnClass = balance > 0 ? 'btn-primary' : 'btn-outline-primary';
+        const btnText = balance > 0 ? 'Pay Now' : 'Pay in Advance';
+        const amountToPay = balance > 0 ? balance : 0; // 0 will trigger custom amount prompt
 
-            const chargeType = (p.charge_type || p.payment_method || 'RENT').toUpperCase();
-            const refNum = p.reference_number || p.reference || `REF-${p.id}`;
-            const statusStr = (p.status || 'completed').toLowerCase();
-            const receiptLink = p.receipt_pdf || p.receipt_url || '#';
+        html += `
+            <tr class="${rowClass}">
+                <td class="fw-semibold">${fullName}</td>
+                <td>${propertyName} <span class="badge bg-light text-dark font-monospace">${unitNumber}</span></td>
+                <td class="font-monospace fw-bold ${balance > 0 ? 'text-danger' : 'text-success'}">${zmw(balance)}</td>
+                <td><span class="badge ${balance > 0 ? 'bg-warning-subtle text-warning border border-warning' : 'bg-success-subtle text-success border border-success'}">${statusText}</span></td>
+                <td>—</td>
+                <td>
+                    <button class="btn btn-sm ${btnClass} py-1 px-3 shadow-sm" onclick="openPaymentGatewayModal('BAL-${Date.now()}', ${amountToPay}, 'Rent')">
+                        <i class="bi bi-credit-card me-1"></i> ${btnText}
+                    </button>
+                </td>
+            </tr>
+        `;
 
-            html += `
-                <tr>
-                    <td class="fw-semibold font-monospace">${refNum}</td>
-                    <td><span class="badge bg-light text-dark border">${chargeType}</span></td>
-                    <td class="font-monospace fw-bold">${zmw(amountVal)}</td>
-                    <td>${p.due_date || p.payment_date || 'N/A'}</td>
-                    <td>
-                        <span class="badge ${statusStr === 'completed' || statusStr === 'paid' ? 'bg-success-subtle text-success border border-success' : 'bg-warning-subtle text-warning border border-warning'}">
-                            ${statusStr.toUpperCase()}
-                        </span>
-                    </td>
-                    <td>
-                        ${isPending ? 
-                            `<button class="btn btn-sm btn-primary py-1 px-3 shadow-sm" onclick="openPaymentGatewayModal('${refNum}', ${amountVal}, '${chargeType}')">
-                                <i class="bi bi-credit-card me-1"></i> Pay Now
-                            </button>` : 
-                            `<a href="${receiptLink}" class="btn btn-sm btn-outline-secondary py-1" download>
-                                <i class="bi bi-file-earmark-pdf me-1"></i> Receipt
-                            </a>`
-                        }
-                    </td>
-                </tr>
-            `;
-        });
+        // ─── Payment history rows ──────────────────────────────────
+        if (payments.length > 0) {
+            payments.forEach(p => {
+                const isPending = (p.status || '').toLowerCase() === 'pending';
+                const amountVal = parseFloat(p.amount) || 0;
+                const refNum = p.reference_number || p.reference || `REF-${p.id}`;
+                const statusStr = (p.status || 'completed').toLowerCase();
+                const receiptLink = p.receipt_pdf || p.receipt_url || '#';
 
-        tbody.innerHTML = html || '<tr><td colspan="6" class="text-center py-4 text-muted">No financial records found.</td></tr>';
+                html += `
+                    <tr>
+                        <td class="fw-medium">${p.tenant_name || 'N/A'}</td>
+                        <td>${p.property_name || 'N/A'} ${p.unit_number ? `<span class="badge bg-light text-dark font-monospace">${p.unit_number}</span>` : ''}</td>
+                        <td class="font-monospace fw-bold">${zmw(amountVal)}</td>
+                        <td><span class="badge bg-light text-dark border">${p.payment_method || 'N/A'}</span></td>
+                        <td class="font-monospace text-muted small">${refNum}</td>
+                        <td>
+                            ${isPending ? 
+                                `<button class="btn btn-sm btn-primary py-1 px-3 shadow-sm" onclick="openPaymentGatewayModal('${refNum}', ${amountVal}, '${p.charge_type || 'Rent'}')">
+                                    <i class="bi bi-credit-card me-1"></i> Pay Now
+                                </button>` : 
+                                `<a href="${receiptLink}" class="btn btn-sm btn-outline-secondary py-1" download>
+                                    <i class="bi bi-file-earmark-pdf me-1"></i> Receipt
+                                </a>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+        }
 
-        // Update KPI summary balance
-        const balanceEl = document.getElementById('tenantTotalBalance');
-        if (balanceEl) balanceEl.textContent = zmw(totalDue);
+        tbody.innerHTML = html;
 
     } catch (err) {
         toast(`Error loading financials: ${err.message}`, 'err');
+        const tbody = document.getElementById('paymentTableBody');
+        if (tbody) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">${err.message}</td></tr>`;
+        }
     }
 }
 
 // ─── Sandbox Payment Gateway Modal ──────────────────────────────────────────
 
 function openPaymentGatewayModal(refNumber, amount, chargeType) {
+    // If amount is 0, prompt for custom amount
+    let finalAmount = amount;
+    if (amount === 0) {
+        const customAmount = prompt('Enter the amount you wish to pay (ZMW):', '100.00');
+        if (!customAmount) return;
+        const parsed = parseFloat(customAmount);
+        if (isNaN(parsed) || parsed <= 0) {
+            toast('Please enter a valid amount.', 'warn');
+            return;
+        }
+        finalAmount = parsed;
+    }
+
     const html = `
         <div class="modal-header border-0 pb-0">
             <h5 class="fw-bold"><i class="bi bi-shield-check text-success me-2"></i>Online Payment Gateway (Sandbox)</h5>
@@ -115,7 +172,7 @@ function openPaymentGatewayModal(refNumber, amount, chargeType) {
             </div>
             <div class="mb-3">
                 <label class="form-label text-muted small fw-medium">Total Payable Amount</label>
-                <input type="text" class="form-control font-monospace fw-bold text-success fs-5 bg-light" value="${zmw(amount)}" readonly>
+                <input type="text" class="form-control font-monospace fw-bold text-success fs-5 bg-light" value="${zmw(finalAmount)}" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-medium">Select Sandbox Provider</label>
@@ -133,7 +190,7 @@ function openPaymentGatewayModal(refNumber, amount, chargeType) {
         </div>
         <div class="modal-footer border-0 pt-0">
             <button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button>
-            <button type="button" class="btn btn-success px-4" onclick="executeSandboxPayment('${refNumber}', ${amount})">
+            <button type="button" class="btn btn-success px-4" onclick="executeSandboxPayment('${refNumber}', ${finalAmount})">
                 <i class="bi bi-check-circle me-1"></i> Confirm Payment
             </button>
         </div>
@@ -148,7 +205,6 @@ async function executeSandboxPayment(refNumber, amount) {
 
         showLoader('modalWrap');
 
-        // Call the new online payment endpoint
         const response = await api.payments.processOnline({
             amount: amount,
             provider: provider,
@@ -159,12 +215,11 @@ async function executeSandboxPayment(refNumber, amount) {
         closeModal();
         toast('Payment processed successfully!', 'ok');
 
-        // Display receipt popup
         if (response.receipt) {
             showReceiptPopup(response.receipt);
         }
 
-        // Refresh the financials
+        // Refresh the financials (tenant view)
         if (typeof renderTenantFinancials === 'function') {
             await renderTenantFinancials();
         } else {
@@ -243,7 +298,7 @@ function showReceiptPopup(receipt) {
     openModal(html);
 }
 
-// ─── Manual Payment Recording ────────────────────────────────────────────────
+// ─── Manual Payment Recording (Landlord only) ──────────────────────────────
 
 function openRecordPaymentModal() {
     const html = `
@@ -266,11 +321,10 @@ function openRecordPaymentModal() {
                 <div class="mb-3">
                     <label class="form-label small fw-medium">Payment Method</label>
                     <select id="modalPayMethod" class="form-select" required>
-                        <option value="MTN MoMo">MTN Mobile Money</option>
-                        <option value="Airtel Money">Airtel Money</option>
-                        <option value="Zamtel Kwacha">Zamtel Kwacha</option>
-                        <option value="Bank Transfer">Bank Transfer</option>
-                        <option value="Cash">Cash</option>
+                        <option value="mobile_money">Mobile Money (MTN / Airtel)</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="cash">Cash</option>
+                        <option value="cheque">Cheque</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -313,13 +367,18 @@ async function submitRecordPayment() {
         return;
     }
 
+    const paymentDate = document.getElementById('modalPayDate').value;
+    // Compute period_month as first day of the payment month
+    const periodMonth = paymentDate ? paymentDate.slice(0, 7) + '-01' : null;
+
     const payload = {
         tenant_id: document.getElementById('modalPayTenant').value,
         amount: parseFloat(document.getElementById('modalPayAmount').value),
         payment_method: document.getElementById('modalPayMethod').value,
         reference_number: document.getElementById('modalPayRef').value.trim(),
-        payment_date: document.getElementById('modalPayDate').value,
-        status: 'completed'
+        payment_date: paymentDate,
+        period_month: periodMonth,   // optional, but we provide it
+        notes: 'Manual entry',
     };
 
     try {
@@ -328,11 +387,19 @@ async function submitRecordPayment() {
         toast('Payment recorded successfully.', 'ok');
         await render_payments();
     } catch (err) {
-        toast(`Failed to record payment: ${err.message}`, 'err');
+        // Show detailed error from API
+        let msg = err.message;
+        if (err.response && err.response.data) {
+            const data = err.response.data;
+            if (typeof data === 'object') {
+                msg = Object.values(data).flat().join('; ');
+            }
+        }
+        toast(`Failed to record payment: ${msg}`, 'err');
     }
 }
 
-// ─── Filtering & Export ─────────────────────────────────────────────────────
+// ─── Filtering & Export (Landlord only) ─────────────────────────────────────
 
 function bindPaymentFilters() {
     ['paymentSearch', 'paymentMonthFilter', 'paymentMethodFilter'].forEach(id => {
@@ -345,19 +412,30 @@ function bindPaymentFilters() {
 }
 
 function applyPaymentFilters() {
-    const query = (document.getElementById('paymentSearch')?.value || '').toLowerCase();
-    const method = document.getElementById('paymentMethodFilter')?.value || '';
+    const query = (document.getElementById('paymentSearch')?.value || '').toLowerCase().trim();
+    const method = document.getElementById('paymentMethodFilter')?.value || 'all';
+
+    // If method is not a valid choice (e.g., old value), treat as 'all'
+    const validMethods = ['mobile_money', 'bank_transfer', 'cash', 'cheque', 'sandbox_gateway'];
+    const methodFilter = (method === 'all' || !validMethods.includes(method)) ? 'all' : method;
+
+    console.log(' Filtering with query:', query, 'method:', methodFilter);
 
     const filtered = paymentsCache.filter(p => {
+        const tenant = (p.tenant_name || '').toLowerCase();
+        const property = (p.property_name || '').toLowerCase();
+        const ref = (p.reference_number || '').toLowerCase();
         const matchesQuery = !query ||
-            (p.tenant_name && p.tenant_name.toLowerCase().includes(query)) ||
-            (p.property_name && p.property_name.toLowerCase().includes(query)) ||
-            (p.reference_number && p.reference_number.toLowerCase().includes(query));
-        const matchesMethod = !method || p.payment_method === method;
+            tenant.includes(query) ||
+            property.includes(query) ||
+            ref.includes(query);
+
+        const matchesMethod = methodFilter === 'all' || p.payment_method === methodFilter;
 
         return matchesQuery && matchesMethod;
     });
 
+    console.log(` Filtered ${filtered.length} payments out of ${paymentsCache.length}`);
     populatePaymentsTable(filtered);
 }
 

@@ -12,7 +12,7 @@ class ReportService:
     """Read-only service — all methods return aggregated data for dashboards and reports."""
 
     @staticmethod
-    def financial_summary(landlord, months: int = 12) -> dict:
+    def financial_summary(user, months: int = 12) -> dict:
         """
         Revenue vs Expenses for the last N months.
         Powers the main dashboard line chart.
@@ -20,10 +20,12 @@ class ReportService:
         cutoff = timezone.now().date() - timedelta(days=months * 30)
 
         payments = Payment.objects.filter(
-            lease__unit__property__owner=landlord,
             payment_date__gte=cutoff,
             status='confirmed',
         )
+        # If not admin, filter by owner (landlord)
+        if not user.is_admin:
+            payments = payments.filter(lease__unit__property__owner=user)
 
         total_collected = payments.aggregate(
             total=Sum('amount')
@@ -52,20 +54,23 @@ class ReportService:
         }
 
     @staticmethod
-    def arrears_report(landlord) -> dict:
+    def arrears_report(user) -> dict:
         """All tenants in arrears — for the landlord's dashboard alert panel."""
-        arrears_leases = Lease.objects.filter(
+        leases = Lease.objects.filter(
             status='active',
             is_in_arrears=True,
-            unit__property__owner=landlord,
-        ).select_related('tenant__user', 'unit__property')
+        )
+        if not user.is_admin:
+            leases = leases.filter(unit__property__owner=user)
 
-        total_outstanding = arrears_leases.aggregate(
+        leases = leases.select_related('tenant__user', 'unit__property')
+
+        total_outstanding = leases.aggregate(
             total=Sum('balance_due')
         )['total'] or Decimal('0.00')
 
         return {
-            'total_in_arrears': arrears_leases.count(),
+            'total_in_arrears': leases.count(),
             'total_outstanding_zmw': str(total_outstanding),
             'tenants': [
                 {
@@ -77,7 +82,7 @@ class ReportService:
                     'arrears_days': l.arrears_days,
                     'monthly_rent': str(l.monthly_rent),
                 }
-                for l in arrears_leases.order_by('-balance_due')
+                for l in leases.order_by('-balance_due')
             ],
         }
 
@@ -96,7 +101,7 @@ class ReportService:
         return round(((current - previous) / previous) * 100, 1)
 
     @staticmethod
-    def dashboard_kpis(landlord) -> dict:
+    def dashboard_kpis(user) -> dict:
         """
         Single endpoint powering the entire dashboard.
         Returns portfolio summary, revenue, arrears, monthly trend, and notifications.
@@ -104,12 +109,12 @@ class ReportService:
         from apps.properties.services import PropertyService
         from apps.notifications.models import Notification
 
-        portfolio = PropertyService.get_portfolio_summary(landlord)
-        arrears = ReportService.arrears_report(landlord)
-        finance_1m = ReportService.financial_summary(landlord, months=1)
-        finance_6m = ReportService.financial_summary(landlord, months=6)
+        portfolio = PropertyService.get_portfolio_summary(user)
+        arrears = ReportService.arrears_report(user)
+        finance_1m = ReportService.financial_summary(user, months=1)
+        finance_6m = ReportService.financial_summary(user, months=6)
         unread_notifs = Notification.objects.filter(
-            user=landlord, is_read=False
+            user=user, is_read=False
         ).count()
 
         return {

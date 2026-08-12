@@ -3,6 +3,7 @@
  */
 
 let maintenanceCache = [];
+let isLandlordMode = false;
 
 // ─── Main render ────────────────────────────────────────────────────────────
 
@@ -110,15 +111,14 @@ function renderMaintenanceRows(requests) {
 
 async function openCreateMaintenanceModal() {
     try {
-        // 1) Get current user info
         const user = await api.auth.me();
-        const isLandlord = user && (user.role === 'landlord' || user.role === 'admin');
+        isLandlordMode = user && (user.role === 'landlord' || user.role === 'admin');
 
         let tenantOptionsHtml = '';
         let tenantId = '';
         let unitId = '';
 
-        if (isLandlord) {
+        if (isLandlordMode) {
             // Landlord: fetch tenants and show dropdowns
             try {
                 const tenants = await api.tenants.list();
@@ -145,27 +145,20 @@ async function openCreateMaintenanceModal() {
                 return;
             }
         } else {
-            // Tenant: auto‑populate from their active lease
-            const tenantProfile = user.tenant_profile;
-            if (!tenantProfile) {
-                toast('You do not have a tenant profile. Please contact support.', 'err');
-                return;
-            }
-            const tenantIdFromProfile = tenantProfile.id;
-            // Fetch full tenant details to get unit and property name
+            // Tenant: show read-only info, no inputs for tenant/unit
             try {
-                const tenantData = await api.tenants.get(tenantIdFromProfile);
-                const unit = tenantData.unit; // from serializer's get_unit
+                const tenantData = await api.tenants.current();
+                if (!tenantData) throw new Error('No tenant profile found.');
+                const unit = tenantData.unit;
                 const propertyName = tenantData.property_name;
                 const unitNumber = unit ? unit.unit_number : 'N/A';
+                tenantId = tenantData.id;
                 unitId = unit ? unit.id : '';
-                tenantId = tenantIdFromProfile;
 
                 tenantOptionsHtml = `
                     <div class="col-md-12">
                         <p class="text-muted small">You are submitting this request for your current unit: <strong>${propertyName || 'N/A'} - Unit ${unitNumber}</strong></p>
-                        <input type="hidden" id="maint_tenant" value="${tenantId}">
-                        <input type="hidden" id="maint_unit" value="${unitId || ''}">
+                        <!-- No hidden inputs – we don't send tenant_id/unit in payload -->
                     </div>
                 `;
             } catch (err) {
@@ -174,7 +167,6 @@ async function openCreateMaintenanceModal() {
             }
         }
 
-        // Build the modal HTML
         const modalHtml = `
             <div class="modal-header border-0 pb-2">
                 <h5 class="modal-title fw-bold text-slate-900 fs-5">File Maintenance Request</h5>
@@ -211,8 +203,7 @@ async function openCreateMaintenanceModal() {
 
         openModal(modalHtml);
 
-        // If landlord, add listener to load units when tenant changes
-        if (isLandlord) {
+        if (isLandlordMode) {
             const tenantSelect = document.getElementById('maint_tenant');
             if (tenantSelect) {
                 tenantSelect.addEventListener('change', function() {
@@ -231,7 +222,7 @@ async function loadUnitsForTenant(tenantId) {
     if (!tenantId) return;
     try {
         const tenant = await api.tenants.get(tenantId);
-        const unit = tenant.unit; // comes from serializer's get_unit
+        const unit = tenant.unit;
         const unitSelect = document.getElementById('maint_unit');
         if (unitSelect) {
             if (unit) {
@@ -258,20 +249,34 @@ async function submitMaintenance() {
     const desc     = document.getElementById('maint_description')?.value.trim();
     const priority = document.getElementById('maint_priority')?.value;
 
-    // Get tenant and unit IDs (works for both hidden fields and selects)
-    const tenantEl = document.getElementById('maint_tenant');
-    const unitEl = document.getElementById('maint_unit');
-    const tenantId = tenantEl ? tenantEl.value : null;
-    const unitId = unitEl ? unitEl.value : null;
-
     if (!title) {
         toast('Issue title is required.', 'warn');
         return;
     }
 
+    // Build payload – start with only common fields
     const payload = { title, description: desc, priority };
-    if (tenantId) payload.tenant_id = tenantId;
-    if (unitId) payload.unit = unitId;
+
+    // For landlords, also include tenant and unit (they are required)
+    if (isLandlordMode) {
+        const tenantEl = document.getElementById('maint_tenant');
+        const unitEl = document.getElementById('maint_unit');
+        const tenantId = tenantEl ? tenantEl.value : null;
+        const unitId = unitEl ? unitEl.value : null;
+
+        if (!tenantId || tenantId === '') {
+            toast('Please select a tenant.', 'warn');
+            return;
+        }
+        if (!unitId || unitId === '') {
+            toast('Please select a unit (or ensure the tenant has an active lease).', 'warn');
+            return;
+        }
+
+        payload.tenant_id = tenantId;
+        payload.unit = unitId;
+    }
+    // For tenants, we DO NOT send tenant_id or unit – the backend auto-assigns them.
 
     try {
         await api.maintenance.create(payload);
@@ -279,7 +284,9 @@ async function submitMaintenance() {
         toast('Maintenance request submitted successfully.', 'ok');
         await render_maintenance();
     } catch (err) {
-        toast(`Failed to submit request: ${err.message}`, 'err');
+        // Show the actual server error
+        const errorMsg = err.data?.detail || err.message || 'Failed to submit request.';
+        toast(`Failed to submit request: ${errorMsg}`, 'err');
     }
 }
 
@@ -288,8 +295,15 @@ async function submitMaintenance() {
 async function resolveRequest(requestId) {
     if (!confirm('Mark this maintenance issue as fully resolved?')) return;
 
+    const notes = prompt('Enter resolution notes (optional):', '');
+    const cost = prompt('Enter actual cost (optional, e.g., 150.00):', '');
+
+    const payload = {};
+    if (notes) payload.resolution_notes = notes;
+    if (cost && !isNaN(parseFloat(cost))) payload.actual_cost = parseFloat(cost);
+
     try {
-        await api.maintenance.update(requestId, { status: 'resolved' });
+        await api.maintenance.resolve(requestId, payload);
         toast('Issue marked as resolved.', 'ok');
         await render_maintenance();
     } catch (err) {

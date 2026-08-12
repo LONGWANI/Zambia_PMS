@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import models
 from .models import Tenant, Lease
@@ -12,6 +13,12 @@ logger = logging.getLogger(__name__)
 class TenantViewSet(viewsets.ModelViewSet):
     permission_classes = [IsLandlord]
 
+    def get_permissions(self):
+        # Allow any authenticated user to access the 'current' action
+        if self.action == 'current':
+            return [permissions.IsAuthenticated()]
+        return [IsLandlord()]
+
     def get_serializer_class(self):
         if self.action == 'create':
             return TenantCreateSerializer
@@ -24,16 +31,12 @@ class TenantViewSet(viewsets.ModelViewSet):
         if user.is_admin:
             qs = Tenant.objects.select_related('user').prefetch_related('leases__unit__property')
         else:
-            # For landlords, include tenants that:
-            # - have a lease on any unit belonging to the landlord's properties, OR
-            # - are directly assigned as current_tenant on a unit belonging to the landlord
             qs = Tenant.objects.filter(
                 models.Q(leases__unit__property__owner=user) |
                 models.Q(user__assigned_unit__property__owner=user)
             ).distinct().select_related('user').prefetch_related('leases__unit__property')
 
-        count = qs.count()
-        logger.info(f"Tenant queryset count: {count}")
+        logger.info(f"Tenant queryset count: {qs.count()}")
         return qs
 
     def create(self, request, *args, **kwargs):
@@ -44,13 +47,23 @@ class TenantViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         tenant = serializer.save()
         logger.info(f"Tenant created with ID: {tenant.id}")
-
-        # Also log the lease count for this tenant after creation
-        lease_count = tenant.leases.count()
-        logger.info(f"Leases for tenant: {lease_count}")
+        logger.info(f"Leases for tenant: {tenant.leases.count()}")
 
         output_serializer = TenantSerializer(tenant)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'], url_path='current')
+    def current(self, request):
+        """Return the Tenant profile for the authenticated user."""
+        user = request.user
+        if not user.is_authenticated:
+            return Response({"detail": "Not authenticated"}, status=401)
+        try:
+            tenant = Tenant.objects.get(user=user)
+        except Tenant.DoesNotExist:
+            return Response({"detail": "No tenant profile found."}, status=404)
+        serializer = self.get_serializer(tenant)
+        return Response(serializer.data)
 
 
 class LeaseViewSet(viewsets.ModelViewSet):
