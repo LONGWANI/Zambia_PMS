@@ -3,17 +3,16 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import User
 
-# 1. Custom Creation Form: Uses Django's built-in double-password validation
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'role')
+        fields = ('email', 'first_name', 'last_name', 'role', 'date_of_birth', 'gender', 'nationality', 'address')
 
-# 2. Custom Change Form: Used when editing an already existing user
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone', 'role', 'is_active', 'is_staff')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'role', 'is_active', 'is_staff',
+                  'date_of_birth', 'gender', 'nationality', 'address')
 
 @admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
@@ -25,19 +24,17 @@ class CustomUserAdmin(BaseUserAdmin):
     search_fields = ('email', 'first_name', 'last_name', 'phone')
     ordering = ('email',)
 
-    # The layout when EDITING a user
     fieldsets = (
         ('Login Credentials', {'fields': ('email', 'password')}),
-        ('Personal Info', {'fields': ('first_name', 'last_name', 'phone', 'role')}),
+        ('Personal Info', {'fields': ('first_name', 'last_name', 'phone', 'role', 'date_of_birth', 'gender', 'nationality', 'address')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important Dates', {'fields': ('last_login',)}),
     )
 
-    # The layout when ADDING a user
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            # THE FIX: Explicitly use password1 and password2
-            'fields': ('email', 'first_name', 'last_name', 'role', 'password1', 'password2'),
+            'fields': ('email', 'first_name', 'last_name', 'role', 'password1', 'password2',
+                       'date_of_birth', 'gender', 'nationality', 'address'),
         }),
     )

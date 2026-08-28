@@ -34,7 +34,9 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     # ─── Extended Profile Fields ──────────────────────────────────────
     nrc_passport = models.CharField(max_length=50, blank=True, null=True)
     nationality = models.CharField(max_length=50, default='Zambian')
-    physical_address = models.TextField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)          # renamed from physical_address
+    date_of_birth = models.DateField(null=True, blank=True)    # NEW
+    gender = models.CharField(max_length=20, blank=True, default='')  # NEW
     avatar = models.ImageField(
         upload_to='avatars/',
         null=True,

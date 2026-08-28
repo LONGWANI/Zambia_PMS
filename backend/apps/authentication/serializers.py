@@ -9,7 +9,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'confirm_password', 'first_name', 'last_name', 'phone', 'role']
+        fields = ['id', 'email', 'password', 'confirm_password', 'first_name', 'last_name', 'phone', 'role',
+                  'date_of_birth', 'gender', 'nationality', 'address', 'nrc_passport']
         read_only_fields = ['id']
         extra_kwargs = {'role': {'default': UserRole.TENANT}}
 
@@ -27,7 +28,8 @@ class UserPublicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'full_name', 'first_name', 'last_name', 'phone', 'role', 'is_active', 'created_at']
+        fields = ['id', 'email', 'full_name', 'first_name', 'last_name', 'phone', 'role', 'is_active',
+                  'created_at', 'date_of_birth', 'gender', 'nationality', 'address', 'nrc_passport']
         read_only_fields = fields
 
     def get_full_name(self, obj):
@@ -35,16 +37,12 @@ class UserPublicSerializer(serializers.ModelSerializer):
 
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
-    """
-    Used for PUT/PATCH /api/auth/me/
-    Allows editing all profile fields including avatar.
-    """
     class Meta:
         model = User
         fields = [
             'first_name', 'last_name', 'phone', 'nrc_passport',
-            'physical_address', 'emergency_contact_name',
-            'emergency_contact_phone', 'emergency_contact_relation',
+            'address', 'date_of_birth', 'gender', 'nationality',
+            'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_relation',
             'avatar'
         ]
         extra_kwargs = {
@@ -68,18 +66,14 @@ class ChangePasswordSerializer(serializers.Serializer):
         return attrs
 
 
-# --- NEW: Custom Token Serializer to support Frontend auth.js ---
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Inject the role directly into the token payload claims
         token['role'] = user.role
         return token
 
     def validate(self, attrs):
-        # Grab default access/refresh pairs
         data = super().validate(attrs)
-        # Nest the frontend-friendly public user representation 
         data['user'] = UserPublicSerializer(self.user).data
         return data

@@ -1,4 +1,5 @@
 # apps/billing/services.py
+from datetime import date, timedelta
 from decimal import Decimal
 from django.db import transaction
 from django.utils import timezone
@@ -7,91 +8,156 @@ from apps.properties.models import UnitStatus
 from apps.notifications.services import NotificationService
 from .models import Payment, UtilityBill, UtilityAllocation
 
+MAX_PREPAID_MONTHS = 240  # safety cap
+
+
+def get_monthly_rent(lease):
+    """Return monthly rent from lease or fallback to unit.rent_amount."""
+    if hasattr(lease, 'monthly_rent') and lease.monthly_rent is not None:
+        return Decimal(str(lease.monthly_rent)).quantize(Decimal('0.01'))
+    return Decimal(str(getattr(lease.unit, 'rent_amount', Decimal('0.00')) or 0)).quantize(Decimal('0.01'))
+
 
 class PaymentService:
     """
     Handles all payment business logic.
-    Uses atomic transaction to ensure ledger consistency.
+    Uses atomic transactions to ensure ledger consistency.
     """
 
     @staticmethod
     @transaction.atomic
     def record_payment(lease, amount, method, reference,
-                       payment_date, period_month, notes, recorded_by):
+                       payment_date, period_month, notes, recorded_by,
+                       charge_type='rent', utility_allocation=None):
         """
-        Records a manual payment and updates the lease ledger.
-        Returns the created Payment object.
+        Creates a pending payment. Does NOT update lease balance.
         """
-        balance_before = lease.balance_due
-        balance_after = balance_before - Decimal(str(amount))
-
         payment = Payment.objects.create(
             lease=lease,
             amount=amount,
-            balance_before=balance_before,
-            balance_after=balance_after,
+            balance_before=None,
+            balance_after=None,
             payment_method=method,
             reference_number=reference,
             payment_date=payment_date,
             period_month=period_month,
             notes=notes,
             recorded_by=recorded_by,
-            status='confirmed',
+            status='pending',
+            prepaid_allocations=[],
+            charge_type=charge_type,
+            utility_allocation=utility_allocation,
         )
+        return payment
+
+    @staticmethod
+    @transaction.atomic
+    def approve_payment(payment, approved_by=None):
+        if payment.status != 'pending':
+            raise ValueError('Only pending payments can be approved.')
+
+        lease = payment.lease
+        balance_before = Decimal(str(lease.balance_due or 0))
+        amount = Decimal(str(payment.amount))
+
+        if amount <= 0:
+            raise ValueError('Payment amount must be positive.')
+
+        balance_after = (balance_before - amount).quantize(Decimal('0.01'))
+
+        prepaid_allocations = []
+        if balance_after < 0:
+            surplus = abs(balance_after)
+            monthly_rent = get_monthly_rent(lease)
+            if monthly_rent > 0:
+                today_first = timezone.now().date().replace(day=1)
+                start_month = payment.period_month or payment.payment_date.replace(day=1)
+                if start_month < today_first:
+                    start_month = today_first
+
+                months_allocated = 0
+                while surplus > 0 and months_allocated < MAX_PREPAID_MONTHS:
+                    alloc_amount = min(monthly_rent, surplus)
+                    prepaid_allocations.append({
+                        'month': start_month.isoformat(),
+                        'amount': str(alloc_amount.quantize(Decimal('0.01'))),
+                    })
+                    surplus -= alloc_amount
+                    start_month = (start_month.replace(day=28) + timedelta(days=4)).replace(day=1)
+                    months_allocated += 1
+
+        payment.balance_before = balance_before
+        payment.balance_after = balance_after
+        payment.prepaid_allocations = prepaid_allocations
+        payment.status = 'confirmed'
+        payment.approved_by = approved_by
+        payment.approved_at = timezone.now()
+        payment.save()
 
         lease.balance_due = balance_after
         ArrearsDetectionService.evaluate_lease(lease)
-        lease.save()
+        lease.save(update_fields=['balance_due', 'is_in_arrears', 'arrears_days', 'updated_at'])
 
-        NotificationService.notify_payment_received(payment)
+        # ─── NEW: send receipt email + notification ──────────────────────
+        NotificationService.send_payment_receipt(payment)
         return payment
 
     @staticmethod
     def generate_receipt(payment) -> dict:
-        """Returns a receipt-formatted dictionary for printing or PDF."""
         lease = payment.lease
+        balance_after = payment.balance_after
+
+        if balance_after is None:
+            status_label = 'PENDING APPROVAL'
+        elif balance_after < 0:
+            status_label = 'OVERPAID — CREDIT APPLIED'
+        elif balance_after == 0:
+            status_label = 'PAID IN FULL'
+        else:
+            status_label = 'PARTIAL PAYMENT'
+
+        prepaid_months = []
+        for alloc in (payment.prepaid_allocations or []):
+            raw_month = alloc.get('month')
+            try:
+                month_val = date.fromisoformat(raw_month) if raw_month else None
+            except (ValueError, TypeError):
+                month_val = None
+            prepaid_months.append({
+                'month': month_val,
+                'amount': str(alloc.get('amount', '0.00')),
+            })
+
         return {
             'receipt_number': f"RCP-{str(payment.id)[:8].upper()}",
             'date': payment.payment_date.isoformat(),
             'tenant': lease.tenant.user.get_full_name(),
             'unit': f"{lease.unit.property.name} — Unit {lease.unit.unit_number}",
+            'charge_type': payment.get_charge_type_display(),
             'amount_paid': str(payment.amount),
             'payment_method': payment.get_payment_method_display(),
             'reference': payment.reference_number,
-            'balance_before': str(payment.balance_before),
-            'balance_after': str(payment.balance_after),
+            'balance_before': str(payment.balance_before) if payment.balance_before is not None else '0.00',
+            'balance_after': str(payment.balance_after) if payment.balance_after is not None else '0.00',
             'period': payment.period_month.strftime('%B %Y') if payment.period_month else '',
-            'status': 'PAID IN FULL' if payment.balance_after <= 0 else 'PARTIAL PAYMENT',
+            'status': status_label,
             'recorded_by': payment.recorded_by.get_full_name() if payment.recorded_by else '',
+            'approved_by': payment.approved_by.get_full_name() if payment.approved_by else '',
+            'prepaid_months': prepaid_months,
+            'total_prepaid': str(payment.total_prepaid) if payment.is_prepaid else '0.00',
         }
 
 
 class ArrearsDetectionService:
-    """
-    Smart arrears detection – automatically flags tenants who are behind on rent.
-    
-    ALGORITHM:
-    A lease is in arrears if balance_due > 0 AND
-    today's day-of-month is greater than the grace period day (5th).
-    This matches Zambian landlord practice: 5 days grace after the 1st.
-    """
-
     GRACE_PERIOD_DAYS = 5
 
     @classmethod
     def evaluate_lease(cls, lease: Lease) -> bool:
-        """
-        Evaluates and updates arrears status for a single lease.
-        Called after every payment and on the daily scheduled job.
-        Returns True if in arrears, False if clear.
-        """
         today = timezone.now().date()
-        # Grace period ends on the 5th day of the month
         past_grace_period = today.day > cls.GRACE_PERIOD_DAYS
 
-        if lease.balance_due > 0 and past_grace_period:
+        if lease.balance_due and lease.balance_due > 0 and past_grace_period:
             lease.is_in_arrears = True
-            # Number of days after the grace period
             lease.arrears_days = today.day - cls.GRACE_PERIOD_DAYS
         else:
             lease.is_in_arrears = False
@@ -101,10 +167,6 @@ class ArrearsDetectionService:
 
     @classmethod
     def run_portfolio_check(cls, landlord) -> dict:
-        """
-        Runs arrears detection across ALL active leases for a landlord.
-        Called daily by Celery task. Returns summary statistics.
-        """
         active_leases = Lease.objects.filter(
             status='active',
             unit__property__owner=landlord
@@ -137,20 +199,11 @@ class ArrearsDetectionService:
 
 
 class UtilityBillService:
-    """
-    Utility bill auto-split algorithm.
-    Supports four strategies: equal, by floor area, by occupant count, and manual.
-    """
-
     @classmethod
     @transaction.atomic
     def create_and_split_bill(cls, property_obj, utility_type, total_amount,
                                billing_period, split_method='equal',
                                manual_allocations=None) -> UtilityBill:
-        """
-        Creates a new UtilityBill record and allocates charges across occupied units.
-        billing_period: Date (e.g., first of the month) indicating the billing month.
-        """
         bill = UtilityBill.objects.create(
             property=property_obj,
             utility_type=utility_type,
@@ -159,14 +212,12 @@ class UtilityBillService:
             split_method=split_method,
             status='pending'
         )
-
         cls.split_bill(bill, manual_allocations=manual_allocations)
         return bill
 
     @classmethod
     @transaction.atomic
     def split_bill(cls, bill: UtilityBill, manual_allocations=None) -> list:
-        """Splits an existing UtilityBill into UtilityAllocation rows."""
         if bill.status == 'split':
             raise ValueError('This bill has already been split.')
 
@@ -175,9 +226,8 @@ class UtilityBillService:
         ).select_related('current_lease')
 
         if not occupied_units.exists():
-            raise ValueError('Cannot split utility bill: No occupied units found for this property.')
+            raise ValueError('Cannot split utility bill: No occupied units found.')
 
-        # Delete any previous allocations before re-splitting
         bill.allocations.all().delete()
 
         method = bill.split_method
@@ -195,7 +245,6 @@ class UtilityBillService:
         bill.status = 'split'
         bill.save(update_fields=['status', 'updated_at'])
 
-        # Notify affected tenants
         for allocation in allocations:
             NotificationService.notify_utility_bill(allocation)
 
@@ -279,16 +328,11 @@ class UtilityBillService:
 
     @staticmethod
     def _split_manual(bill, units, manual_allocations: list) -> list:
-        """
-        Manual split logic.
-        manual_allocations format: [{'unit_id': 1, 'amount': 500.00}, ...]
-        """
         if not manual_allocations:
-            raise ValueError("Manual allocation list cannot be empty for manual split strategy.")
+            raise ValueError("Manual allocation list cannot be empty.")
 
         units_dict = {unit.id: unit for unit in units}
         allocations = []
-        total_allocated = Decimal('0.00')
 
         for item in manual_allocations:
             unit_id = item.get('unit_id')
@@ -297,7 +341,6 @@ class UtilityBillService:
 
             unit = units_dict[unit_id]
             amt = Decimal(str(item['amount'])).quantize(Decimal('0.01'))
-            total_allocated += amt
             basis = Decimal(str(round(amt / bill.total_amount, 4))) if bill.total_amount > 0 else Decimal('0.00')
 
             allocations.append(UtilityAllocation.objects.create(

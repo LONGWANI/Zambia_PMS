@@ -10,19 +10,33 @@
         <h2 class="fs-4 fw-bold mb-1" style="color: var(--text-primary);">Financial Ledger</h2>
         <p class="text-muted small mb-0" id="paymentsSubtext">Record, track, audit, and reconcile incoming rent payments</p>
     </div>
-    <div class="d-flex gap-2 w-100 w-sm-auto">
+    <div class="d-flex gap-2 w-100 w-sm-auto flex-wrap">
         <!-- Landlord actions -->
-        <button class="btn btn-white border bg-white text-secondary fw-semibold d-flex align-items-center gap-2" onclick="exportLedger()" id="exportBtn" style="display:none;">
+        <button class="btn btn-white border bg-white text-secondary fw-semibold d-flex align-items-center gap-2"
+                data-action="export-ledger-csv" id="exportBtn" style="display:none;">
             <i class="bi bi-download"></i> CSV Export
         </button>
-        <button class="btn-primary" onclick="openRecordPaymentModal()" id="recordPaymentBtn" style="display:none;">
-            <i class="bi bi-receipt me-2"></i> Record Payment
+        <button class="btn btn-white border bg-white text-secondary fw-semibold d-flex align-items-center gap-2"
+                data-action="batch-receipts" id="batchReceiptBtn" style="display:none;">
+            <i class="bi bi-file-zip"></i> Batch Receipts
+        </button>
+        <button class="btn btn-outline-danger d-flex align-items-center gap-2"
+                data-action="show-arrears-report" id="arrearsBtn" style="display:none;">
+            <i class="bi bi-exclamation-triangle"></i> Arrears Report
+        </button>
+        <button class="btn btn-primary d-flex align-items-center gap-2"
+                data-action="open-record-payment" id="recordPaymentBtn" style="display:none;">
+            <i class="bi bi-receipt me-1"></i> Record Payment
         </button>
     </div>
 </div>
 
-<!-- ─── Tenant Balance Card ─────────────────────────────────────────── -->
-<div id="tenantBalanceCard" style="display:none;" class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+<!-- ─── Tenant Balance Card ───────────────────────────────────────────
+     NOTE: no `d-flex` class here on purpose — Bootstrap's .d-flex is
+     `display: flex !important`, which would override the inline
+     `display:none` below and make this card permanently visible.
+     JS toggles inline display none/flex instead. -->
+<div id="tenantBalanceCard" style="display:none;" class="alert alert-info justify-content-between align-items-center mb-4">
     <span><i class="bi bi-wallet2 me-2"></i> <strong>Your outstanding balance:</strong></span>
     <span class="fw-bold fs-5" id="tenantTotalBalance">ZMW 0.00</span>
 </div>
@@ -30,25 +44,35 @@
 <div class="saas-card p-0 overflow-hidden shadow-sm">
     <div class="p-3 border-bottom bg-light">
         <div class="row g-3">
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-3">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control border-start-0" placeholder="Search tenant name or reference number..." id="paymentSearch">
+                    <input type="text" class="form-control border-start-0" placeholder="Search tenant name or reference..." id="paymentSearch">
                 </div>
             </div>
-            <div class="col-12 col-md-4" id="monthFilterContainer">
-                <input type="month" class="form-control" id="paymentMonthFilter">
-            </div>
-            <div class="col-12 col-md-3" id="methodFilterContainer">
-                <select class="form-select" id="paymentMethodFilter">
-                    <option value="all">All Methods</option>
-                    <option value="mobile_money">Mobile Money (MTN / Airtel)</option>
-                    <option value="bank_transfer">Bank Transfer</option>
-                    <option value="cash">Cash</option>
-                    <option value="cheque">Cheque</option>
-                    <!-- 'sandbox_gateway' is also possible if any online payments -->
-                    <option value="sandbox_gateway">Online Sandbox Gateway</option>
+            <div class="col-12 col-md-2">
+                <select class="form-select" id="paymentStatusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="pending">Pending</option>
+                    <option value="reversed">Reversed</option>
+                    <option value="unpaid">Utility Charge — Unpaid</option>
+                    <option value="paid">Utility Charge — Paid</option>
                 </select>
+            </div>
+            <div class="col-12 col-md-2">
+                <select class="form-select" id="paymentPropertyFilter">
+                    <option value="">All Properties</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2">
+                <input type="date" class="form-control" id="paymentDateFrom" placeholder="From">
+            </div>
+            <div class="col-12 col-md-2">
+                <input type="date" class="form-control" id="paymentDateTo" placeholder="To">
+            </div>
+            <div class="col-12 col-md-1">
+                <button class="btn btn-outline-secondary w-100" data-action="apply-payment-filters" title="Apply filters"><i class="bi bi-funnel"></i></button>
             </div>
         </div>
     </div>
@@ -63,11 +87,13 @@
                     <th>Method</th>
                     <th>Reference No.</th>
                     <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="paymentTableBody">
                 <tr>
-                    <td colspan="6" class="text-center py-5 text-muted">
+                    <td colspan="8" class="text-center py-5 text-muted">
                         <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
                         Loading payment records...
                     </td>
@@ -79,42 +105,94 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/payments.js' %}"></script>
+{# Bump ?v=N whenever payments.js changes — a stale cached copy hides new handlers. #}
+<script src="{% static 'js/payments.js' %}?v=10"></script>
 <script>
     auth.protectRoute(['admin', 'landlord', 'tenant']);
 
     document.addEventListener('DOMContentLoaded', async () => {
-        const user = await auth.me();
-        const isLandlord = user && (user.role === 'landlord' || user.role === 'admin');
+        try {
+            // auth.me() is SYNCHRONOUS and can return null (empty cache) —
+            // fall back to the live API before deciding the role branch.
+            let user = auth.me();
+            if (!user || !user.role) {
+                try { user = await api.auth.me(); if (user) auth.setUser(user); } catch (_) {}
+            }
+            const isLandlord = !!(user && (user.role === 'landlord' || user.role === 'admin'));
 
-        // Landlord-specific UI
-        const exportBtn = document.getElementById('exportBtn');
-        const recordBtn = document.getElementById('recordPaymentBtn');
-        const balanceCard = document.getElementById('tenantBalanceCard');
-        const methodFilter = document.getElementById('paymentMethodFilter');
+            // ─── Deep-link support (used by dashboard links) ────────────
+            // /payments/?view=arrears          → auto-open Arrears Report
+            // /payments/?property=<uuid>       → preset property filter
+            // /payments/?q=<text>              → preset search box
+            // /payments/?status=<value>        → preset status filter
+            // /payments/?date_from=&date_to=   → preset date range
+            const deepParams = new URLSearchParams(window.location.search);
+            const presetControl = (id, value) => {
+                if (!value) return;
+                const el = document.getElementById(id);
+                if (el) el.value = value;
+            };
+            presetControl('paymentStatusFilter', deepParams.get('status'));
+            presetControl('paymentPropertyFilter', deepParams.get('property'));
+            presetControl('paymentDateFrom', deepParams.get('date_from'));
+            presetControl('paymentDateTo', deepParams.get('date_to'));
+            presetControl('paymentSearch', deepParams.get('q'));
+            const deepView = deepParams.get('view');
 
-        if (isLandlord) {
-            exportBtn.style.display = 'inline-flex';
-            recordBtn.style.display = 'inline-flex';
-            if (balanceCard) balanceCard.style.display = 'none';
-            document.getElementById('monthFilterContainer').style.display = 'block';
-            document.getElementById('methodFilterContainer').style.display = 'block';
+            const exportBtn   = document.getElementById('exportBtn');
+            const recordBtn   = document.getElementById('recordPaymentBtn');
+            const batchBtn    = document.getElementById('batchReceiptBtn');
+            const arrearsBtn  = document.getElementById('arrearsBtn');
+            const balanceCard = document.getElementById('tenantBalanceCard');
 
-            // ★ RESET method filter to "all" on load ★
-            if (methodFilter) methodFilter.value = 'all';
-        } else {
-            exportBtn.style.display = 'none';
-            recordBtn.style.display = 'none';
-            if (balanceCard) balanceCard.style.display = 'flex';
-            document.getElementById('monthFilterContainer').style.display = 'none';
-            document.getElementById('methodFilterContainer').style.display = 'none';
-        }
+            const filterEls = document.querySelectorAll('#paymentStatusFilter, #paymentPropertyFilter, #paymentDateFrom, #paymentDateTo');
 
-        // Render the appropriate table
-        if (typeof render_payments === 'function' && isLandlord) {
-            render_payments();
-        } else if (typeof renderTenantFinancials === 'function') {
-            renderTenantFinancials();
+            if (isLandlord) {
+                if (exportBtn)  exportBtn.style.display  = 'inline-flex';
+                if (recordBtn)  recordBtn.style.display  = 'inline-flex';
+                if (batchBtn)   batchBtn.style.display   = 'inline-flex';
+                if (arrearsBtn) arrearsBtn.style.display = 'inline-flex';
+                if (balanceCard) balanceCard.style.display = 'none';
+                filterEls.forEach(el => {
+                    const parent = el.closest('.col-12');
+                    if (parent) parent.classList.remove('d-none');
+                });
+            } else {
+                if (exportBtn)  exportBtn.style.display  = 'none';
+                if (recordBtn)  recordBtn.style.display  = 'none';
+                if (batchBtn)   batchBtn.style.display   = 'none';
+                if (arrearsBtn) arrearsBtn.style.display = 'none';
+                if (balanceCard) balanceCard.style.display = 'flex';
+                filterEls.forEach(el => {
+                    const parent = el.closest('.col-12');
+                    if (parent) parent.classList.add('d-none');
+                });
+            }
+
+            if (isLandlord && typeof render_payments === 'function') {
+                // render_payments() applies whatever is in the filter controls,
+                // so presets set above take effect on first render automatically.
+                await render_payments();
+
+                if (deepView === 'arrears' && typeof window.showArrearsReport === 'function') {
+                    window.showArrearsReport();
+                }
+
+                // Strip the 'view' param so a refresh doesn't re-open the modal.
+                if (deepView) {
+                    deepParams.delete('view');
+                    const qs = deepParams.toString();
+                    history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : ''));
+                }
+            } else if (typeof renderTenantFinancials === 'function') {
+                await renderTenantFinancials();
+            }
+        } catch (err) {
+            console.error('[payments page] init failed:', err);
+            const tbody = document.getElementById('paymentTableBody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Failed to initialise the ledger page.</td></tr>';
+            }
         }
     });
 </script>

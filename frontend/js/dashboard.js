@@ -1,4 +1,20 @@
 // dashboard.js – Landlord & Tenant views with rent due reminders
+// Includes tenant first‑login flow (password change & lease acceptance)
+// v7: financial areas deep-link into the Financial Ledger
+//     (?view=arrears, ?property=, ?q=) — see ledgerUrl() below.
+
+// ─── Helper: build deep links into the Financial Ledger ─────────────────
+function ledgerUrl(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return '/payments/' + (qs ? '?' + qs : '');
+}
+
+// ─── Helper: HTML escaping (dashboard renders user-controlled names) ────
+function esc(value) {
+    return String(value ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+}
 
 // ─── Helper: compute next rent due date from lease start ────────────────
 function getNextRentDueDate(leaseStartDate) {
@@ -36,8 +52,167 @@ function safeExtract(response) {
     return [];
 }
 
+// ─── Tenant compliance check ────────────────────────────────────────────
+async function ensureTenantCompliance() {
+    const user = auth.getCurrentUser();
+    if (!user || user.role !== 'tenant') return true; // not a tenant
+
+    try {
+        const profile = await api.tenants.current();
+        console.log('Tenant profile:', profile);
+
+        const passwordChanged = profile.password_changed ?? false;
+        const leaseAccepted = profile.lease_accepted ?? false;
+
+        if (!passwordChanged) {
+            console.log('Password not changed – showing modal');
+            showPasswordChangeModal(profile);
+            return false;
+        }
+        if (!leaseAccepted) {
+            console.log('Lease not accepted – showing modal');
+            showLeaseAgreementModal(profile);
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.warn('Could not fetch tenant profile:', err);
+        // Fallback: show password change modal with dummy profile
+        showPasswordChangeModal({ id: user.id, user_id: user.id });
+        return false;
+    }
+}
+
+// ─── Password change modal ──────────────────────────────────────────────
+function showPasswordChangeModal(tenant) {
+    const modalHtml = `
+        <div class="modal-header border-0 pb-0">
+            <h5 class="fw-bold">Change Temporary Password</h5>
+            <button type="button" class="btn-close" onclick="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+            <p class="text-muted">You are using a temporary password. Please set a new password to continue.</p>
+            <form id="passwordChangeForm">
+                <div class="mb-3">
+                    <label class="form-label small fw-medium">New Password</label>
+                    <input type="password" id="newPassword" class="form-control" minlength="8" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-medium">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" minlength="8" required>
+                </div>
+                <div class="text-danger small" id="passwordError"></div>
+            </form>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-secondary" onclick="auth.logout()">Logout</button>
+            <button type="button" class="btn btn-primary" onclick="submitTenantPasswordChange()">Update Password</button>
+        </div>
+    `;
+    openModal(modalHtml);
+    window._tenantId = tenant.id;
+    window._userId = tenant.user_id || tenant.id;
+}
+
+async function submitTenantPasswordChange() {
+    const newPass = document.getElementById('newPassword').value;
+    const confirmPass = document.getElementById('confirmPassword').value;
+    const errorEl = document.getElementById('passwordError');
+
+    if (newPass.length < 8) {
+        errorEl.textContent = 'Password must be at least 8 characters.';
+        return;
+    }
+    if (newPass !== confirmPass) {
+        errorEl.textContent = 'Passwords do not match.';
+        return;
+    }
+
+    try {
+        await api.auth.update({ password: newPass });
+        await api.tenants.markPasswordChanged();
+        closeModal();
+        toast('Password updated successfully. Please log in again.', 'ok');
+        auth.logout();
+    } catch (err) {
+        errorEl.textContent = err.message || 'Failed to update password.';
+    }
+}
+
+// ─── Lease agreement modal ──────────────────────────────────────────────
+function showLeaseAgreementModal(tenant) {
+    const leaseText = `
+        <h5>General Lease Agreement</h5>
+        <p>This is a generalised lease agreement that applies to all tenants.</p>
+        <ul>
+            <li>You agree to pay rent on or before the due date each month.</li>
+            <li>You are responsible for maintaining the property in good condition.</li>
+            <li>You must provide 30 days' notice before vacating.</li>
+            <li>Late fees apply if rent is not received within 5 days of due date.</li>
+            <li>You agree to comply with all property rules and regulations.</li>
+        </ul>
+        <p><strong>Please read the full terms and conditions.</strong></p>
+    `;
+
+    const modalHtml = `
+        <div class="modal-header border-0 pb-0">
+            <h5 class="fw-bold">Lease Agreement</h5>
+        </div>
+        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+            ${leaseText}
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" id="leaseAgreeCheck">
+                <label class="form-check-label" for="leaseAgreeCheck">
+                    I have read and agree to the terms and conditions.
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-danger" onclick="auth.logout()">Decline & Logout</button>
+            <button type="button" class="btn btn-primary" onclick="submitTenantLeaseAccept()" id="acceptLeaseBtn" disabled>Accept</button>
+        </div>
+    `;
+    openModal(modalHtml);
+
+    const checkbox = document.getElementById('leaseAgreeCheck');
+    const acceptBtn = document.getElementById('acceptLeaseBtn');
+    if (checkbox && acceptBtn) {
+        checkbox.addEventListener('change', function() {
+            acceptBtn.disabled = !this.checked;
+        });
+    }
+}
+
+async function submitTenantLeaseAccept() {
+    try {
+        await api.tenants.acceptLease();
+        closeModal();
+        toast('Lease accepted. Welcome!', 'ok');
+        window.location.reload();
+    } catch (err) {
+        toast('Failed to accept lease: ' + err.message, 'err');
+    }
+}
+
 // ─── Main render ──────────────────────────────────────────────────────────
 async function render_dashboard() {
+    // ─── First, run tenant compliance check ──────────────────────────
+    const isCompliant = await ensureTenantCompliance();
+    if (!isCompliant) {
+        // Show a placeholder while the modals are open
+        const contentEl = document.getElementById('contentWorkspace') || document.getElementById('content');
+        if (contentEl) {
+            contentEl.innerHTML = `
+                <div class="text-center py-5 text-muted">
+                    <div class="spinner-border text-secondary mb-3" role="status"></div>
+                    <p>Please complete the required steps to continue.</p>
+                </div>
+            `;
+        }
+        return; // block dashboard rendering
+    }
+
+    // ─── Proceed with normal dashboard rendering ────────────────────
     showLoader();
     try {
         const user = await auth.me();
@@ -52,7 +227,7 @@ async function render_dashboard() {
         const contentEl = document.getElementById('contentWorkspace') || document.getElementById('content');
         if (contentEl) {
             contentEl.innerHTML =
-                `<div class="alert alert-danger m-4">Failed to load dashboard: ${err.message}</div>`;
+                `<div class="alert alert-danger m-4">Failed to load dashboard: ${esc(err.message)}</div>`;
         }
         console.error('Dashboard error:', err);
     }
@@ -159,11 +334,14 @@ async function render_landlord_dashboard() {
 
         document.getElementById('kpiLabel4').textContent = 'Collection Efficiency';
         document.getElementById('kpiValue4').textContent = `${collectionEfficiency}%`;
+        // FIX: this previously contained {% url 'reports' %} inside a STATIC js
+        // file — Django never processes static assets, so the link was literally
+        // broken. Deep-links to the ledger's arrears view instead.
         document.getElementById('kpiSub4').innerHTML =
             `<i class="bi bi-exclamation-circle"></i>
-            <a href="{% url 'reports' %}" class="text-danger fw-semibold text-decoration-none">View active invoice deficits</a>`;
+            <a href="${ledgerUrl({ view: 'arrears' })}" class="text-danger fw-semibold text-decoration-none">View outstanding balances</a>`;
 
-        // ─── Right Panel: Property Occupancy ──────────────────────────
+        // ─── Right Panel: Property Occupancy (deep-links to ledger) ───
         const rightPanelTitle = document.getElementById('rightPanelTitle');
         if (rightPanelTitle) rightPanelTitle.textContent = 'Property Occupancy';
         const occHtml = properties.map(p => {
@@ -171,20 +349,22 @@ async function render_landlord_dashboard() {
             const occupied = propUnits.filter(u => (u.status || '').toLowerCase() === 'occupied').length;
             const rate = propUnits.length > 0 ? Math.round((occupied / propUnits.length) * 100) : 0;
             return `
-                <div class="mb-3">
+                <a href="${ledgerUrl({ property: p.id })}"
+                   class="text-decoration-none d-block mb-3"
+                   title="Open the Financial Ledger filtered to ${esc(p.name)}">
                     <div class="d-flex justify-content-between mb-1" style="font-size: 13px;">
-                        <span class="fw-medium">${p.name}</span>
+                        <span class="fw-medium" style="color: var(--text-primary);">${esc(p.name)}</span>
                         <span class="fw-bold ${rate >= 90 ? 'text-success' : rate >= 70 ? 'text-warning' : 'text-danger'}">${rate}%</span>
                     </div>
                     <div class="progress" style="height: 6px; background-color: #e2e8f0;">
                         <div class="progress-bar ${rate >= 90 ? 'bg-success' : rate >= 70 ? 'bg-warning' : 'bg-danger'}" role="progressbar" style="width: ${rate}%"></div>
                     </div>
-                </div>
+                </a>
             `;
         }).join('');
         document.getElementById('rightPanelContent').innerHTML = occHtml || '<p class="text-muted">No properties found.</p>';
 
-        // ─── Rent Due Reminders (Landlord) ──────────────────────────
+        // ─── Rent Due Reminders (Landlord, deep-linked to ledger) ────
         const remindersDiv = document.getElementById('landlordReminders');
         if (remindersDiv) {
             remindersDiv.style.display = 'block';
@@ -220,8 +400,12 @@ async function render_landlord_dashboard() {
                                 <tbody>
                                     ${activeLeaseData.map(d => `
                                         <tr>
-                                            <td class="fw-medium">${d.tenant}</td>
-                                            <td>${d.property} / Unit ${d.unit}</td>
+                                            <td class="fw-medium">
+                                                <a href="${ledgerUrl({ q: d.tenant })}"
+                                                   class="text-decoration-none"
+                                                   title="View ${esc(d.tenant)} in the Financial Ledger">${esc(d.tenant)}</a>
+                                            </td>
+                                            <td>${esc(d.property)} / Unit ${esc(d.unit)}</td>
                                             <td>${formatDate(d.dueDate)}</td>
                                             <td>${d.days !== null ? (d.days <= 0 ? '<span class="badge bg-danger">Overdue</span>' : `${d.days} days`) : '—'}</td>
                                             <td class="font-monospace">${zmw(d.monthlyRent)}</td>
@@ -264,7 +448,7 @@ async function render_landlord_dashboard() {
         const recentPayments = confirmedPayments.slice(0, 5);
         document.getElementById('recentPayments').innerHTML = recentPayments.map(p => `
             <tr>
-                <td><div class="fw-medium">${p.tenant_name || 'N/A'}</div><div class="text-muted" style="font-size: 11px;">Unit ${p.unit_number || 'N/A'}</div></td>
+                <td><div class="fw-medium">${esc(p.tenant_name || 'N/A')}</div><div class="text-muted" style="font-size: 11px;">Unit ${esc(p.unit_number || 'N/A')}</div></td>
                 <td class="font-monospace fw-medium">${zmw(p.amount)}</td>
                 <td><span class="badge bg-success">Completed</span></td>
             </tr>
@@ -278,13 +462,13 @@ async function render_landlord_dashboard() {
         } catch { maintenance = []; }
         document.getElementById('recentMaintenance').innerHTML = maintenance.map(m => `
             <tr>
-                <td class="fw-medium">${m.title}</td>
-                <td class="text-muted">${m.unit_number || 'N/A'}</td>
+                <td class="fw-medium">${esc(m.title)}</td>
+                <td class="text-muted">${esc(m.unit_number || 'N/A')}</td>
                 <td><span class="badge ${m.priority === 'high' ? 'bg-danger' : 'bg-warning'}">${m.priority ? m.priority.toUpperCase() : 'N/A'}</span></td>
             </tr>
         `).join('') || '<tr><td colspan="3" class="text-center text-muted py-3">No open issues</td></tr>';
 
-        // ─── Arrears Alert ────────────────────────────────────────────
+        // ─── Arrears Alert → deep-links to the Financial Ledger ───────
         const alertsContainer = document.getElementById('alertsContainer');
         if (arrearsLeases.length > 0) {
             alertsContainer.innerHTML = `
@@ -293,7 +477,7 @@ async function render_landlord_dashboard() {
                     <div>
                         <strong>Action Required:</strong> ${arrearsLeases.length} tenant(s) in arrears totalling
                         <span class="font-monospace fw-bold">${zmw(totalArrears)}</span>.
-                        <a href="#" onclick="navigate('tenants');return false" class="alert-link ms-2">View Arrears →</a>
+                        <a href="${ledgerUrl({ view: 'arrears' })}" class="alert-link ms-2">View Arrears →</a>
                     </div>
                 </div>
             `;
@@ -305,7 +489,7 @@ async function render_landlord_dashboard() {
         console.error('Landlord dashboard error:', err);
         const contentEl = document.getElementById('contentWorkspace') || document.getElementById('content');
         if (contentEl) {
-            contentEl.innerHTML = `<div class="alert alert-danger m-4">Failed to load dashboard: ${err.message}</div>`;
+            contentEl.innerHTML = `<div class="alert alert-danger m-4">Failed to load dashboard: ${esc(err.message)}</div>`;
         }
     }
 }
@@ -328,7 +512,6 @@ async function render_tenant_dashboard() {
         const propertyName = profile.property_name || 'N/A';
         const unitNumber = profile.unit || 'N/A';
         const leaseStatus = profile.lease_status || 'No active lease';
-        // ─── Use fields from profile (now available) ──────────────
         const monthlyRent = parseFloat(profile.monthly_rent) || 0;
         const leaseStart = profile.lease_start ? new Date(profile.lease_start) : null;
         const leaseEnd = profile.lease_end ? new Date(profile.lease_end) : null;
@@ -350,7 +533,7 @@ async function render_tenant_dashboard() {
         document.getElementById('kpiLabel1').textContent = 'Your Unit';
         document.getElementById('kpiValue1').textContent = unitNumber;
         document.getElementById('kpiSub1').innerHTML =
-            `<i class="bi bi-house-door"></i> <span>${propertyName}</span>`;
+            `<i class="bi bi-house-door"></i> <span>${esc(propertyName)}</span>`;
 
         document.getElementById('kpiLabel2').textContent = 'Current Balance';
         document.getElementById('kpiValue2').textContent = zmw(balance);
@@ -360,8 +543,8 @@ async function render_tenant_dashboard() {
 
         document.getElementById('kpiLabel3').textContent = 'Lease Status';
         document.getElementById('kpiValue3').textContent = leaseStatus;
-        const statusBadge = leaseStatus && leaseStatus.toLowerCase() === 'active' ? 'bg-success' : 'bg-secondary';
-        document.getElementById('kpiSub3').innerHTML = `<span class="badge ${statusBadge}">${leaseStatus}</span>`;
+        const leaseBadge = leaseStatus && leaseStatus.toLowerCase() === 'active' ? 'bg-success' : 'bg-secondary';
+        document.getElementById('kpiSub3').innerHTML = `<span class="badge ${leaseBadge}">${esc(leaseStatus)}</span>`;
 
         document.getElementById('kpiLabel4').textContent = 'Payments Made';
         document.getElementById('kpiValue4').textContent = payments.length;
@@ -404,9 +587,7 @@ async function render_tenant_dashboard() {
         if (remindersDiv) remindersDiv.style.display = 'none';
 
         // ─── Chart: Rent Owed vs Rent Paid ───────────────────────────
-        // Start from the lease start date – no truncation to 6 months
         let startDate = leaseStart ? new Date(leaseStart) : new Date(now.getFullYear(), now.getMonth() - 5, 1);
-        // ✅ FIX: removed the clamping to sixMonthsAgo – now shows ALL months from lease start to now
 
         const monthMap = {};
         const currentDate = new Date(startDate);
@@ -451,9 +632,9 @@ async function render_tenant_dashboard() {
         const recentPayments = payments.slice(0, 5);
         document.getElementById('recentPayments').innerHTML = recentPayments.map(p => `
             <tr>
-                <td><div class="fw-medium">${p.payment_date || 'N/A'}</div></td>
+                <td><div class="fw-medium">${esc(p.payment_date || 'N/A')}</div></td>
                 <td class="font-monospace fw-medium">${zmw(p.amount)}</td>
-                <td><span class="badge ${p.status === 'confirmed' ? 'bg-success' : 'bg-warning'}">${p.status || 'pending'}</span></td>
+                <td><span class="badge ${p.status === 'confirmed' ? 'bg-success' : 'bg-warning'}">${esc(p.status || 'pending')}</span></td>
             </tr>
         `).join('') || '<tr><td colspan="3" class="text-center text-muted py-3">No payment records found.</td></tr>';
 
@@ -465,8 +646,8 @@ async function render_tenant_dashboard() {
         } catch { maintenance = []; }
         document.getElementById('recentMaintenance').innerHTML = maintenance.map(m => `
             <tr>
-                <td class="fw-medium">${m.title}</td>
-                <td class="text-muted">Unit ${m.unit_number || 'N/A'}</td>
+                <td class="fw-medium">${esc(m.title)}</td>
+                <td class="text-muted">Unit ${esc(m.unit_number || 'N/A')}</td>
                 <td><span class="badge ${m.priority === 'high' ? 'bg-danger' : 'bg-warning'}">${m.priority ? m.priority.toUpperCase() : 'N/A'}</span></td>
             </tr>
         `).join('') || '<tr><td colspan="3" class="text-center text-muted py-3">No maintenance requests.</td></tr>';
@@ -478,7 +659,7 @@ async function render_tenant_dashboard() {
         console.error('Tenant dashboard error:', err);
         const contentEl = document.getElementById('contentWorkspace') || document.getElementById('content');
         if (contentEl) {
-            contentEl.innerHTML = `<div class="alert alert-danger m-4">Failed to load tenant dashboard: ${err.message}</div>`;
+            contentEl.innerHTML = `<div class="alert alert-danger m-4">Failed to load tenant dashboard: ${esc(err.message)}</div>`;
         }
     }
 }

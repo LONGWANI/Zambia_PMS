@@ -2,50 +2,76 @@
 {% load static %}
 
 {% block page_title %}Tenant Directory{% endblock %}
-{% block page_subtitle %}Manage active leases, contact records, and account balances{% endblock %}
+{% block page_subtitle %}Manage tenant profiles, occupancy, identification, and tenancy agreements{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-sm-items-center gap-3 mb-4">
     <div>
         <h2 class="fs-4 fw-bold mb-1" style="color: var(--text-primary);">Tenant Directory</h2>
-        <p class="text-muted small mb-0" id="tenantSubtext">Manage active leases, contact records, and account balances</p>
+        <p class="text-muted small mb-0" id="tenantSubtext">Manage tenant profiles, occupancy, identification, and tenancy agreements</p>
     </div>
     <button class="btn-primary" onclick="openOnboardTenantModal()">
         <i class="bi bi-person-plus me-2"></i> Onboard New Tenant
     </button>
 </div>
 
+<!-- Search & Filters -->
 <div class="saas-card p-0 overflow-hidden shadow-sm">
-    <div class="p-3 border-bottom d-flex flex-column flex-sm-row justify-content-between gap-3 bg-light">
-        <div class="input-group" style="max-width: 380px;">
+    <div class="p-3 border-bottom d-flex flex-wrap gap-2 bg-light align-items-center">
+        <div class="input-group" style="max-width: 300px;">
             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-            <input type="text" class="form-control border-start-0"
-                   placeholder="Search name, email, phone, or unit..." id="tenantSearch">
+            <input type="text" class="form-control border-start-0" placeholder="Search name, ID, NRC, phone, email..." id="tenantSearch">
         </div>
-        <div>
-            <select class="form-select" id="tenantStatusFilter" style="width: auto;">
-                <option value="all">All Statuses</option>
-                <option value="active">Current (No Balance)</option>
-                <option value="arrears">In Arrears</option>
-            </select>
+
+        <select class="form-select" id="tenantStatusFilter" style="width: auto; min-width: 150px;">
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="expired">Expired</option>
+            <option value="terminated">Terminated</option>
+            <option value="archived">Archived</option>
+            <option value="none">No Lease</option>
+        </select>
+
+        <select class="form-select" id="tenantContractFilter" style="width: auto; min-width: 150px;">
+            <option value="all">All Contracts</option>
+            <option value="active">Active</option>
+            <option value="expired">Expired</option>
+            <option value="none">No Contract</option>
+        </select>
+
+        <select class="form-select" id="tenantPropertyFilter" style="width: auto; min-width: 150px;">
+            <option value="all">All Properties</option>
+            <!-- Options populated dynamically by JS -->
+        </select>
+
+        <!-- Saved Views -->
+        <div class="ms-auto d-flex gap-1 flex-wrap">
+            <button class="btn btn-sm btn-outline-secondary saved-view-btn" data-view="active">Active</button>
+            <button class="btn btn-sm btn-outline-warning saved-view-btn" data-view="expiring">Expiring</button>
+            <button class="btn btn-sm btn-outline-danger saved-view-btn" data-view="expired">Expired</button>
+            <button class="btn btn-sm btn-outline-info saved-view-btn" data-view="unverified">Unverified</button>
+            <button class="btn btn-sm btn-outline-secondary saved-view-btn" data-view="unassigned">Unassigned</button>
         </div>
     </div>
 
+    <!-- Tenant Table -->
     <div class="table-responsive">
         <table class="table table-hover align-middle saas-table m-0">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Property / Unit</th>
-                    <th>Contact</th>
-                    <th>Status</th>
-                    <th>Balance</th>
-                    <th class="text-end">Actions</th>
+                    <th style="min-width: 180px;">Tenant</th>
+                    <th style="min-width: 140px;">Identification</th>
+                    <th style="min-width: 150px;">Property / Unit</th>
+                    <th style="min-width: 180px;">Contact</th>
+                    <th style="min-width: 110px;">Tenancy Status</th>
+                    <th style="min-width: 150px;">Contract</th>
+                    <th style="min-width: 130px;" class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody id="tenantTableBody">
                 <tr>
-                    <td colspan="6" class="text-center py-5 text-muted">
+                    <td colspan="7" class="text-center py-5 text-muted">
                         <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
                         Loading tenant directory...
                     </td>
@@ -54,15 +80,76 @@
         </table>
     </div>
 </div>
+
+<style>
+    .tenant-link {
+        color: #0d6efd;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.15s ease-in-out, text-decoration 0.15s ease-in-out;
+    }
+    .tenant-link:hover {
+        color: #0a58ca;
+        text-decoration: underline;
+    }
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 13px;
+        color: #495057;
+        flex-shrink: 0;
+    }
+    .saas-table thead th {
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: #6c757d;
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+        padding: 0.75rem 0.5rem;
+    }
+    .saas-table tbody td {
+        padding: 0.75rem 0.5rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .saas-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    .badge {
+        font-weight: 500;
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+    }
+    .btn-sm {
+        font-size: 0.75rem;
+    }
+</style>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/tenants.js' %}?v=3"></script>
+<script src="{% static 'js/tenants.js' %}?v=4"></script>
 <script>
     auth.protectRoute(['admin', 'landlord']);
 
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof render_tenants === 'function') {
+            // Populate property filter dropdown from API
+            api.properties.list().then(res => {
+                const props = res.results || res || [];
+                const sel = document.getElementById('tenantPropertyFilter');
+                if (sel) {
+                    sel.innerHTML = '<option value="all">All Properties</option>' +
+                        props.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+                }
+            }).catch(() => {});
             render_tenants();
         }
     });

@@ -1,0 +1,90 @@
+{# apps/billing/templates/billing/receipt_pdf.html — rendered by WeasyPrint. Inline CSS only. #}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    @page { size: A4; margin: 18mm; }
+    body   { font-family: Helvetica, Arial, sans-serif; color: #1f2937; font-size: 12px; }
+    .head  { text-align: center; border-bottom: 2px solid #14532d; padding-bottom: 10px; margin-bottom: 16px; }
+    .head h1 { margin: 0; font-size: 22px; color: #14532d; letter-spacing: 1px; }
+    .head p  { margin: 2px 0 0; color: #6b7280; }
+    table.meta { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+    table.meta td { padding: 3px 0; vertical-align: top; }
+    table.meta td.label { color: #6b7280; width: 32%; }
+    table.meta td.value { font-weight: bold; text-align: right; }
+    .amount-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px;
+                  padding: 12px 16px; margin: 12px 0; }
+    .amount-box .amt { font-size: 24px; font-weight: bold; color: #14532d; }
+    .status { display: inline-block; border: 1px solid #14532d; color: #14532d;
+              padding: 2px 10px; border-radius: 999px; font-weight: bold; font-size: 11px; }
+    table.prepaid { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    table.prepaid th, table.prepaid td { border-bottom: 1px solid #e5e7eb; padding: 5px 4px; text-align: left; }
+    table.prepaid th { background: #f3f4f6; font-size: 11px; }
+    table.prepaid td.amt-cell { text-align: right; font-family: monospace; }
+    .footer { margin-top: 36px; text-align: center; color: #9ca3af; font-size: 10px;
+              border-top: 1px solid #e5e7eb; padding-top: 10px; }
+    .sig { margin-top: 48px; width: 45%; margin-left: auto; margin-right: auto;
+           border-top: 1px solid #9ca3af; text-align: center; padding-top: 4px; color: #374151; }
+</style>
+</head>
+<body>
+    <div class="head">
+        <h1>ZambiaPMS</h1>
+        <p>Official Payment Receipt — {{ receipt.receipt_number }}</p>
+    </div>
+
+    <table class="meta">
+        <tr><td class="label">Receipt No.</td><td class="value">{{ receipt.receipt_number }}</td></tr>
+        <tr><td class="label">Date</td><td class="value">{{ receipt.date }}</td></tr>
+        <tr><td class="label">Tenant</td><td class="value">{{ receipt.tenant }}</td></tr>
+        <tr><td class="label">Unit</td><td class="value">{{ receipt.unit }}</td></tr>
+        <tr><td class="label">Charge Type</td><td class="value">{{ receipt.charge_type|default:"Rent" }}</td></tr>
+        <tr><td class="label">Payment Method</td><td class="value">{{ receipt.payment_method }}</td></tr>
+        <tr><td class="label">Reference</td><td class="value">{{ receipt.reference|default:"—" }}</td></tr>
+        <tr><td class="label">Period</td><td class="value">{{ receipt.period|default:"—" }}</td></tr>
+    </table>
+
+    {% if receipt.utility %}
+    <table class="meta">
+        <tr><td class="label">Utility</td><td class="value">{{ receipt.utility.utility }}</td></tr>
+        {% if receipt.utility.period %}<tr><td class="label">Billing Period</td><td class="value">{{ receipt.utility.period }}</td></tr>{% endif %}
+        {% if receipt.utility.invoice %}<tr><td class="label">Invoice No.</td><td class="value">{{ receipt.utility.invoice }}</td></tr>{% endif %}
+    </table>
+    {% endif %}
+
+    <div class="amount-box">
+        <span class="amt">ZMW {{ receipt.amount_paid }}</span>
+        &nbsp;&nbsp;<span class="status">{{ receipt.status }}</span>
+    </div>
+
+    <table class="meta">
+        <tr><td class="label">Balance Before</td><td class="value">ZMW {{ receipt.balance_before }}</td></tr>
+        <tr><td class="label">Balance After</td><td class="value">ZMW {{ receipt.balance_after }}</td></tr>
+    </table>
+
+    {% if receipt.prepaid_months %}
+    <p><strong>Prepaid allocation — total ZMW {{ receipt.total_prepaid }}:</strong></p>
+    <table class="prepaid">
+        <thead><tr><th>#</th><th>Covers Month</th><th>Amount (ZMW)</th></tr></thead>
+        <tbody>
+        {% for m in receipt.prepaid_months %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{% if m.month %}{{ m.month|date:"F Y" }}{% else %}—{% endif %}</td>
+                <td class="amt-cell">{{ m.amount }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <p style="margin-top:14px; color:#6b7280;">
+        Recorded by: {{ receipt.recorded_by|default:"—" }}
+        {% if receipt.approved_by %} &nbsp;·&nbsp; Approved by: {{ receipt.approved_by }}{% endif %}
+    </p>
+
+    <div class="sig">Authorised Signature</div>
+    <div class="footer">This is a system-generated receipt from ZambiaPMS. Generated {{ receipt.date }}.</div>
+</body>
+</html>

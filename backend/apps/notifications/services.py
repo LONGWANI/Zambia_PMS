@@ -1,6 +1,12 @@
 # apps/notifications/services.py
+import logging
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils import timezone
+from io import BytesIO
 from .models import Notification, NotificationType
 
+logger = logging.getLogger(__name__)
 
 class NotificationService:
     """
@@ -24,7 +30,6 @@ class NotificationService:
         """Notify tenant that a payment was recorded."""
         lease = payment.lease
         tenant_user = lease.tenant.user
-        # Use the current balance from the lease (should be updated by PaymentService)
         balance_after = lease.balance_due
         cls._create(
             user=tenant_user,
@@ -88,3 +93,56 @@ class NotificationService:
             related_id=lease.id,
             related_type='lease',
         )
+
+    @classmethod
+    def send_payment_receipt(cls, payment):
+        """
+        Generate a PDF receipt and email it to the tenant.
+        Also creates an in-app notification.
+        """
+        from apps.billing.services import PaymentService
+        from weasyprint import HTML
+
+        tenant_user = payment.lease.tenant.user
+        receipt_data = PaymentService.generate_receipt(payment)
+
+        # Render HTML
+        html_string = render_to_string('billing/receipt_pdf.html', {'receipt': receipt_data})
+        pdf_file = HTML(string=html_string).write_pdf()
+
+        # Email subject and body
+        subject = f'Payment Receipt – {receipt_data["receipt_number"]}'
+        body = f"""
+Dear {tenant_user.get_full_name()},
+
+Your payment of ZMW {receipt_data['amount_paid']} has been confirmed.
+Please find the receipt attached.
+
+Thank you,
+ZambiaPMS
+        """
+        email = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email='noreply@zambiapms.com',
+            to=[tenant_user.email],
+        )
+        email.attach(f'{receipt_data["receipt_number"]}.pdf', pdf_file, 'application/pdf')
+        
+        # Attempt to send, log error but don't raise (prevents 500)
+        try:
+            email.send(fail_silently=False)
+        except Exception as e:
+            logger.error(f"Failed to send receipt email for payment {payment.id}: {e}")
+            # Still create in-app notification below
+
+        # In-app notification (always created)
+        cls._create(
+            user=tenant_user,
+            notif_type='payment_receipt',
+            title='Payment Receipt Ready',
+            message=f'Your payment of ZMW {receipt_data["amount_paid"]} has been confirmed. Receipt attached.',
+            related_id=payment.id,
+            related_type='payment'
+        )
+        logger.info(f'Receipt generated for payment {payment.id}')

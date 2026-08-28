@@ -3,6 +3,7 @@ from core.models import TimeStampedModel
 from apps.tenants.models import Lease
 from apps.properties.models import Property, Unit
 from apps.authentication.models import User
+from decimal import Decimal, InvalidOperation
 
 
 class PaymentProvider(models.TextChoices):
@@ -41,8 +42,8 @@ class Payment(TimeStampedModel):
         default='rent'
     )
     amount           = models.DecimalField(max_digits=12, decimal_places=2)
-    balance_before   = models.DecimalField(max_digits=12, decimal_places=2)
-    balance_after    = models.DecimalField(max_digits=12, decimal_places=2)
+    balance_before   = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    balance_after    = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     payment_method   = models.CharField(max_length=50, choices=PaymentMethod.choices)
     reference_number = models.CharField(max_length=100, blank=True)
     payment_date     = models.DateField()
@@ -56,6 +57,21 @@ class Payment(TimeStampedModel):
         default='pending',
         choices=[('confirmed', 'Confirmed'), ('pending', 'Pending'), ('reversed', 'Reversed')]
     )
+    # Approval audit trail
+    approved_by      = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                         related_name='approved_payments')
+    approved_at      = models.DateTimeField(null=True, blank=True)
+    # Link a payment to the utility charge it settles (if any)
+    utility_allocation = models.ForeignKey(
+        'UtilityAllocation', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='payments',
+        help_text="Set when this payment settles a utility bill allocation."
+    )
+    # Store prepaid allocation details
+    prepaid_allocations = models.JSONField(
+        default=list, blank=True,
+        help_text="List of {month: 'YYYY-MM-DD', amount: '...'} for prepaid months"
+    )
 
     class Meta:
         db_table = 'payments'
@@ -63,6 +79,26 @@ class Payment(TimeStampedModel):
 
     def __str__(self):
         return f"ZMW {self.amount} — {self.lease} on {self.payment_date}"
+
+    @property
+    def is_prepaid(self):
+        return bool(self.prepaid_allocations)
+
+    @property
+    def months_covered(self):
+        return [alloc.get('month') for alloc in (self.prepaid_allocations or [])]
+
+    @property
+    def total_prepaid(self):
+        # Start from Decimal('0.00') — sum() starts at int 0, which has no
+        # .quantize() and crashed the list endpoint for empty allocations.
+        total = Decimal('0.00')
+        for alloc in (self.prepaid_allocations or []):
+            try:
+                total += Decimal(str(alloc.get('amount', '0')))
+            except (TypeError, ValueError, InvalidOperation):
+                continue
+        return total.quantize(Decimal('0.01'))
 
 
 class UtilityType(models.TextChoices):
@@ -107,7 +143,13 @@ class UtilityBill(TimeStampedModel):
 class UtilityAllocation(TimeStampedModel):
     bill             = models.ForeignKey(UtilityBill, on_delete=models.CASCADE, related_name='allocations')
     unit             = models.ForeignKey(Unit, on_delete=models.RESTRICT, related_name='utility_allocations')
-    tenant           = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    tenant           = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    # The active lease this charge was posted to (drives balance_due + ledger visibility)
+    lease            = models.ForeignKey(
+        Lease, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='utility_charges',
+        help_text="Active lease billed. Set when the charge is posted to the tenant's balance."
+    )
     allocated_amount = models.DecimalField(max_digits=12, decimal_places=2)
     allocation_basis = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
     is_paid          = models.BooleanField(default=False)
@@ -121,8 +163,6 @@ class UtilityAllocation(TimeStampedModel):
         return f"ZMW {self.allocated_amount} — {self.unit}"
 
 
-# ─── NEW: Expense model for maintenance costs ───────────────────────────────
-
 class ExpenseCategory(models.TextChoices):
     MAINTENANCE = 'maintenance', 'Maintenance & Repairs'
     UTILITIES   = 'utilities',   'Utilities'
@@ -132,33 +172,21 @@ class ExpenseCategory(models.TextChoices):
 
 
 class Expense(TimeStampedModel):
-    """
-    Records operating expenses (maintenance, utilities, etc.)
-    """
     amount          = models.DecimalField(max_digits=12, decimal_places=2)
     category        = models.CharField(max_length=50, choices=ExpenseCategory.choices, default=ExpenseCategory.MAINTENANCE)
     description     = models.TextField(blank=True)
     expense_date    = models.DateField()
     maintenance     = models.ForeignKey(
         'maintenance.MaintenanceRequest',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='expenses'
+        on_delete=models.SET_NULL, null=True, blank=True, related_name='expenses'
     )
     property        = models.ForeignKey(
         'properties.Property',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='expenses'
+        on_delete=models.SET_NULL, null=True, blank=True, related_name='expenses'
     )
     recorded_by     = models.ForeignKey(
         'authentication.User',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='recorded_expenses'
+        on_delete=models.SET_NULL, null=True, blank=True, related_name='recorded_expenses'
     )
 
     class Meta:

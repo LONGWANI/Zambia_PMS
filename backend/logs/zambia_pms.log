@@ -161,3 +161,1356 @@ INFO 2026-08-12 12:09:37,738 views 16820 22844 Tenant created with ID: 65c80320-
 INFO 2026-08-12 12:09:37,746 views 16820 22844 Leases for tenant: 1
 INFO 2026-08-12 12:09:37,837 views 16820 22844 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
 INFO 2026-08-12 12:09:37,869 views 16820 22844 Tenant queryset count: 6
+INFO 2026-08-12 12:22:44,136 views 11812 7056 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:22:44,170 views 11812 7056 Tenant queryset count: 6
+INFO 2026-08-12 12:23:06,164 views 11812 2860 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:23:06,196 views 11812 2860 Tenant queryset count: 6
+INFO 2026-08-12 12:49:11,281 views 7152 16692 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:49:11,322 views 7152 16692 Tenant queryset count: 6
+INFO 2026-08-12 12:49:22,380 views 7152 23244 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:49:22,427 views 7152 23244 Tenant queryset count: 6
+INFO 2026-08-12 12:49:40,641 views 7152 11580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:49:40,686 views 7152 11580 Tenant queryset count: 6
+INFO 2026-08-12 12:49:43,804 views 7152 2640 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:49:43,844 views 7152 2640 Tenant queryset count: 6
+INFO 2026-08-12 12:50:06,680 views 7152 10128 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:50:06,738 views 7152 10128 Tenant queryset count: 6
+INFO 2026-08-12 12:50:14,463 views 7152 11580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:50:14,502 views 7152 11580 Tenant queryset count: 6
+INFO 2026-08-12 12:50:51,901 views 7152 18624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:50:51,945 views 7152 18624 Tenant queryset count: 6
+INFO 2026-08-12 12:52:40,290 views 7152 23184 Creating tenant with data: {'first_name': 'King', 'last_name': 'George', 'email': 'KG@zpms.com', 'phone': '0550193146', 'nrc_passport': '222222/22/2', 'password': 'L0ngwani', 'employer_name': '', 'employer_phone': '', 'notes': '', 'property_id': '88436af7-44d2-4f3b-8f25-ba190b32c2be', 'unit_number': '7', 'monthly_rent': 3000}
+INFO 2026-08-12 12:52:42,091 views 7152 23184 Tenant created with ID: 6bf6b1da-fc80-4578-8797-8f7d448f4518
+INFO 2026-08-12 12:52:42,103 views 7152 23184 Leases for tenant: 1
+INFO 2026-08-12 12:52:42,387 views 7152 23184 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-12 12:52:42,409 views 7152 23184 Tenant queryset count: 7
+INFO 2026-08-13 08:25:38,001 views 7152 4648 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:25:38,218 views 7152 4648 Tenant queryset count: 7
+INFO 2026-08-13 08:27:03,767 views 7152 26312 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:27:03,817 views 7152 26312 Tenant queryset count: 7
+INFO 2026-08-13 08:46:22,723 views 11496 24648 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:46:22,769 views 11496 24648 Tenant queryset count: 7
+INFO 2026-08-13 08:46:28,883 views 11496 7196 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:46:28,938 views 11496 7196 Tenant queryset count: 7
+INFO 2026-08-13 08:46:49,165 views 11496 2868 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:46:49,215 views 11496 2868 Tenant queryset count: 7
+INFO 2026-08-13 08:53:15,803 views 22196 1852 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:53:15,849 views 22196 1852 Tenant queryset count: 7
+INFO 2026-08-13 08:53:24,786 views 22196 25420 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:53:24,836 views 22196 25420 Tenant queryset count: 7
+INFO 2026-08-13 08:54:22,422 views 14288 24268 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:54:22,484 views 14288 24268 Tenant queryset count: 7
+INFO 2026-08-13 08:54:26,450 views 14288 22052 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:54:26,494 views 14288 22052 Tenant queryset count: 7
+INFO 2026-08-13 08:55:10,378 views 14288 26056 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:55:10,454 views 14288 26056 Tenant queryset count: 7
+INFO 2026-08-13 08:55:16,947 views 14288 26128 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 08:55:17,018 views 14288 26128 Tenant queryset count: 7
+INFO 2026-08-13 09:13:36,156 views 14288 15136 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 09:13:36,208 views 14288 15136 Tenant queryset count: 7
+INFO 2026-08-13 09:15:27,058 views 14288 8808 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 09:15:27,119 views 14288 8808 Tenant queryset count: 7
+INFO 2026-08-13 12:28:16,376 views 20844 25468 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 12:28:16,542 views 20844 25468 Tenant queryset count: 7
+INFO 2026-08-13 12:28:23,420 views 20844 20584 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 12:28:23,471 views 20844 20584 Tenant queryset count: 7
+INFO 2026-08-13 12:29:02,154 views 20844 24152 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 12:29:02,221 views 20844 24152 Tenant queryset count: 7
+INFO 2026-08-13 12:29:24,927 views 20844 23664 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 12:29:25,007 views 20844 23664 Tenant queryset count: 7
+INFO 2026-08-13 13:11:38,606 views 26000 9996 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:11:38,665 views 26000 9996 Tenant queryset count: 7
+INFO 2026-08-13 13:21:00,848 views 22664 17936 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:21:00,894 views 22664 17936 Tenant queryset count: 7
+ERROR 2026-08-13 13:21:32,788 views 22664 25008 Utility bill creation failed: Invalid field name(s) given in select_related: 'current_lease'. Choices are: property, current_tenant
+ERROR 2026-08-13 13:21:47,818 views 22664 25380 Utility bill creation failed: Invalid field name(s) given in select_related: 'current_lease'. Choices are: property, current_tenant
+ERROR 2026-08-13 13:22:44,266 views 22664 11240 Utility bill creation failed: Invalid field name(s) given in select_related: 'current_lease'. Choices are: property, current_tenant
+INFO 2026-08-13 13:25:08,142 views 22664 332 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:25:08,188 views 22664 332 Tenant queryset count: 7
+INFO 2026-08-13 13:25:22,185 views 22664 13896 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:25:22,221 views 22664 13896 Tenant queryset count: 7
+INFO 2026-08-13 13:32:04,559 views 19376 22300 Mapped utility type 'Electricity (ZESCO)' to 'electricity'
+ERROR 2026-08-13 13:32:04,590 views 19376 22300 Utility bill creation failed unexpectedly: Invalid field name(s) given in select_related: 'current_lease'. Choices are: property, current_tenant
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 265, in create_and_split
+    bill = UtilityBillService.create_and_split_bill(
+        property_obj=property_obj,
+    ...<3 lines>...
+        split_method=split_method,
+    )
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\services.py", line 163, in create_and_split_bill
+    cls.split_bill(bill, manual_allocations=manual_allocations)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\services.py", line 185, in split_bill
+    allocations = cls._split_equal(bill, occupied_units)
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\services.py", line 212, in _split_equal
+    for i, unit in enumerate(units):
+                   ~~~~~~~~~^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\query.py", line 390, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1611, in execute_sql
+    sql, params = self.as_sql()
+                  ~~~~~~~~~~~^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 767, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+                                       ~~~~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases or bool(combinator),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 86, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 75, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+                                                            ~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 300, in get_select
+    related_klass_infos = self.get_related_selections(select, select_mask)
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1397, in get_related_selections
+    raise FieldError(
+    ...<6 lines>...
+    )
+django.core.exceptions.FieldError: Invalid field name(s) given in select_related: 'current_lease'. Choices are: property, current_tenant
+INFO 2026-08-13 13:32:11,860 views 19376 12472 Mapped utility type 'Electricity (ZESCO)' to 'electricity'
+ERROR 2026-08-13 13:32:11,894 views 19376 12472 Utility bill creation failed unexpectedly: Invalid field name(s) given in select_related: 'current_lease'. Choices are: property, current_tenant
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 265, in create_and_split
+    bill = UtilityBillService.create_and_split_bill(
+        property_obj=property_obj,
+    ...<3 lines>...
+        split_method=split_method,
+    )
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\services.py", line 163, in create_and_split_bill
+    cls.split_bill(bill, manual_allocations=manual_allocations)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 85, in inner
+    return func(*args, **kwds)
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\services.py", line 185, in split_bill
+    allocations = cls._split_equal(bill, occupied_units)
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\services.py", line 212, in _split_equal
+    for i, unit in enumerate(units):
+                   ~~~~~~~~~^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\query.py", line 390, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1611, in execute_sql
+    sql, params = self.as_sql()
+                  ~~~~~~~~~~~^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 767, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+                                       ~~~~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases or bool(combinator),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 86, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 75, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+                                                            ~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 300, in get_select
+    related_klass_infos = self.get_related_selections(select, select_mask)
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1397, in get_related_selections
+    raise FieldError(
+    ...<6 lines>...
+    )
+django.core.exceptions.FieldError: Invalid field name(s) given in select_related: 'current_lease'. Choices are: property, current_tenant
+INFO 2026-08-13 13:39:13,228 views 12148 23920 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:39:13,281 views 12148 23920 Tenant queryset count: 7
+INFO 2026-08-13 13:39:23,894 views 12148 22008 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:39:23,935 views 12148 22008 Tenant queryset count: 7
+INFO 2026-08-13 13:39:58,585 views 12148 23920 Found 2 occupied units
+INFO 2026-08-13 13:39:58,598 views 12148 23920 Created UtilityBill 6d2c9c22-ede6-4107-9f90-fda9d4867475
+INFO 2026-08-13 13:39:58,735 views 12148 23920 Created 2 allocations
+INFO 2026-08-13 13:40:15,141 views 12148 21168 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:40:15,208 views 12148 21168 Tenant queryset count: 7
+INFO 2026-08-13 13:51:06,110 views 12148 12308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:51:06,156 views 12148 12308 Tenant queryset count: 7
+INFO 2026-08-13 13:51:14,597 views 12148 22472 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-13 13:51:14,685 views 12148 22472 Tenant queryset count: 7
+INFO 2026-08-13 13:54:54,749 views 12148 19064 Tenant list requested by user: Vernon Longwani (admin) (is_admin: True)
+INFO 2026-08-13 13:54:54,764 views 12148 19064 Tenant queryset count: 14
+INFO 2026-08-13 13:55:42,698 views 12148 12648 Tenant list requested by user: Vernon Longwani (admin) (is_admin: True)
+INFO 2026-08-13 13:55:42,719 views 12148 12648 Tenant queryset count: 14
+INFO 2026-08-13 13:55:56,442 views 12148 12648 Tenant list requested by user: Vernon Longwani (admin) (is_admin: True)
+INFO 2026-08-13 13:55:56,476 views 12148 12648 Tenant queryset count: 14
+INFO 2026-08-14 11:49:52,187 views 26312 24980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 11:49:52,236 views 26312 24980 Tenant queryset count: 7
+INFO 2026-08-14 11:55:21,747 views 26312 7416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 11:55:21,799 views 26312 7416 Tenant queryset count: 7
+INFO 2026-08-14 11:55:41,095 views 26312 7416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 11:55:41,149 views 26312 7416 Tenant queryset count: 7
+INFO 2026-08-14 11:55:47,254 views 26312 24980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 11:55:47,299 views 26312 24980 Tenant queryset count: 7
+INFO 2026-08-14 11:56:51,644 views 26312 24980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 11:56:51,705 views 26312 24980 Tenant queryset count: 7
+INFO 2026-08-14 12:02:45,745 views 26312 18884 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 12:02:45,802 views 26312 18884 Tenant queryset count: 7
+INFO 2026-08-14 12:05:46,432 views 26312 7756 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 12:05:46,480 views 26312 7756 Tenant queryset count: 7
+INFO 2026-08-14 12:19:47,969 views 26312 1296 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-14 12:19:48,035 views 26312 1296 Tenant queryset count: 7
+INFO 2026-08-17 10:26:29,206 views 6708 17500 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-17 10:26:29,301 views 6708 17500 Tenant queryset count: 7
+INFO 2026-08-17 10:26:31,221 views 6708 17500 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-17 10:26:31,285 views 6708 17500 Tenant queryset count: 7
+INFO 2026-08-17 10:26:32,849 views 6708 17480 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-17 10:26:32,918 views 6708 17480 Tenant queryset count: 7
+INFO 2026-08-17 10:27:09,283 views 6708 17448 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-17 10:27:09,332 views 6708 17448 Tenant queryset count: 7
+INFO 2026-08-17 10:38:08,116 views 6708 18608 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-17 10:38:08,154 views 6708 18608 Tenant queryset count: 7
+INFO 2026-08-17 10:38:40,160 views 6708 10340 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-17 10:38:40,223 views 6708 10340 Tenant queryset count: 7
+INFO 2026-08-20 21:50:13,771 views 6708 23420 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 21:50:13,829 views 6708 23420 Tenant queryset count: 7
+INFO 2026-08-20 21:50:26,123 views 6708 21388 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 21:50:26,166 views 6708 21388 Tenant queryset count: 7
+INFO 2026-08-20 23:45:46,436 views 17828 14512 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:45:46,817 views 17828 14512 Tenant queryset count: 7
+INFO 2026-08-20 23:45:52,807 views 17828 22060 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:45:52,857 views 17828 22060 Tenant queryset count: 7
+INFO 2026-08-20 23:46:26,071 views 17828 17712 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:26,171 views 17828 17712 Tenant queryset count: 7
+INFO 2026-08-20 23:46:27,563 views 17828 17712 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:27,693 views 17828 17712 Tenant queryset count: 7
+INFO 2026-08-20 23:46:28,948 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:28,999 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:29,222 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:29,335 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:34,186 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:34,290 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:36,094 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:36,145 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:37,329 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:37,382 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:38,925 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:39,026 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:42,715 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:42,819 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:51,269 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:51,371 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:46:51,722 views 17828 2092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:46:51,838 views 17828 2092 Tenant queryset count: 7
+INFO 2026-08-20 23:51:10,887 views 17828 11808 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:10,948 views 17828 11808 Tenant queryset count: 7
+INFO 2026-08-20 23:51:20,563 views 17828 8376 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:20,653 views 17828 8376 Tenant queryset count: 7
+INFO 2026-08-20 23:51:23,043 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:23,088 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:23,856 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:23,972 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:24,737 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:24,797 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:25,258 views 17828 8376 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:25,327 views 17828 8376 Tenant queryset count: 7
+INFO 2026-08-20 23:51:26,368 views 17828 8376 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:26,422 views 17828 8376 Tenant queryset count: 7
+INFO 2026-08-20 23:51:27,133 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:27,141 views 17828 21724 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:27,835 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:27,839 views 17828 21724 Tenant queryset count: 7
+INFO 2026-08-20 23:51:28,292 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:28,339 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:28,609 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:28,745 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:29,695 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:30,105 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:30,605 views 17828 20192 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:30,662 views 17828 20192 Tenant queryset count: 7
+INFO 2026-08-20 23:51:32,086 views 17828 10016 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:32,170 views 17828 10016 Tenant queryset count: 7
+INFO 2026-08-20 23:51:38,622 views 17828 10016 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:38,765 views 17828 10016 Tenant queryset count: 7
+INFO 2026-08-20 23:51:39,378 views 17828 10016 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:39,427 views 17828 10016 Tenant queryset count: 7
+INFO 2026-08-20 23:51:52,107 views 17828 10016 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:52,157 views 17828 10016 Tenant queryset count: 7
+INFO 2026-08-20 23:51:57,079 views 17828 10016 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:51:57,137 views 17828 10016 Tenant queryset count: 7
+INFO 2026-08-20 23:52:00,908 views 17828 10016 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:52:00,958 views 17828 10016 Tenant queryset count: 7
+INFO 2026-08-20 23:52:02,545 views 17828 8376 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:52:02,658 views 17828 8376 Tenant queryset count: 7
+INFO 2026-08-20 23:52:16,103 views 17828 19252 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:52:16,172 views 17828 19252 Tenant queryset count: 7
+INFO 2026-08-20 23:52:52,413 views 17828 19696 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:52:52,477 views 17828 19696 Tenant queryset count: 7
+INFO 2026-08-20 23:53:18,324 views 17828 16424 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:53:18,378 views 17828 16424 Tenant queryset count: 7
+INFO 2026-08-20 23:53:39,248 views 17828 13612 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:53:39,314 views 17828 13612 Tenant queryset count: 7
+INFO 2026-08-20 23:54:29,319 views 17828 3416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:54:29,377 views 17828 3416 Tenant queryset count: 7
+INFO 2026-08-20 23:54:48,975 views 17828 3416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:54:49,094 views 17828 3416 Tenant queryset count: 7
+INFO 2026-08-20 23:54:49,948 views 17828 3416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:54:50,199 views 17828 3416 Tenant queryset count: 7
+INFO 2026-08-20 23:55:14,795 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:14,873 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:37,247 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:37,315 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:46,983 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:47,094 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:47,683 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:47,820 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:50,949 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:51,074 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:51,785 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:51,837 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:52,267 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:52,314 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:53,808 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:54,102 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:55:54,640 views 17828 9072 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:54,695 views 17828 9072 Tenant queryset count: 7
+INFO 2026-08-20 23:55:55,188 views 17828 23176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:55:55,266 views 17828 23176 Tenant queryset count: 7
+INFO 2026-08-20 23:56:17,200 views 17828 6828 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:56:17,276 views 17828 6828 Tenant queryset count: 7
+INFO 2026-08-20 23:56:24,244 views 17828 6828 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:56:24,290 views 17828 6828 Tenant queryset count: 7
+INFO 2026-08-20 23:56:26,636 views 17828 6828 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:56:26,772 views 17828 6828 Tenant queryset count: 7
+INFO 2026-08-20 23:56:37,026 views 17828 6828 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:56:37,177 views 17828 6828 Tenant queryset count: 7
+INFO 2026-08-20 23:56:39,643 views 17828 20472 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-20 23:56:39,700 views 17828 20472 Tenant queryset count: 7
+INFO 2026-08-21 07:29:29,297 views 17828 22640 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 07:29:29,357 views 17828 22640 Tenant queryset count: 7
+INFO 2026-08-21 07:30:50,614 views 17828 26148 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 07:30:50,665 views 17828 26148 Tenant queryset count: 7
+INFO 2026-08-21 07:31:40,516 views 17828 8336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 07:31:40,573 views 17828 8336 Tenant queryset count: 7
+INFO 2026-08-21 07:36:46,235 views 17828 828 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 07:36:46,290 views 17828 828 Tenant queryset count: 7
+INFO 2026-08-21 07:42:00,795 views 17828 20880 Creating tenant with data: {'first_name': 'Blessing', 'last_name': 'Chanda', 'email': 'BlessingsTenant@Zpms.com', 'phone': '0976565656', 'nrc_passport': '909998/67/1', 'password': 'L0ngwani', 'date_of_birth': '1999-06-09', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Emmanuel Chanda', 'relationship': 'Father', 'phone': '0978855555', 'email': 'emmaChNextKin@Zmps.com'}, 'occupants': 4, 'move_in_date': '2025-04-17', 'property_id': '09d6fe44-06c0-419f-bb00-c5bb517af419', 'unit_number': '3', 'monthly_rent': 4500, 'employer_name': '', 'employer_phone': '', 'notes': ''}
+INFO 2026-08-21 07:42:16,239 views 17828 16956 Creating tenant with data: {'first_name': 'Blessing', 'last_name': 'Chanda', 'email': 'BlessingsTenant@Zpms.com', 'phone': '0976565656', 'nrc_passport': '909998/67/1', 'password': 'L0ngwani', 'date_of_birth': '1999-06-09', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Emmanuel Chanda', 'relationship': 'Father', 'phone': '0978855555', 'email': 'emmaChNextKin@Zmps.com'}, 'occupants': 4, 'move_in_date': '2025-04-17', 'property_id': '09d6fe44-06c0-419f-bb00-c5bb517af419', 'unit_number': '3', 'monthly_rent': 4500, 'employer_name': '', 'employer_phone': '', 'notes': ''}
+INFO 2026-08-21 07:44:34,573 views 17828 13424 Creating tenant with data: {'first_name': 'Blessing', 'last_name': 'Chanda', 'email': 'BlessingsTenant@Zpms.com', 'phone': '0976565656', 'nrc_passport': '909998/67/1', 'password': 'L0ngwani', 'date_of_birth': '1999-06-09', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Emmanuel Chanda', 'relationship': 'Father', 'phone': '0978855555', 'email': 'emmaChNextKin@Zmps.com'}, 'occupants': 4, 'move_in_date': '2025-04-17', 'property_id': '09d6fe44-06c0-419f-bb00-c5bb517af419', 'unit_number': '3', 'monthly_rent': 4500, 'employer_name': '', 'employer_phone': '', 'notes': ''}
+INFO 2026-08-21 07:44:52,095 views 17828 22876 Creating tenant with data: {'first_name': 'Blessing', 'last_name': 'Chanda', 'email': 'BlessingsTenant@Zpms.com', 'phone': '0976565656', 'nrc_passport': '909998/67/1', 'password': 'L0ngwani', 'date_of_birth': '1999-06-09', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Emmanuel Chanda', 'relationship': 'Father', 'phone': '0978855555', 'email': 'emmaChNextKin@Zmps.com'}, 'occupants': 4, 'move_in_date': '2025-04-17', 'property_id': '09d6fe44-06c0-419f-bb00-c5bb517af419', 'unit_number': '3', 'monthly_rent': 4500, 'employer_name': '', 'employer_phone': '', 'notes': ''}
+INFO 2026-08-21 07:44:57,441 views 17828 13424 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 07:44:57,484 views 17828 13424 Tenant queryset count: 7
+INFO 2026-08-21 07:49:21,475 views 17828 20080 Creating tenant with data: {'first_name': 'Blessings', 'last_name': 'Mulenga', 'email': 'BlessingsTenants@zpms.com', 'phone': '0978888123', 'nrc_passport': '453453/56/1', 'password': 'L0ngwani', 'date_of_birth': '1978-06-07', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Chilufya Mulenga', 'relationship': 'Father', 'phone': '05766665454', 'email': 'Chilunfya@zpms.com'}, 'occupants': 8, 'move_in_date': '2025-11-08', 'property_id': '88436af7-44d2-4f3b-8f25-ba190b32c2be', 'unit_number': '2', 'monthly_rent': 4000, 'employer_name': '', 'employer_phone': '', 'notes': '', 'emergency_contact_name': 'Chilufya Mulenga', 'emergency_contact_phone': '05766665454', 'emergency_contact_relation': 'Father'}
+INFO 2026-08-21 07:57:30,913 views 29004 22064 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 07:57:30,961 views 29004 22064 Tenant queryset count: 7
+INFO 2026-08-21 07:57:34,467 views 29004 18720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 07:57:34,514 views 29004 18720 Tenant queryset count: 7
+INFO 2026-08-21 08:04:40,748 views 29004 15552 Creating tenant with data: {'first_name': 'Brian', 'last_name': 'Banda', 'email': 'brian.banda@test.example', 'phone': '0970000001', 'nrc_passport': '900001/10/1', 'password': 'L0ngwani', 'date_of_birth': '1994-06-10', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Mary Banda', 'relationship': 'Mother', 'phone': '0970000101', 'email': 'MB@nextkin.example'}, 'occupants': 4, 'move_in_date': '2017-06-23', 'property_id': '72ab4e4f-8592-4313-811e-c8f5601759a1', 'unit_number': '3', 'monthly_rent': 5400, 'employer_name': '', 'employer_phone': '', 'notes': '', 'emergency_contact_name': 'Mary Banda', 'emergency_contact_phone': '0970000101', 'emergency_contact_relation': 'Mother'}
+INFO 2026-08-21 08:05:16,798 views 29004 15552 Creating tenant with data: {'first_name': 'Brian', 'last_name': 'Banda', 'email': 'brian.banda@test.example', 'phone': '0970000001', 'nrc_passport': '900001/10/1', 'password': 'L0ngwani', 'date_of_birth': '1994-06-10', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Mary Banda', 'relationship': 'Mother', 'phone': '0970000101', 'email': 'MB@nextkin.example'}, 'occupants': 4, 'move_in_date': '2017-06-23', 'property_id': '72ab4e4f-8592-4313-811e-c8f5601759a1', 'unit_number': '3', 'monthly_rent': 5400, 'employer_name': '', 'employer_phone': '', 'notes': '', 'emergency_contact_name': 'Mary Banda', 'emergency_contact_phone': '0970000101', 'emergency_contact_relation': 'Mother'}
+INFO 2026-08-21 08:13:54,568 views 29004 26664 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:13:54,612 views 29004 26664 Tenant queryset count: 7
+INFO 2026-08-21 08:18:26,359 views 29004 17048 Creating tenant with data: {'first_name': 'Brian', 'last_name': 'Banda', 'email': 'brian.banda@test.example', 'phone': '0970000001', 'nrc_passport': '900001/10/1', 'password': 'L0ngwani', 'date_of_birth': '1973-06-20', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Mary Banda', 'relationship': 'Mother', 'phone': '0970000101', 'email': 'mary@zpms.com'}, 'occupants': 4, 'move_in_date': '2016-06-08', 'property_id': '09d6fe44-06c0-419f-bb00-c5bb517af419', 'unit_number': '3', 'monthly_rent': 4500, 'employer_name': '', 'employer_phone': '', 'notes': '', 'emergency_contact_name': 'Mary Banda', 'emergency_contact_phone': '0970000101', 'emergency_contact_relation': 'Mother'}
+INFO 2026-08-21 08:22:17,581 views 23196 24620 Creating tenant with data: {'first_name': 'Brian', 'last_name': 'Banda', 'email': 'brian.banda@test.example', 'phone': '0970000001', 'nrc_passport': '900001/10/1', 'password': 'L0ngwani', 'date_of_birth': '1973-06-20', 'gender': 'Male', 'nationality': 'Zambian', 'address': 'Lusaka', 'next_of_kin': {'full_name': 'Mary Banda', 'relationship': 'Mother', 'phone': '0970000101', 'email': 'mary@zpms.com'}, 'occupants': 4, 'move_in_date': '2016-06-08', 'property_id': '09d6fe44-06c0-419f-bb00-c5bb517af419', 'unit_number': '3', 'monthly_rent': 4500, 'employer_name': '', 'employer_phone': '', 'notes': '', 'emergency_contact_name': 'Mary Banda', 'emergency_contact_phone': '0970000101', 'emergency_contact_relation': 'Mother'}
+INFO 2026-08-21 08:22:19,002 views 23196 24620 Tenant created with ID: e96e72c6-062a-432d-ac44-cb2aa37c80fb
+INFO 2026-08-21 08:22:19,009 views 23196 24620 Leases for tenant: 1
+INFO 2026-08-21 08:22:19,177 views 23196 24620 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:19,215 views 23196 24620 Tenant queryset count: 8
+INFO 2026-08-21 08:22:47,840 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:47,858 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:48,007 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:48,026 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:50,890 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:50,907 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:52,337 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:52,355 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:55,644 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:55,663 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:55,887 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:55,907 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:56,797 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:56,814 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:57,060 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:57,081 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:58,332 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:58,352 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:22:58,420 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:22:58,438 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:23:00,402 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:23:00,450 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:23:00,680 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:23:00,705 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:23:01,590 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:23:01,608 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:23:19,490 views 23196 21624 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:23:19,548 views 23196 21624 Tenant queryset count: 8
+INFO 2026-08-21 08:25:28,899 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:28,917 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:29,227 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:29,254 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:32,549 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:32,568 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:33,217 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:33,237 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:33,470 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:33,490 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:34,625 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:34,654 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:35,938 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:35,959 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:37,588 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:37,616 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:39,710 views 23196 12792 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:39,732 views 23196 12792 Tenant queryset count: 8
+INFO 2026-08-21 08:25:41,978 views 23196 23252 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:25:42,289 views 23196 23252 Tenant queryset count: 8
+INFO 2026-08-21 08:34:33,505 views 23196 3716 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:34:33,566 views 23196 3716 Tenant queryset count: 8
+INFO 2026-08-21 08:34:47,076 views 23196 3716 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:34:47,095 views 23196 3716 Tenant queryset count: 8
+INFO 2026-08-21 08:35:31,814 views 23196 29368 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:31,857 views 23196 29368 Tenant queryset count: 8
+INFO 2026-08-21 08:35:35,522 views 23196 29368 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:35,547 views 23196 29368 Tenant queryset count: 8
+INFO 2026-08-21 08:35:35,692 views 23196 29368 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:35,709 views 23196 29368 Tenant queryset count: 8
+INFO 2026-08-21 08:35:37,722 views 23196 29368 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:37,742 views 23196 29368 Tenant queryset count: 8
+INFO 2026-08-21 08:35:39,064 views 23196 29368 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:39,084 views 23196 29368 Tenant queryset count: 8
+INFO 2026-08-21 08:35:40,364 views 23196 28520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:40,398 views 23196 28520 Tenant queryset count: 8
+INFO 2026-08-21 08:35:42,954 views 23196 28520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:42,972 views 23196 28520 Tenant queryset count: 8
+INFO 2026-08-21 08:35:43,115 views 23196 28520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:35:43,132 views 23196 28520 Tenant queryset count: 8
+INFO 2026-08-21 08:38:51,339 views 23196 7612 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:38:51,380 views 23196 7612 Tenant queryset count: 8
+INFO 2026-08-21 08:38:57,382 views 23196 30008 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:38:57,410 views 23196 30008 Tenant queryset count: 8
+INFO 2026-08-21 08:38:57,690 views 23196 30008 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:38:57,711 views 23196 30008 Tenant queryset count: 8
+INFO 2026-08-21 08:39:00,124 views 23196 30008 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:39:00,144 views 23196 30008 Tenant queryset count: 8
+INFO 2026-08-21 08:39:01,049 views 23196 30008 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:39:01,066 views 23196 30008 Tenant queryset count: 8
+INFO 2026-08-21 08:39:01,279 views 23196 30008 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:39:01,302 views 23196 30008 Tenant queryset count: 8
+INFO 2026-08-21 08:39:11,137 views 23196 27664 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:39:11,183 views 23196 27664 Tenant queryset count: 8
+INFO 2026-08-21 08:44:57,951 views 23196 17160 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:44:57,995 views 23196 17160 Tenant queryset count: 8
+INFO 2026-08-21 08:45:02,531 views 23196 17160 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:02,554 views 23196 17160 Tenant queryset count: 8
+INFO 2026-08-21 08:45:02,809 views 23196 17160 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:02,829 views 23196 17160 Tenant queryset count: 8
+INFO 2026-08-21 08:45:07,889 views 23196 17160 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:07,910 views 23196 17160 Tenant queryset count: 8
+INFO 2026-08-21 08:45:09,215 views 23196 17160 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:09,236 views 23196 17160 Tenant queryset count: 8
+INFO 2026-08-21 08:45:10,733 views 23196 17160 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:10,760 views 23196 17160 Tenant queryset count: 8
+INFO 2026-08-21 08:45:12,054 views 23196 19200 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:12,099 views 23196 19200 Tenant queryset count: 8
+INFO 2026-08-21 08:45:16,154 views 23196 19200 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:16,179 views 23196 19200 Tenant queryset count: 8
+INFO 2026-08-21 08:45:31,962 views 23196 19200 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:31,985 views 23196 19200 Tenant queryset count: 8
+INFO 2026-08-21 08:45:47,474 views 23196 19200 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:45:47,496 views 23196 19200 Tenant queryset count: 8
+INFO 2026-08-21 08:46:22,739 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:46:22,759 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:46:34,635 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:46:34,653 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:46:34,802 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:46:34,820 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:46:36,892 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:46:36,911 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:46:43,252 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:46:43,279 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:46:47,744 views 23196 9240 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:46:47,769 views 23196 9240 Tenant queryset count: 8
+INFO 2026-08-21 08:47:06,024 views 23196 11336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:47:06,043 views 23196 11336 Tenant queryset count: 8
+INFO 2026-08-21 08:47:19,553 views 23196 11336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:47:19,573 views 23196 11336 Tenant queryset count: 8
+INFO 2026-08-21 08:47:19,848 views 23196 11336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:47:19,874 views 23196 11336 Tenant queryset count: 8
+INFO 2026-08-21 08:55:40,707 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:40,742 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:45,393 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:45,412 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:45,555 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:45,573 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:47,665 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:47,683 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:49,054 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:49,476 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:49,917 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:49,935 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:50,136 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:50,159 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:50,383 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:50,892 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:55:51,265 views 23196 30228 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:55:51,282 views 23196 30228 Tenant queryset count: 8
+INFO 2026-08-21 08:56:06,492 views 23196 28980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:06,534 views 23196 28980 Tenant queryset count: 8
+INFO 2026-08-21 08:56:08,990 views 23196 28980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:09,008 views 23196 28980 Tenant queryset count: 8
+INFO 2026-08-21 08:56:09,306 views 23196 28980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:09,330 views 23196 28980 Tenant queryset count: 8
+INFO 2026-08-21 08:56:10,693 views 23196 28980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:10,714 views 23196 28980 Tenant queryset count: 8
+INFO 2026-08-21 08:56:11,628 views 23196 28980 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:11,648 views 23196 28980 Tenant queryset count: 8
+INFO 2026-08-21 08:56:20,996 views 23196 21688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:21,015 views 23196 21688 Tenant queryset count: 8
+INFO 2026-08-21 08:56:25,956 views 23196 23252 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:25,997 views 23196 23252 Tenant queryset count: 8
+INFO 2026-08-21 08:56:46,523 views 23196 30480 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:46,573 views 23196 30480 Tenant queryset count: 8
+INFO 2026-08-21 08:56:48,727 views 23196 30480 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:48,747 views 23196 30480 Tenant queryset count: 8
+INFO 2026-08-21 08:56:48,915 views 23196 30480 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:48,940 views 23196 30480 Tenant queryset count: 8
+INFO 2026-08-21 08:56:50,369 views 23196 30480 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:50,389 views 23196 30480 Tenant queryset count: 8
+INFO 2026-08-21 08:56:51,540 views 23196 30480 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:56:51,559 views 23196 30480 Tenant queryset count: 8
+INFO 2026-08-21 08:57:07,638 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:07,663 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 08:57:08,811 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:08,839 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 08:57:08,899 views 23196 7680 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:08,920 views 23196 7680 Tenant queryset count: 8
+INFO 2026-08-21 08:57:09,730 views 23196 7680 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:09,748 views 23196 7680 Tenant queryset count: 8
+INFO 2026-08-21 08:57:09,932 views 23196 7680 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:09,952 views 23196 7680 Tenant queryset count: 8
+INFO 2026-08-21 08:57:11,444 views 23196 7680 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:11,463 views 23196 7680 Tenant queryset count: 8
+INFO 2026-08-21 08:57:11,532 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:11,549 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 08:57:15,164 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:15,186 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 08:57:15,362 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 08:57:15,380 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 09:04:52,146 views 23196 4688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:04:52,187 views 23196 4688 Tenant queryset count: 8
+INFO 2026-08-21 09:04:57,960 views 23196 4688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:04:57,977 views 23196 4688 Tenant queryset count: 8
+INFO 2026-08-21 09:04:58,125 views 23196 4688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:04:58,145 views 23196 4688 Tenant queryset count: 8
+INFO 2026-08-21 09:05:01,799 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:01,818 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:01,893 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:01,912 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:07,729 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:07,751 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:07,835 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:07,868 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:17,581 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:17,601 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:17,675 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:17,694 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:28,967 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:28,989 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:29,066 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:29,088 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:47,550 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:47,569 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:47,646 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:47,671 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:50,320 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:50,342 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:50,542 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:50,561 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:55,350 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:55,370 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:55,455 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:55,478 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:57,889 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:57,909 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:05:57,982 views 23196 25720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:05:58,003 views 23196 25720 Tenant queryset count: 8
+INFO 2026-08-21 09:06:14,092 views 23196 2812 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:14,115 views 23196 2812 Tenant queryset count: 8
+INFO 2026-08-21 09:06:14,191 views 23196 2812 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:14,213 views 23196 2812 Tenant queryset count: 8
+INFO 2026-08-21 09:06:15,768 views 23196 2812 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:15,785 views 23196 2812 Tenant queryset count: 8
+INFO 2026-08-21 09:06:17,115 views 23196 26688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:17,169 views 23196 26688 Tenant queryset count: 8
+INFO 2026-08-21 09:06:21,628 views 23196 26688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:21,648 views 23196 26688 Tenant queryset count: 8
+INFO 2026-08-21 09:06:21,799 views 23196 26688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:21,817 views 23196 26688 Tenant queryset count: 8
+INFO 2026-08-21 09:06:27,856 views 23196 25092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:27,899 views 23196 25092 Tenant queryset count: 8
+INFO 2026-08-21 09:06:32,012 views 23196 25092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:32,034 views 23196 25092 Tenant queryset count: 8
+INFO 2026-08-21 09:06:37,751 views 23196 25092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:37,771 views 23196 25092 Tenant queryset count: 8
+INFO 2026-08-21 09:06:38,038 views 23196 25092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 09:06:38,058 views 23196 25092 Tenant queryset count: 8
+INFO 2026-08-21 18:06:28,796 views 23196 22876 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:06:29,489 views 23196 22876 Tenant queryset count: 8
+INFO 2026-08-21 18:07:05,764 views 23196 23524 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:05,853 views 23196 23524 Tenant queryset count: 8
+INFO 2026-08-21 18:07:08,211 views 23196 23524 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:08,257 views 23196 23524 Tenant queryset count: 8
+INFO 2026-08-21 18:07:18,403 views 23196 23524 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:18,499 views 23196 23524 Tenant queryset count: 8
+INFO 2026-08-21 18:07:18,715 views 23196 23524 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:18,760 views 23196 23524 Tenant queryset count: 8
+INFO 2026-08-21 18:07:19,651 views 23196 23524 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:19,732 views 23196 23524 Tenant queryset count: 8
+INFO 2026-08-21 18:07:20,462 views 23196 23524 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:21,066 views 23196 23524 Tenant queryset count: 8
+INFO 2026-08-21 18:07:28,364 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:28,426 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:31,992 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:32,079 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:32,717 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:32,935 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:34,813 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:34,917 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:35,229 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:35,334 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:37,694 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:37,807 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:38,168 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:38,211 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:39,915 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:40,018 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:40,319 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:40,404 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:47,823 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:47,939 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:48,301 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:48,425 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:57,887 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:58,017 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:07:58,377 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:07:58,421 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:08:00,093 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:00,196 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:00,527 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:00,640 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:01,755 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:01,841 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:02,159 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:02,256 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:02,672 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:02,773 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:10,155 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:10,199 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:32,044 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:32,087 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:43,598 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:43,657 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:43,840 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:43,886 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:48,770 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:48,819 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:48,998 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:49,043 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:08:51,604 views 23196 19384 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:08:51,643 views 23196 19384 Tenant queryset count: 8
+INFO 2026-08-21 18:09:01,602 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:01,649 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:09:01,831 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:01,877 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:09:02,684 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:02,799 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:09:04,304 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:04,354 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:09:18,483 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:18,537 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:09:18,739 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:18,778 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:09:19,173 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:19,266 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:09:19,664 views 23196 22308 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:09:19,720 views 23196 22308 Tenant queryset count: 8
+INFO 2026-08-21 18:10:08,932 views 23196 9100 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:10:09,032 views 23196 9100 Tenant queryset count: 8
+INFO 2026-08-21 18:10:09,224 views 23196 9100 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:10:09,273 views 23196 9100 Tenant queryset count: 8
+INFO 2026-08-21 18:11:14,289 views 23196 22848 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:11:14,390 views 23196 22848 Tenant queryset count: 8
+INFO 2026-08-21 18:11:14,735 views 23196 22848 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:11:14,846 views 23196 22848 Tenant queryset count: 8
+INFO 2026-08-21 18:17:47,708 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:17:47,771 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:17:54,301 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:17:54,348 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:05,006 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:05,095 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:05,973 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:06,065 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:08,768 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:08,854 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:09,151 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:09,241 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:09,688 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:09,779 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:10,391 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:10,477 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:35,236 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:35,284 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:35,450 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:35,496 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:39,953 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:40,060 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:40,373 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:40,420 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:44,074 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:44,190 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:44,399 views 5456 19572 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:44,440 views 5456 19572 Tenant queryset count: 8
+INFO 2026-08-21 18:18:46,560 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:46,655 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:18:46,979 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:47,092 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:18:48,089 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:48,189 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:18:48,601 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:48,707 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:18:58,798 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:58,914 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:18:59,258 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:18:59,343 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:05,845 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:05,968 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:06,321 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:06,408 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:15,038 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:15,086 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:15,429 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:15,517 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:19,093 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:19,212 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:19,656 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:19,742 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:36,699 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:36,754 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:58,444 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:58,542 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:19:58,862 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:19:58,963 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:20:03,371 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:20:03,482 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:20:03,881 views 5456 9076 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:20:04,319 views 5456 9076 Tenant queryset count: 8
+INFO 2026-08-21 18:24:55,927 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:24:55,980 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:03,564 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:03,651 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:04,073 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:04,123 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:07,273 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:07,363 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:07,671 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:07,761 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:10,108 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:10,198 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:18,510 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:18,556 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:18,917 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:19,463 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:21,039 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:21,133 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:25:37,251 views 5456 28720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:25:37,303 views 5456 28720 Tenant queryset count: 8
+INFO 2026-08-21 18:26:26,090 views 5456 1460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:26:26,150 views 5456 1460 Tenant queryset count: 8
+INFO 2026-08-21 18:30:32,016 views 5456 12324 Creating tenant with data: {'first_name': 'Chanda', 'last_name': 'Mwansa', 'email': 'chanda.mwansa@test.example', 'phone': '0970000002', 'nrc_passport': '900002/10/2', 'password': 'L0ngwani', 'date_of_birth': '1997-07-17', 'gender': 'Female', 'nationality': 'Zambian', 'address': 'Chelstone', 'next_of_kin': {'full_name': 'Peter Mwansa', 'relationship': 'Father', 'phone': '0970000102', 'email': 'petermwansa@zpms.com'}, 'occupants': 4, 'move_in_date': '2014-11-18', 'property_id': 'fb25e0b9-3a4d-4e09-83b4-5a2a9b4f1242', 'unit_number': '1', 'monthly_rent': 4500, 'employer_name': '', 'employer_phone': '', 'notes': '', 'emergency_contact_name': 'Peter Mwansa', 'emergency_contact_phone': '0970000102', 'emergency_contact_relation': 'Father'}
+INFO 2026-08-21 18:30:36,410 views 5456 12324 Tenant created with ID: 5bc7f183-5136-4489-b54f-b06912f2e73a
+INFO 2026-08-21 18:30:36,447 views 5456 12324 Leases for tenant: 1
+INFO 2026-08-21 18:30:36,864 views 5456 12324 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:30:36,907 views 5456 12324 Tenant queryset count: 9
+INFO 2026-08-21 18:30:51,500 views 5456 28720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:30:51,561 views 5456 28720 Tenant queryset count: 9
+INFO 2026-08-21 18:31:17,368 views 5456 28720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:31:17,463 views 5456 28720 Tenant queryset count: 9
+INFO 2026-08-21 18:31:18,096 views 5456 28720 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:31:18,191 views 5456 28720 Tenant queryset count: 9
+INFO 2026-08-21 18:32:04,461 views 5456 12324 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:04,511 views 5456 12324 Tenant queryset count: 9
+INFO 2026-08-21 18:32:04,692 views 5456 12324 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:04,737 views 5456 12324 Tenant queryset count: 9
+INFO 2026-08-21 18:32:08,392 views 5456 12324 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:08,490 views 5456 12324 Tenant queryset count: 9
+INFO 2026-08-21 18:32:08,821 views 5456 12324 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:08,908 views 5456 12324 Tenant queryset count: 9
+INFO 2026-08-21 18:32:16,391 views 5456 12324 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:16,503 views 5456 12324 Tenant queryset count: 9
+INFO 2026-08-21 18:32:16,856 views 5456 12324 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:16,944 views 5456 12324 Tenant queryset count: 9
+INFO 2026-08-21 18:32:33,174 views 5456 18500 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:33,272 views 5456 18500 Tenant queryset count: 9
+INFO 2026-08-21 18:32:33,575 views 5456 18500 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 18:32:34,673 views 5456 18500 Tenant queryset count: 9
+INFO 2026-08-21 22:14:15,211 views 5456 14664 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:14:15,272 views 5456 14664 Tenant queryset count: 9
+INFO 2026-08-21 22:14:59,081 views 5456 18184 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:14:59,117 views 5456 18184 Tenant queryset count: 9
+INFO 2026-08-21 22:53:18,258 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:18,316 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:21,880 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:21,942 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:22,433 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:22,490 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:27,727 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:27,866 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:28,246 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:28,366 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:31,821 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:31,936 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:32,298 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:32,572 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:34,816 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:34,940 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:35,334 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:35,436 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:53:48,492 views 5456 13300 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:48,536 views 5456 13300 Tenant queryset count: 9
+INFO 2026-08-21 22:53:48,863 views 5456 13300 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:53:48,971 views 5456 13300 Tenant queryset count: 9
+INFO 2026-08-21 22:54:03,379 views 5456 13300 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:03,509 views 5456 13300 Tenant queryset count: 9
+INFO 2026-08-21 22:54:04,310 views 5456 13300 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:04,426 views 5456 13300 Tenant queryset count: 9
+INFO 2026-08-21 22:54:08,396 views 5456 13300 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:08,501 views 5456 13300 Tenant queryset count: 9
+INFO 2026-08-21 22:54:13,078 views 5456 13300 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:13,119 views 5456 13300 Tenant queryset count: 9
+INFO 2026-08-21 22:54:13,291 views 5456 13300 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:13,344 views 5456 13300 Tenant queryset count: 9
+INFO 2026-08-21 22:54:23,403 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:23,453 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:23,827 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:23,944 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:27,323 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:27,388 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:27,611 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:27,673 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:34,390 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:34,507 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:34,871 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:35,295 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:38,920 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:39,058 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:39,457 views 5456 12112 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:39,560 views 5456 12112 Tenant queryset count: 9
+INFO 2026-08-21 22:54:48,514 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:48,556 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:54:48,754 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:54:48,862 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:55:07,640 views 5456 6520 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:55:07,772 views 5456 6520 Tenant queryset count: 9
+INFO 2026-08-21 22:56:17,902 views 5456 17504 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 22:56:18,011 views 5456 17504 Tenant queryset count: 9
+INFO 2026-08-21 23:09:45,119 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:09:45,182 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:09:49,719 views 28252 5964 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:09:49,765 views 28252 5964 Tenant queryset count: 9
+INFO 2026-08-21 23:10:04,391 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:04,449 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:10:10,877 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:10,961 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:10:11,572 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:11,616 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:10:15,481 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:15,587 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:10:15,922 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:16,014 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:10:18,112 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:18,216 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:10:18,628 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:18,730 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:10:20,928 views 28252 31416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:21,028 views 28252 31416 Tenant queryset count: 9
+INFO 2026-08-21 23:10:21,520 views 28252 31416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:21,653 views 28252 31416 Tenant queryset count: 9
+INFO 2026-08-21 23:10:30,681 views 28252 31416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:10:30,769 views 28252 31416 Tenant queryset count: 9
+INFO 2026-08-21 23:11:14,838 views 28252 27940 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:11:14,896 views 28252 27940 Tenant queryset count: 9
+INFO 2026-08-21 23:11:21,926 views 28252 27940 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:11:22,032 views 28252 27940 Tenant queryset count: 9
+INFO 2026-08-21 23:11:22,798 views 28252 27940 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:11:22,921 views 28252 27940 Tenant queryset count: 9
+INFO 2026-08-21 23:11:24,647 views 28252 27940 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:11:24,796 views 28252 27940 Tenant queryset count: 9
+INFO 2026-08-21 23:11:25,303 views 28252 27940 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:11:25,423 views 28252 27940 Tenant queryset count: 9
+INFO 2026-08-21 23:11:30,400 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:11:30,505 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:11:43,007 views 28252 18516 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:11:43,077 views 28252 18516 Tenant queryset count: 9
+INFO 2026-08-21 23:12:20,073 views 28252 31416 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:12:20,135 views 28252 31416 Tenant queryset count: 9
+INFO 2026-08-21 23:18:25,876 views 28252 23780 Creating tenant with data: {'first_name': 'Susan', 'last_name': 'Lungu', 'email': 'susan.lungu@test.example', 'phone': '0970000038', 'nrc_passport': '900038/13/8', 'password': 'L0ngwani', 'date_of_birth': '1997-08-08', 'gender': 'Female', 'nationality': 'Zambian', 'address': 'Olympia', 'next_of_kin': {'full_name': 'Mary Lungu', 'relationship': 'Mother', 'phone': '0970000138', 'email': 'susan@zpms.com'}, 'occupants': 3, 'move_in_date': '2017-08-12', 'property_id': '88436af7-44d2-4f3b-8f25-ba190b32c2be', 'unit_number': '1', 'monthly_rent': 2299.99, 'employer_name': '', 'employer_phone': '', 'notes': '', 'emergency_contact_name': 'Mary Lungu', 'emergency_contact_phone': '0970000138', 'emergency_contact_relation': 'Mother'}
+INFO 2026-08-21 23:18:29,938 views 28252 23780 Tenant created with ID: 60c674fe-5389-4b2b-b50d-19e661cdc9ad
+INFO 2026-08-21 23:18:29,976 views 28252 23780 Leases for tenant: 1
+INFO 2026-08-21 23:18:31,316 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:18:31,369 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:18:55,661 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:18:55,751 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:18:56,512 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:18:56,617 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:12,079 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:12,184 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:12,561 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:12,714 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:18,698 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:18,809 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:19,179 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:19,694 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:22,007 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:22,136 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:22,511 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:22,613 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:27,044 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:27,133 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:19:43,838 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:19:43,937 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:20:07,480 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:20:07,586 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:20:07,899 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:20:07,957 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:20:11,214 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:20:11,293 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:20:22,903 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:20:22,999 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:20:24,368 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:20:24,844 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:20:39,798 views 28252 29820 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:20:39,846 views 28252 29820 Tenant queryset count: 10
+INFO 2026-08-21 23:25:12,116 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:25:12,183 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:28:01,064 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:28:01,131 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:28:07,246 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:28:07,291 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:28:07,765 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:28:07,812 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:28:13,896 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:28:13,985 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:28:14,294 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:28:14,347 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:37:26,080 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:26,141 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:29,040 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:29,131 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:29,796 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:29,881 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:44,604 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:44,743 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:45,205 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:45,312 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:55,844 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:55,900 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:56,092 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:56,142 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:58,931 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:59,056 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:37:59,417 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:37:59,515 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:38:08,183 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:08,272 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:38:09,812 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:09,905 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:38:10,853 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:10,945 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:38:11,737 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:11,812 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:38:12,618 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:12,818 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:38:13,623 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:13,720 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:38:14,645 views 28252 21452 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:14,756 views 28252 21452 Tenant queryset count: 10
+INFO 2026-08-21 23:38:15,070 views 28252 23780 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:15,070 views 28252 23576 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:15,170 views 28252 23780 Tenant queryset count: 10
+INFO 2026-08-21 23:38:15,170 views 28252 23576 Tenant queryset count: 10
+INFO 2026-08-21 23:38:15,350 views 28252 1672 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:15,434 views 28252 1672 Tenant queryset count: 10
+INFO 2026-08-21 23:38:21,370 views 28252 1672 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:21,468 views 28252 1672 Tenant queryset count: 10
+INFO 2026-08-21 23:38:22,045 views 28252 1672 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:22,784 views 28252 1672 Tenant queryset count: 10
+INFO 2026-08-21 23:38:33,705 views 28252 1672 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:33,755 views 28252 1672 Tenant queryset count: 10
+INFO 2026-08-21 23:38:34,043 views 28252 1672 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:34,137 views 28252 1672 Tenant queryset count: 10
+INFO 2026-08-21 23:38:45,336 views 28252 29336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:45,389 views 28252 29336 Tenant queryset count: 10
+INFO 2026-08-21 23:38:45,631 views 28252 18796 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:45,720 views 28252 18796 Tenant queryset count: 10
+INFO 2026-08-21 23:38:47,922 views 28252 18796 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:48,018 views 28252 18796 Tenant queryset count: 10
+INFO 2026-08-21 23:38:48,469 views 28252 18796 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:48,574 views 28252 18796 Tenant queryset count: 10
+INFO 2026-08-21 23:38:55,591 views 28252 18796 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:55,717 views 28252 18796 Tenant queryset count: 10
+INFO 2026-08-21 23:38:56,122 views 28252 18796 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:56,737 views 28252 18796 Tenant queryset count: 10
+INFO 2026-08-21 23:38:59,258 views 28252 18796 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:38:59,347 views 28252 18796 Tenant queryset count: 10
+INFO 2026-08-21 23:39:00,301 views 28252 29336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:39:00,392 views 28252 29336 Tenant queryset count: 10
+INFO 2026-08-21 23:39:01,279 views 28252 18796 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:39:01,366 views 28252 18796 Tenant queryset count: 10
+INFO 2026-08-21 23:39:02,389 views 28252 29336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:39:02,481 views 28252 29336 Tenant queryset count: 10
+INFO 2026-08-21 23:39:03,360 views 28252 29336 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:39:03,403 views 28252 29336 Tenant queryset count: 10
+INFO 2026-08-21 23:39:11,497 views 28252 29820 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:39:11,557 views 28252 29820 Tenant queryset count: 10
+INFO 2026-08-21 23:42:58,775 views 28252 16932 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-21 23:42:58,828 views 28252 16932 Tenant queryset count: 10
+INFO 2026-08-22 16:03:50,651 views 8144 14092 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:03:50,706 views 8144 14092 Tenant queryset count: 10
+INFO 2026-08-22 16:04:06,341 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:04:06,382 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:04:51,967 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:04:51,987 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:04:52,265 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:04:52,285 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:05:01,458 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:05:01,484 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:05:01,676 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:05:01,746 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:05:04,706 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:05:04,728 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:05:04,809 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:05:04,829 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:05:08,788 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:05:08,807 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:05:08,880 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:05:08,897 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:05:12,432 views 8144 24580 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:05:12,453 views 8144 24580 Tenant queryset count: 10
+INFO 2026-08-22 16:59:46,729 views 18324 26728 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 16:59:46,774 views 18324 26728 Tenant queryset count: 10
+INFO 2026-08-22 17:00:01,549 views 18324 26728 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 17:00:01,570 views 18324 26728 Tenant queryset count: 10
+INFO 2026-08-22 17:04:48,356 views 18324 1688 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 17:04:48,409 views 18324 1688 Tenant queryset count: 10
+INFO 2026-08-22 17:04:50,409 views 18324 26728 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 17:04:50,448 views 18324 26728 Tenant queryset count: 10
+INFO 2026-08-22 17:04:54,316 views 18324 26288 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 17:04:54,350 views 18324 26288 Tenant queryset count: 10
+INFO 2026-08-22 21:02:50,760 views 2876 27972 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 21:02:51,768 views 2876 27972 Tenant queryset count: 10
+INFO 2026-08-22 21:03:09,533 views 2876 27972 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 21:03:09,557 views 2876 27972 Tenant queryset count: 10
+INFO 2026-08-22 21:32:08,503 views 2876 25704 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 21:32:08,559 views 2876 25704 Tenant queryset count: 10
+INFO 2026-08-22 23:40:09,823 views 8844 24176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 23:40:09,893 views 8844 24176 Tenant queryset count: 10
+INFO 2026-08-22 23:40:18,103 views 8844 21372 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 23:40:18,156 views 8844 21372 Tenant queryset count: 10
+INFO 2026-08-22 23:40:36,090 views 8844 21372 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-22 23:40:36,142 views 8844 21372 Tenant queryset count: 10
+INFO 2026-08-23 00:08:48,028 views 25280 28756 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:08:48,087 views 25280 28756 Tenant queryset count: 10
+INFO 2026-08-23 00:10:09,980 views 25280 28756 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:10:10,073 views 25280 28756 Tenant queryset count: 10
+INFO 2026-08-23 00:10:26,981 views 25280 28756 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:10:27,083 views 25280 28756 Tenant queryset count: 10
+INFO 2026-08-23 00:10:36,068 views 25280 8040 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:10:36,124 views 25280 8040 Tenant queryset count: 10
+INFO 2026-08-23 00:10:49,437 views 25280 8040 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:10:49,492 views 25280 8040 Tenant queryset count: 10
+INFO 2026-08-23 00:11:12,421 views 25280 8040 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:11:12,488 views 25280 8040 Tenant queryset count: 10
+INFO 2026-08-23 00:11:15,487 views 25280 12636 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:11:15,542 views 25280 12636 Tenant queryset count: 10
+INFO 2026-08-23 00:12:31,537 views 25280 26232 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:12:31,591 views 25280 26232 Tenant queryset count: 10
+INFO 2026-08-23 00:13:55,089 views 25280 8040 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:13:55,149 views 25280 8040 Tenant queryset count: 10
+INFO 2026-08-23 00:14:22,326 views 25280 27672 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-23 00:14:22,386 views 25280 27672 Tenant queryset count: 10
+INFO 2026-08-24 10:00:58,847 views 25280 15916 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 10:01:00,736 views 25280 15916 Tenant queryset count: 10
+INFO 2026-08-24 10:27:15,712 views 21556 11252 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 10:27:15,767 views 21556 11252 Tenant queryset count: 10
+INFO 2026-08-24 10:34:49,336 views 26284 8008 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 10:34:49,399 views 26284 8008 Tenant queryset count: 10
+INFO 2026-08-24 10:35:15,123 views 26284 12088 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 10:35:15,199 views 26284 12088 Tenant queryset count: 10
+WARNING 2026-08-24 10:35:24,514 views 26284 29820 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-24 10:36:21,799 views 26284 24176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 10:36:21,843 views 26284 24176 Tenant queryset count: 10
+WARNING 2026-08-24 10:36:31,777 views 26284 8008 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-24 10:57:54,339 views 5764 28204 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 10:57:54,947 views 5764 28204 Tenant queryset count: 10
+WARNING 2026-08-24 10:58:10,680 views 5764 28204 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+WARNING 2026-08-24 11:04:33,464 views 5764 17880 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-24 11:20:01,142 views 5764 15996 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 11:20:01,206 views 5764 15996 Tenant queryset count: 10
+INFO 2026-08-24 11:20:56,040 views 5764 15996 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 11:20:56,089 views 5764 15996 Tenant queryset count: 10
+INFO 2026-08-24 11:21:08,073 views 5764 18232 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 11:21:08,122 views 5764 18232 Tenant queryset count: 10
+INFO 2026-08-24 11:58:59,532 views 5764 11840 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 11:58:59,602 views 5764 11840 Tenant queryset count: 10
+INFO 2026-08-24 12:16:47,930 views 5764 29040 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-24 12:16:48,001 views 5764 29040 Tenant queryset count: 10
+WARNING 2026-08-24 12:17:06,296 views 5764 29040 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 14:31:32,316 views 5764 8176 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 14:31:32,392 views 5764 8176 Tenant queryset count: 10
+WARNING 2026-08-27 14:32:41,590 views 5764 21124 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+WARNING 2026-08-27 14:32:46,527 views 5764 21124 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 15:03:57,628 views 26752 10320 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:03:58,164 views 26752 10320 Tenant queryset count: 10
+WARNING 2026-08-27 15:04:40,753 views 26752 18560 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 15:04:49,874 views 26752 17340 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:04:49,931 views 26752 17340 Tenant queryset count: 10
+WARNING 2026-08-27 15:06:32,234 views 26752 6292 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 15:13:54,173 views 31040 8120 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:13:54,225 views 31040 8120 Tenant queryset count: 10
+WARNING 2026-08-27 15:14:09,023 views 31040 2580 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+WARNING 2026-08-27 15:16:53,731 views 31040 14084 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+WARNING 2026-08-27 15:20:36,231 views 31040 7192 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+WARNING 2026-08-27 15:20:45,560 views 31040 28844 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 15:36:21,393 views 1888 27288 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:36:21,442 views 1888 27288 Tenant queryset count: 10
+WARNING 2026-08-27 15:36:43,325 views 1888 27288 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 15:36:53,513 views 1888 27460 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:36:53,572 views 1888 27460 Tenant queryset count: 10
+WARNING 2026-08-27 15:37:03,125 views 1888 27460 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 15:42:02,352 views 1888 10752 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:42:02,391 views 1888 10752 Tenant queryset count: 10
+INFO 2026-08-27 15:48:09,846 views 1888 25252 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:48:09,921 views 1888 25252 Tenant queryset count: 10
+INFO 2026-08-27 15:50:53,089 views 1888 29100 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 15:50:53,152 views 1888 29100 Tenant queryset count: 10
+INFO 2026-08-27 16:05:26,455 views 1888 29100 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 16:05:26,516 views 1888 29100 Tenant queryset count: 10
+WARNING 2026-08-27 16:06:39,766 views 1888 7084 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 16:07:43,595 views 1888 14484 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 16:07:43,658 views 1888 14484 Tenant queryset count: 10
+INFO 2026-08-27 18:07:28,990 views 10076 19872 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 18:07:29,050 views 10076 19872 Tenant queryset count: 10
+WARNING 2026-08-27 18:08:05,869 views 10076 20328 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+ERROR 2026-08-27 18:18:23,618 views 10076 17396 Failed to send receipt for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 168, in send_receipt
+    NotificationService.send_payment_receipt(payment)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\apps\notifications\services.py", line 105, in send_payment_receipt
+    from weasyprint import HTML
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\weasyprint\__init__.py", line 419, in <module>
+    from .css import preprocess_stylesheet  # noqa: I001, E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\weasyprint\css\__init__.py", line 28, in <module>
+    from .computed_values import COMPUTER_FUNCTIONS
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\weasyprint\css\computed_values.py", line 9, in <module>
+    from ..text.ffi import ffi, pango, units_to_double
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\weasyprint\text\ffi.py", line 431, in <module>
+    gobject = _dlopen(
+        ffi, 'gobject-2.0-0', 'gobject-2.0', 'libgobject-2.0-0',
+        'libgobject-2.0.so.0', 'libgobject-2.0.dylib', 'libgobject-2.0-0.dll')
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\weasyprint\text\ffi.py", line 420, in _dlopen
+    return ffi.dlopen(names[0])  # pragma: no cover
+           ~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\cffi\api.py", line 143, in dlopen
+    lib, function_cache = _make_ffi_library(self, name, flags)
+                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\cffi\api.py", line 827, in _make_ffi_library
+    backendlib = _load_backend_lib(backend, libname, flags)
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\cffi\api.py", line 822, in _load_backend_lib
+    raise OSError(msg)
+OSError: cannot load library 'gobject-2.0-0': error 0x7e.  Additionally, ctypes.util.find_library() did not manage to locate a library called 'gobject-2.0-0'
+INFO 2026-08-27 18:38:07,035 views 21452 4012 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 18:38:07,079 views 21452 4012 Tenant queryset count: 10
+ERROR 2026-08-27 18:38:33,349 views 21452 11632 Failed to send receipt for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 168, in send_receipt
+    NotificationService.send_payment_receipt(payment)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\apps\notifications\services.py", line 111, in send_payment_receipt
+    html_string = render_to_string('billing/receipt_pdf.html', {'receipt': receipt_data})
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: billing/receipt_pdf.html
+INFO 2026-08-27 19:07:46,197 views 14064 26628 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 19:07:46,253 views 14064 26628 Tenant queryset count: 10
+INFO 2026-08-27 19:10:30,725 views 14064 11972 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 19:10:30,820 views 14064 11972 Tenant queryset count: 10
+INFO 2026-08-27 19:25:36,577 views 17604 15488 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 19:25:36,633 views 17604 15488 Tenant queryset count: 10
+ERROR 2026-08-27 19:25:53,221 views 17604 29852 Failed to send receipt for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 158, in send_receipt
+    NotificationService.send_payment_receipt(payment)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\apps\notifications\services.py", line 125, in send_payment_receipt
+    html_string = render_to_string('billing/receipt_pdf.html', {'receipt': receipt_data})
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: billing/receipt_pdf.html
+INFO 2026-08-27 19:26:15,875 views 17604 29852 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 19:26:15,927 views 17604 29852 Tenant queryset count: 10
+INFO 2026-08-27 20:03:46,843 views 18868 14048 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 20:03:46,907 views 18868 14048 Tenant queryset count: 10
+INFO 2026-08-27 20:48:14,647 views 1652 9704 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 20:48:14,700 views 1652 9704 Tenant queryset count: 10
+ERROR 2026-08-27 20:48:37,356 views 1652 9704 Failed to send receipt for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 168, in send_receipt
+    NotificationService.send_payment_receipt(payment)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\apps\notifications\services.py", line 111, in send_payment_receipt
+    html_string = render_to_string('billing/receipt_pdf.html', {'receipt': receipt_data})
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: billing/receipt_pdf.html
+ERROR 2026-08-27 20:48:44,923 views 1652 9704 Failed to send receipt for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 168, in send_receipt
+    NotificationService.send_payment_receipt(payment)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\apps\notifications\services.py", line 111, in send_payment_receipt
+    html_string = render_to_string('billing/receipt_pdf.html', {'receipt': receipt_data})
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: billing/receipt_pdf.html
+WARNING 2026-08-27 20:48:48,012 views 1652 9704 Batch receipts aborted — PDF engine unavailable: Receipt template error: billing/receipt_pdf.html
+INFO 2026-08-27 21:00:13,085 views 1664 14876 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 21:00:13,135 views 1664 14876 Tenant queryset count: 10
+ERROR 2026-08-27 21:00:33,634 views 1664 31464 Failed to send receipt for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 168, in send_receipt
+    NotificationService.send_payment_receipt(payment)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\apps\notifications\services.py", line 132, in send_payment_receipt
+    email.send(fail_silently=False)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\core\mail\message.py", line 358, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 130, in send_messages
+    new_conn_created = self.open()
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 88, in open
+    self.connection = self.connection_class(
+                      ~~~~~~~~~~~~~~~~~~~~~^
+        self.host, self.port, **connection_params
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\smtplib.py", line 261, in __init__
+    (code, msg) = self.connect(host, port)
+                  ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\smtplib.py", line 348, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\smtplib.py", line 318, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+                                    self.source_address)
+                                    ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py", line 874, in create_connection
+    raise exceptions[0]
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py", line 859, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2026-08-27 21:00:35,630 views 1664 14876 Failed to send receipt for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+Traceback (most recent call last):
+  File "C:\Users\Longwani\zambia_pms\backend\apps\billing\views.py", line 168, in send_receipt
+    NotificationService.send_payment_receipt(payment)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\apps\notifications\services.py", line 132, in send_payment_receipt
+    email.send(fail_silently=False)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\core\mail\message.py", line 358, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 130, in send_messages
+    new_conn_created = self.open()
+  File "C:\Users\Longwani\zambia_pms\backend\venv\Lib\site-packages\django\core\mail\backends\smtp.py", line 88, in open
+    self.connection = self.connection_class(
+                      ~~~~~~~~~~~~~~~~~~~~~^
+        self.host, self.port, **connection_params
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\smtplib.py", line 261, in __init__
+    (code, msg) = self.connect(host, port)
+                  ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\smtplib.py", line 348, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\smtplib.py", line 318, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+                                    self.source_address)
+                                    ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py", line 874, in create_connection
+    raise exceptions[0]
+  File "C:\Users\Longwani\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py", line 859, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:04:37,300 views 10640 7952 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 21:04:37,357 views 10640 7952 Tenant queryset count: 10
+ERROR 2026-08-27 21:04:59,899 services 10640 7952 Failed to send receipt email for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:04:59,902 services 10640 7952 Receipt generated for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+ERROR 2026-08-27 21:05:01,337 services 10640 10524 Failed to send receipt email for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:05:01,340 services 10640 10524 Receipt generated for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+ERROR 2026-08-27 21:05:02,464 services 10640 12028 Failed to send receipt email for payment b66bffdd-bcda-4cae-8fbe-9a6a9f56a587: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2026-08-27 21:05:02,777 services 10640 14072 Failed to send receipt email for payment b66bffdd-bcda-4cae-8fbe-9a6a9f56a587: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:05:03,079 services 10640 12028 Receipt generated for payment b66bffdd-bcda-4cae-8fbe-9a6a9f56a587
+INFO 2026-08-27 21:05:03,080 services 10640 14072 Receipt generated for payment b66bffdd-bcda-4cae-8fbe-9a6a9f56a587
+ERROR 2026-08-27 21:05:03,874 services 10640 31372 Failed to send receipt email for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:05:03,881 services 10640 31372 Receipt generated for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+ERROR 2026-08-27 21:05:04,186 services 10640 26988 Failed to send receipt email for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:05:04,193 services 10640 26988 Receipt generated for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+INFO 2026-08-27 21:06:45,769 views 10640 26988 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 21:06:45,812 views 10640 26988 Tenant queryset count: 10
+ERROR 2026-08-27 21:15:30,947 services 10640 27360 Failed to send receipt email for payment 1932a852-6156-40e3-b184-0d531bf4ad02: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:15:30,955 services 10640 27360 Receipt generated for payment 1932a852-6156-40e3-b184-0d531bf4ad02
+ERROR 2026-08-27 21:18:22,010 services 10640 27360 Failed to send receipt email for payment 1932a852-6156-40e3-b184-0d531bf4ad02: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:18:22,020 services 10640 27360 Receipt generated for payment 1932a852-6156-40e3-b184-0d531bf4ad02
+ERROR 2026-08-27 21:18:23,946 services 10640 6876 Failed to send receipt email for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:18:23,951 services 10640 6876 Receipt generated for payment 67ea3518-939e-4b07-b773-ee9c0d27b4de
+ERROR 2026-08-27 21:18:38,769 services 10640 6876 Failed to send receipt email for payment 1932a852-6156-40e3-b184-0d531bf4ad02: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2026-08-27 21:18:38,773 services 10640 6876 Receipt generated for payment 1932a852-6156-40e3-b184-0d531bf4ad02
+INFO 2026-08-27 21:38:09,821 views 16700 13116 Tenant list requested by user: Ngandwe Longwani (landlord) (is_admin: False)
+INFO 2026-08-27 21:38:09,851 views 16700 13116 Tenant queryset count: 10

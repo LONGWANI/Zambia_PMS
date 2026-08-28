@@ -14,7 +14,7 @@ async function render_properties() {
         propertiesCache = response.results || response || [];
 
         const totalUnits = propertiesCache.reduce((sum, p) => sum + (parseInt(p.total_units) || 0), 0);
-        const subtextEl  = document.getElementById('propertySubtext');
+        const subtextEl = document.getElementById('propertySubtext');
         if (subtextEl) {
             subtextEl.textContent =
                 `${propertiesCache.length} propert${propertiesCache.length !== 1 ? 'ies' : 'y'} · ${totalUnits} total units`;
@@ -24,6 +24,7 @@ async function render_properties() {
         bindPropertyFilters();
 
     } catch (err) {
+        console.error('Error loading properties:', err);
         const tbody = document.getElementById('propertyTableBody');
         if (tbody) {
             tbody.innerHTML = `
@@ -52,32 +53,67 @@ function populatePropertiesTable(properties) {
         return;
     }
 
-    tbody.innerHTML = properties.map(p => `
-        <tr>
-            <td class="fw-semibold text-dark">${p.name}</td>
-            <td>${p.address || ''}, ${p.city || ''}</td>
-            <td><span class="badge bg-light text-dark border">${p.property_type || 'Residential'}</span></td>
-            <td class="font-monospace fw-medium">${p.total_units || 1} units</td>
-            <td>
-                <span class="badge ${p.occupied_units > 0 ? 'bg-success-subtle text-success border border-success' : 'bg-warning-subtle text-warning border border-warning'}">
-                    ${p.occupied_units || 0} Occupied
-                </span>
-            </td>
-            <td>
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-primary" onclick="openUtilitySplitModal(${p.id}, '${p.name.replace(/'/g, "\\'")}')">
-                        <i class="bi bi-calculator me-1"></i> Split Utility
-                    </button>
-                    <button class="btn btn-outline-secondary" onclick="openEditPropertyModal(${p.id})">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" onclick="deleteProperty(${p.id})">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+    let html = '';
+    properties.forEach(p => {
+        const escapedName = p.name.replace(/'/g, "\\'");
+        html += `
+            <tr data-property-id="${p.id}">
+                <td class="fw-semibold text-dark">${p.name}</td>
+                <td>${p.address || ''}, ${p.city || ''}</td>
+                <td><span class="badge bg-light text-dark border">${p.property_type || 'Residential'}</span></td>
+                <td class="font-monospace fw-medium">${p.total_units || 1} units</td>
+                <td>
+                    <span class="badge ${p.occupied_units > 0 ? 'bg-success-subtle text-success border border-success' : 'bg-warning-subtle text-warning border border-warning'}">
+                        ${p.occupied_units || 0} Occupied
+                    </span>
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary btn-split-utility" data-prop-id="${p.id}" data-prop-name="${escapedName}">
+                            <i class="bi bi-calculator me-1"></i> Split Utility
+                        </button>
+                        <button class="btn btn-outline-secondary btn-edit-property" data-prop-id="${p.id}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-delete-property" data-prop-id="${p.id}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+
+    // ─── Attach event listeners ────────────────────────────────────────────
+    tbody.querySelectorAll('.btn-split-utility').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const propId = this.dataset.propId;
+            const propName = this.dataset.propName;
+            console.log(`Split Utility clicked for property ${propId} (${propName})`);
+            openUtilitySplitModal(propId, propName);
+        });
+    });
+
+    tbody.querySelectorAll('.btn-edit-property').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const propId = this.dataset.propId;
+            console.log(`Edit clicked for property ${propId}`);
+            openEditPropertyModal(propId);
+        });
+    });
+
+    tbody.querySelectorAll('.btn-delete-property').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const propId = this.dataset.propId;
+            console.log(`Delete clicked for property ${propId}`);
+            deleteProperty(propId);
+        });
+    });
 }
 
 // ─── Filtering Helpers ────────────────────────────────────────────────────────
@@ -100,7 +136,7 @@ function bindPropertyFilters() {
 
 function applyPropertyFilters() {
     const query = (document.getElementById('propertySearch')?.value || '').toLowerCase();
-    const type  = document.getElementById('propertyTypeFilter')?.value || '';
+    const type = document.getElementById('propertyTypeFilter')?.value || '';
 
     const filtered = propertiesCache.filter(p => {
         const matchesQuery = !query ||
@@ -108,7 +144,6 @@ function applyPropertyFilters() {
             (p.address && p.address.toLowerCase().includes(query)) ||
             (p.city && p.city.toLowerCase().includes(query));
         const matchesType = !type || p.property_type === type;
-
         return matchesQuery && matchesType;
     });
 
@@ -176,12 +211,12 @@ async function submitAddProperty() {
     }
 
     const payload = {
-        name:          document.getElementById('modalPropName').value.trim(),
-        address:       document.getElementById('modalPropAddress').value.trim(),
-        city:          document.getElementById('modalPropCity').value.trim(),
-        district:      document.getElementById('modalPropDistrict').value.trim(),
+        name: document.getElementById('modalPropName').value.trim(),
+        address: document.getElementById('modalPropAddress').value.trim(),
+        city: document.getElementById('modalPropCity').value.trim(),
+        district: document.getElementById('modalPropDistrict').value.trim(),
         property_type: document.getElementById('modalPropType').value,
-        total_units:   parseInt(document.getElementById('modalPropUnits').value) || 1,
+        total_units: parseInt(document.getElementById('modalPropUnits').value) || 1,
     };
 
     try {
@@ -190,9 +225,98 @@ async function submitAddProperty() {
         toast(`Property "${payload.name}" added successfully.`, 'ok');
         await render_properties();
     } catch (err) {
+        console.error('Create property error:', err);
         toast(`Failed to add property: ${err.message}`, 'err');
     }
 }
+
+// ─── Edit Property ───────────────────────────────────────────────────────────
+
+async function openEditPropertyModal(propertyId) {
+    try {
+        const property = await api.properties.get(propertyId);
+        const html = `
+            <div class="modal-header border-0 pb-0">
+                <h5 class="fw-bold">Edit Property</h5>
+                <button type="button" class="btn-close" onclick="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPropertyForm">
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium">Property Name</label>
+                        <input type="text" id="editPropName" class="form-control" value="${property.name}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium">Physical Address</label>
+                        <input type="text" id="editPropAddress" class="form-control" value="${property.address}" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">City</label>
+                            <input type="text" id="editPropCity" class="form-control" value="${property.city}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">District</label>
+                            <input type="text" id="editPropDistrict" class="form-control" value="${property.district || ''}">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">Property Type</label>
+                            <select id="editPropType" class="form-select" required>
+                                <option value="Apartment" ${property.property_type === 'Apartment' ? 'selected' : ''}>Apartment</option>
+                                <option value="Commercial" ${property.property_type === 'Commercial' ? 'selected' : ''}>Commercial</option>
+                                <option value="Stand-alone House" ${property.property_type === 'Stand-alone House' ? 'selected' : ''}>Stand-alone House</option>
+                                <option value="Complex" ${property.property_type === 'Complex' ? 'selected' : ''}>Complex</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">Total Units</label>
+                            <input type="number" id="editPropUnits" class="form-control" value="${property.total_units}" min="1" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitEditProperty('${propertyId}')">Update Property</button>
+            </div>
+        `;
+        openModal(html);
+    } catch (err) {
+        console.error('Load property error:', err);
+        toast(`Failed to load property: ${err.message}`, 'err');
+    }
+}
+
+async function submitEditProperty(propertyId) {
+    const form = document.getElementById('editPropertyForm');
+    if (form && !form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const payload = {
+        name: document.getElementById('editPropName').value.trim(),
+        address: document.getElementById('editPropAddress').value.trim(),
+        city: document.getElementById('editPropCity').value.trim(),
+        district: document.getElementById('editPropDistrict').value.trim(),
+        property_type: document.getElementById('editPropType').value,
+        total_units: parseInt(document.getElementById('editPropUnits').value) || 1,
+    };
+
+    try {
+        await api.properties.update(propertyId, payload);
+        closeModal();
+        toast('Property updated successfully.', 'ok');
+        await render_properties();
+    } catch (err) {
+        console.error('Update property error:', err);
+        toast(`Update failed: ${err.message}`, 'err');
+    }
+}
+
+// ─── Delete Property ─────────────────────────────────────────────────────────
 
 async function deleteProperty(propertyId) {
     if (!confirm('Are you sure you want to delete this property? This cannot be undone.')) return;
@@ -201,6 +325,7 @@ async function deleteProperty(propertyId) {
         toast('Property deleted.', 'ok');
         await render_properties();
     } catch (err) {
+        console.error('Delete property error:', err);
         toast(`Delete failed: ${err.message}`, 'err');
     }
 }
@@ -208,6 +333,7 @@ async function deleteProperty(propertyId) {
 // ─── Utility Bill Splitter Modal ─────────────────────────────────────────────
 
 function openUtilitySplitModal(propertyId, propertyName) {
+    console.log(`Opening utility split for property ${propertyId} (${propertyName})`);
     const html = `
         <div class="modal-header border-0 pb-0">
             <h5 class="fw-bold">Split Utility Bill &mdash; ${propertyName}</h5>
@@ -221,6 +347,7 @@ function openUtilitySplitModal(propertyId, propertyName) {
                         <option value="Electricity (ZESCO)">Electricity (ZESCO Meter)</option>
                         <option value="Water (LWSC)">Water (LWSC)</option>
                         <option value="Refuse / Trash">Refuse / Trash Collection</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -251,32 +378,71 @@ function openUtilitySplitModal(propertyId, propertyName) {
         </div>
         <div class="modal-footer border-0 pt-0">
             <button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="submitUtilitySplit(${propertyId})">Calculate & Issue Invoices</button>
+            <button type="button" class="btn btn-primary" id="confirmSplitBtn">Calculate & Issue Invoices</button>
         </div>
     `;
     openModal(html);
+
+    // Set default dates (current month)
+    const today = new Date().toISOString().split('T')[0];
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    document.getElementById('utilStart').value = lastMonth.toISOString().split('T')[0];
+    document.getElementById('utilEnd').value = today;
+
+    // ─── Attach event listener to the confirm button (no inline onclick) ──
+    const confirmBtn = document.getElementById('confirmSplitBtn');
+    if (confirmBtn) {
+        // Remove any existing listeners (just in case)
+        confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+        const newBtn = document.getElementById('confirmSplitBtn');
+        newBtn.addEventListener('click', function() {
+            submitUtilitySplit(propertyId);
+        });
+    }
 }
 
 async function submitUtilitySplit(propertyId) {
-    try {
-        const payload = {
-            property_id: propertyId,
-            utility_type: document.getElementById('utilType').value,
-            total_amount: document.getElementById('utilAmount').value,
-            period_start: document.getElementById('utilStart').value,
-            period_end: document.getElementById('utilEnd').value,
-            split_method: document.getElementById('utilMethod').value
-        };
+    const form = document.getElementById('utilitySplitForm');
+    if (form && !form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
 
+    const payload = {
+        property_id: propertyId,
+        utility_type: document.getElementById('utilType').value,
+        total_amount: parseFloat(document.getElementById('utilAmount').value),
+        period_start: document.getElementById('utilStart').value,
+        period_end: document.getElementById('utilEnd').value,
+        split_method: document.getElementById('utilMethod').value
+    };
+
+    console.log('Submitting utility split payload:', payload);
+
+    const btn = document.getElementById('confirmSplitBtn');
+    const originalText = btn ? btn.innerHTML : 'Calculate & Issue Invoices';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Processing...';
+    }
+
+    try {
         await api.utilityBills.createAndSplit(payload);
         closeModal();
         toast('Utility bill split and issued to all occupied units.', 'ok');
     } catch (err) {
+        console.error('Utility split error:', err);
         toast(`Failed to split utility bill: ${err.message}`, 'err');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
 }
 
-// ─── Digital Lease Agreement Modal ───────────────────────────────────────────
+// ─── Digital Lease Agreement Modal ──────────────────────────────────────────
 
 function openCreateLeaseModal(propertyId, unitId) {
     const html = `
@@ -329,10 +495,20 @@ function openCreateLeaseModal(propertyId, unitId) {
         </div>
         <div class="modal-footer border-0 pt-0">
             <button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button>
-            <button type="button" class="btn btn-success" onclick="submitLeaseAgreement(${propertyId}, ${unitId})">Create & Sign Lease</button>
+            <button type="button" class="btn btn-success" id="confirmLeaseBtn">Create & Sign Lease</button>
         </div>
     `;
     openModal(html);
+
+    // Attach event listener for the lease agreement confirm button
+    const confirmBtn = document.getElementById('confirmLeaseBtn');
+    if (confirmBtn) {
+        confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+        const newBtn = document.getElementById('confirmLeaseBtn');
+        newBtn.addEventListener('click', function() {
+            submitLeaseAgreement(propertyId, unitId);
+        });
+    }
 }
 
 async function submitLeaseAgreement(propertyId, unitId) {
@@ -355,6 +531,13 @@ async function submitLeaseAgreement(propertyId, unitId) {
         is_accepted: document.getElementById('leaseAccept').checked
     };
 
+    const btn = document.getElementById('confirmLeaseBtn');
+    const originalText = btn ? btn.innerHTML : 'Create & Sign Lease';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Creating...';
+    }
+
     try {
         if (api.leaseAgreements && api.leaseAgreements.create) {
             await api.leaseAgreements.create(payload);
@@ -364,18 +547,26 @@ async function submitLeaseAgreement(propertyId, unitId) {
         closeModal();
         toast('Digital Lease Agreement created and signed successfully.', 'ok');
     } catch (err) {
+        console.error('Lease agreement error:', err);
         toast(`Failed to generate lease agreement: ${err.message}`, 'err');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
 }
 
 // ─── Exports ─────────────────────────────────────────────────────────────────
-window.render_properties        = render_properties;
-window.populatePropertiesTable  = populatePropertiesTable;
-window.applyPropertyFilters     = applyPropertyFilters;
-window.openCreatePropertyModal  = openCreatePropertyModal;
-window.submitAddProperty        = submitAddProperty;
-window.deleteProperty           = deleteProperty;
-window.openUtilitySplitModal    = openUtilitySplitModal;
-window.submitUtilitySplit      = submitUtilitySplit;
-window.openCreateLeaseModal     = openCreateLeaseModal;
-window.submitLeaseAgreement    = submitLeaseAgreement;
+window.render_properties = render_properties;
+window.populatePropertiesTable = populatePropertiesTable;
+window.applyPropertyFilters = applyPropertyFilters;
+window.openCreatePropertyModal = openCreatePropertyModal;
+window.submitAddProperty = submitAddProperty;
+window.openEditPropertyModal = openEditPropertyModal;
+window.submitEditProperty = submitEditProperty;
+window.deleteProperty = deleteProperty;
+window.openUtilitySplitModal = openUtilitySplitModal;
+window.submitUtilitySplit = submitUtilitySplit;
+window.openCreateLeaseModal = openCreateLeaseModal;
+window.submitLeaseAgreement = submitLeaseAgreement;
